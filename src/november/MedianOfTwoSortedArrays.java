@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MedianOfTwoSortedArrays {
     public static void main(String[] args) {
-        int[] nums1 = new int[]{1, 3};
+        int[] nums1 = new int[]{1, 2};
         int[] nums2 = new int[]{4, 5};
 //        System.out.println(solution1(nums1, nums2));
         System.out.println(solution2(nums1, nums2));
@@ -26,14 +26,14 @@ public class MedianOfTwoSortedArrays {
 //        二分查找, 查找区间为[0,m], 满足条件 nums1[i-1] <= nums2[j] && nums2[j-1] <= nums1[i]
 //        循环终止条件为left == right, 此时left = right = i (第一个数组分割线右边的第一个元素下标)
         while (left < right) {
-            int i = (left + right + 1) / 2;
+            int i = (left + right) / 2;
             int j = leftSize - i;
-            if (nums1[i - 1] > nums2[j]) {
-//                查询区间为[left, i-1]
-                right = i - 1;
+            if (nums2[j - 1] > nums1[i]) {
+//                查询区间为[i+1, right]
+                left = i + 1;
             } else {
-//                查找区间为[i, right]
-                left = i;
+//                查找区间为[left, i]
+                right = i;
             }
         }
         int i = left;
