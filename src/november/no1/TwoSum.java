@@ -1,4 +1,4 @@
-package november;
+package november.no1;
 
 import java.util.HashMap;
 import java.util.Map;

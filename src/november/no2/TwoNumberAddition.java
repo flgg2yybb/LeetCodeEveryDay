@@ -1,4 +1,4 @@
-package november;
+package november.no2;
 
 public class TwoNumberAddition {
     public static void main(String[] args) {

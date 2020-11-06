@@ -1,4 +1,4 @@
-package november;
+package november.no7;
 
 import java.util.ArrayList;
 import java.util.List;
