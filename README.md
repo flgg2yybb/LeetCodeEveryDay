@@ -1,3 +1,3 @@
 # LeetCodeEveryDay
 
-The number in commited message stand for the question number in LeetCode
+The number in committed message stand for the question sequence in LeetCode
