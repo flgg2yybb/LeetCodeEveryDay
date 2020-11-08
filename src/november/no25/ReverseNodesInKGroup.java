@@ -6,8 +6,50 @@ public class ReverseNodesInKGroup {
                 new ListNode(4, new ListNode(5, new ListNode(6, new ListNode(7, new ListNode(8,
                         new ListNode(9)))))))));
         int k = 3;
-        ListNode result = solution1(head, k);
+//        ListNode result = solution1(head, k);
+        ListNode result = solution2(head, k);
         disp(result);
+    }
+
+    private static ListNode solution2(ListNode head, int k) {
+//        新建一个头节点指向链表头部
+        ListNode root = new ListNode(0, head);
+//        pre表示上一段链表的尾节点，用来连接反转后的子链表的头部
+        ListNode pre = root;
+        while (head != null) {
+            ListNode tail = head;
+//            找到当前有k个元素的子链表，分别用head和tail指向头尾
+            for (int i = 1; i < k; i++) {
+                tail = tail.next;
+                if (tail == null) {
+                    return root.next;
+                }
+            }
+//            next为下一个子链表的表头
+            ListNode next = tail.next;
+//            反转当前子链表，并返回反转后的头、尾节点
+            ListNode[] listNodes = reverseLinkedList(head, tail);
+            head = listNodes[0];
+            tail = listNodes[1];
+            tail.next = next;
+            pre.next = head;
+            pre = tail;
+            head = next;
+        }
+        return root.next;
+    }
+
+    private static ListNode[] reverseLinkedList(ListNode head, ListNode tail) {
+        ListNode end = tail.next;
+        ListNode start = head;
+        ListNode nextStart;
+        while (end != tail) {
+            nextStart = start.next;
+            start.next = end;
+            end = start;
+            start = nextStart;
+        }
+        return new ListNode[]{tail, head};
     }
 
     private static ListNode solution1(ListNode head, int k) {
