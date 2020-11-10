@@ -15,40 +15,52 @@ public class ImplementQueueUsingStacks {
 
 class MyQueue {
 
-    private final Stack<Integer> stack;
-    private final Stack<Integer> tempStack;
+    private final Stack<Integer> inStack;
+    private final Stack<Integer> outStack;
 
 
-    /** Initialize your data structure here. */
+    /**
+     * Initialize your data structure here.
+     */
     public MyQueue() {
-        stack = new Stack<>();
-        tempStack = new Stack<>();
+        inStack = new Stack<>();
+        outStack = new Stack<>();
     }
 
-    /** Push element x to the back of queue. */
+    /**
+     * Push element x to the back of queue.
+     */
     public void push(int x) {
-        while (!stack.empty()) {
-            tempStack.push(stack.pop());
-        }
-        stack.push(x);
-        while (!tempStack.empty()) {
-            stack.push(tempStack.pop());
-        }
+        inStack.push(x);
     }
 
-    /** Removes the element from in front of queue and returns that element. */
+    /**
+     * Removes the element from in front of queue and returns that element.
+     */
     public int pop() {
-        return stack.pop();
+        if (!outStack.empty()) {
+            return outStack.pop();
+        }
+        while (!inStack.empty()) {
+            outStack.push(inStack.pop());
+        }
+        return outStack.pop();
     }
 
-    /** Get the front element. */
+    /**
+     * Get the front element.
+     */
     public int peek() {
-        return stack.peek();
+        int top = this.pop();
+        outStack.push(top);
+        return top;
     }
 
-    /** Returns whether the queue is empty. */
+    /**
+     * Returns whether the queue is empty.
+     */
     public boolean empty() {
-        return stack.empty();
+        return outStack.empty() && inStack.empty();
     }
 }
 
