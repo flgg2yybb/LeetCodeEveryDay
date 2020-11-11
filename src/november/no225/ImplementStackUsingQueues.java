@@ -1,6 +1,7 @@
 package november.no225;
 
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class ImplementStackUsingQueues {
     public static void main(String[] args) {
@@ -23,8 +24,7 @@ public class ImplementStackUsingQueues {
 
 class MyStack {
 
-    private LinkedList<Integer> queue;
-    private boolean isTop = false;
+    private Queue<Integer> queue;
 
     /**
      * Initialize your data structure here.
@@ -37,21 +37,16 @@ class MyStack {
      * Push element x onto stack.
      */
     public void push(int x) {
-        if (isTop) {
-            queue.add(queue.poll());
-            isTop = false;
+        queue.offer(x);
+        for (int i = 1; i < queue.size(); i++) {
+            queue.offer(queue.poll());
         }
-        queue.add(x);
     }
 
     /**
      * Removes the element on top of the stack and returns that element.
      */
     public int pop() {
-        if (!isTop) {
-            moveFirstToTop(queue);
-        }
-        isTop = false;
         return queue.poll();
     }
 
@@ -59,17 +54,7 @@ class MyStack {
      * Get the top element.
      */
     public int top() {
-        if (!isTop) {
-            moveFirstToTop(queue);
-            isTop = true;
-        }
         return queue.peek();
-    }
-
-    private void moveFirstToTop(LinkedList<Integer> queue) {
-        for (int i = 1; i < queue.size(); i++) {
-            queue.add(queue.poll());
-        }
     }
 
     /**
