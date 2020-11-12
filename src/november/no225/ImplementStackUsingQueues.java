@@ -24,7 +24,7 @@ public class ImplementStackUsingQueues {
 
 class MyStack {
 
-    private Queue<Integer> queue;
+    private final Queue<Integer> queue;
 
     /**
      * Initialize your data structure here.
