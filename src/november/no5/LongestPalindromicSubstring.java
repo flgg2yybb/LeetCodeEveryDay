@@ -7,11 +7,36 @@ public class LongestPalindromicSubstring {
         String s3 = "a";        //a
         String s4 = "ac";       //a, c
         String s5 = "aaaaaaa";       //aaaaaaa
-        System.out.println(longestPalindrome2(s1));
-        System.out.println(longestPalindrome2(s2));
-        System.out.println(longestPalindrome2(s3));
-        System.out.println(longestPalindrome2(s4));
-        System.out.println(longestPalindrome2(s5));
+        System.out.println(longestPalindrome3(s1));
+        System.out.println(longestPalindrome3(s2));
+        System.out.println(longestPalindrome3(s3));
+        System.out.println(longestPalindrome3(s4));
+        System.out.println(longestPalindrome3(s5));
+    }
+
+    private static String longestPalindrome3(String s) {
+//        dynamic programming
+        int begin = 0;
+        int maxLen = 0;
+        boolean[][] dp = new boolean[s.length()][s.length()];
+//        len means the length of s[i...j]
+        for (int len = 1; len <= s.length(); len++) {
+            for (int i = 0; i <= s.length() - len; i++) {
+                int j = i + len - 1;
+                if (len == 1) {
+                    dp[i][j] = true;
+                } else if (len == 2) {
+                    dp[i][j] = s.charAt(i) == s.charAt(j);
+                } else {
+                    dp[i][j] = s.charAt(i) == s.charAt(j) && dp[i + 1][j - 1];
+                }
+                if (dp[i][j] && maxLen < len) {
+                    maxLen = len;
+                    begin = i;
+                }
+            }
+        }
+        return s.substring(begin, begin + maxLen);
     }
 
     private static String longestPalindrome2(String s) {
