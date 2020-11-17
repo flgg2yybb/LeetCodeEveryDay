@@ -1,5 +1,8 @@
 package november.no8;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StringToInteger {
     public static void main(String[] args) {
         String s1 = "42";   //42
@@ -8,12 +11,24 @@ public class StringToInteger {
         String s4 = "words with 987";   //0
         String s5 = "-91283472332"; //-2147483648
         String s6 = "+-12";     //0
-        System.out.println(myAtoi(s1));
-        System.out.println(myAtoi(s2));
-        System.out.println(myAtoi(s3));
-        System.out.println(myAtoi(s4));
-        System.out.println(myAtoi(s5));
-        System.out.println(myAtoi(s6));
+        System.out.println(myAtoi2(s1));
+        System.out.println(myAtoi2(s2));
+        System.out.println(myAtoi2(s3));
+        System.out.println(myAtoi2(s4));
+        System.out.println(myAtoi2(s5));
+        System.out.println(myAtoi2(s6));
+    }
+
+    private static int myAtoi2(String s) {
+//        DFA(Deterministic Finite Automation)
+        Automation automation = new Automation();
+        for (int i = 0; i < s.length(); i++) {
+            automation.add(s.charAt(i));
+            if (Automation.END.equals(automation.getStatus())) {
+                break;
+            }
+        }
+        return automation.getResult();
     }
 
     private static int myAtoi(String s) {
@@ -64,6 +79,74 @@ public class StringToInteger {
 
     private static boolean isSign(char c) {
         return c == '-' || c == '+';
+    }
+}
+
+class Automation {
+    /*
+     *   Status Transition Array:
+     *               ' '         sign('+' / '-')       number      other
+     *   start       start           signed          in_number      end
+     *   signed      end             end             in_number      end
+     *   in_number   end             end             in_number      end
+     *   end         end             end                end         end
+     * */
+    final static String START = "start";
+    final static String SIGNED = "signed";
+    final static String IN_NUMBER = "in_number";
+    final static String END = "end";
+    private final Map<String, String[]> statusMap = new HashMap() {{
+        put(START, new String[]{START, SIGNED, IN_NUMBER, END});
+        put(SIGNED, new String[]{END, END, IN_NUMBER, END});
+        put(IN_NUMBER, new String[]{END, END, IN_NUMBER, END});
+        put(END, new String[]{END, END, END, END});
+    }};
+    //    ans is absolute value, not negative
+    private long ans = 0;
+    private int sign = 1;
+    private String status = START;
+
+    public void add(char currChar) {
+        status = statusMap.get(status)[getCol(currChar)];
+        switch (status) {
+            case SIGNED:
+                sign = currChar == '-' ? -1 : 1;
+                break;
+            case IN_NUMBER:
+                ans = ans * 10 + currChar - '0';
+                if (sign == 1 && ans >= Integer.MAX_VALUE) {
+                    ans = Integer.MAX_VALUE;
+                } else if (sign == -1 && ans >= -1L * Integer.MIN_VALUE) {
+                    ans = -1L * Integer.MIN_VALUE;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private int getCol(char currChar) {
+        if (currChar == ' ') {
+            return 0;
+        }
+        if (currChar == '-' || currChar == '+') {
+            return 1;
+        }
+        if (Character.isDigit(currChar)) {
+            return 2;
+        }
+        return 3;
+    }
+
+    public int getResult() {
+        /*
+         *       Integer range : [-2^32, 2^32 - 1]
+         * */
+        return ans == -1L * Integer.MIN_VALUE ? Integer.MIN_VALUE : (int) (ans * sign);
+    }
+
+    public String getStatus() {
+        return status;
     }
 }
 
