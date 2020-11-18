@@ -5,9 +5,31 @@ public class PalindromeNumber {
         int x1 = 121;
         int x2 = -121;
         int x3 = 1000000001;
-        System.out.println(isPalindrome(x1));
-        System.out.println(isPalindrome(x2));
-        System.out.println(isPalindrome(x3));
+        int x4 = 0;
+        int x5 = 3;
+        System.out.println(isPalindrome2(x1));
+        System.out.println(isPalindrome2(x2));
+        System.out.println(isPalindrome2(x3));
+        System.out.println(isPalindrome2(x4));
+        System.out.println(isPalindrome2(x5));
+    }
+
+    private static boolean isPalindrome2(int x) {
+//        time is O(log n), space is O(1)
+//        所有负数、以及个位数为0的正整数均不为回文数（正整数高位不可能为0）
+        if (x < 0 || x > 0 && x % 10 == 0) {
+            return false;
+        }
+//        取出整数后半部分反转与前半部分比较
+        int reversedNum = 0;
+//        考虑奇偶情况，当原整数小于等于反转数时，此时已到一半
+        while (x > reversedNum) {
+            reversedNum = reversedNum * 10 + x % 10;
+            x /= 10;
+        }
+//        若x有奇数位，则reversedNum会比x多一位（原x的中间位），需将reversedNum除10后与x比较
+//        若x为偶数位，则reversedNum和x位数相同，直接比较即可
+        return x == reversedNum || x == reversedNum / 10;
     }
 
     private static boolean isPalindrome(int x) {
