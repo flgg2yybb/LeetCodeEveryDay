@@ -4,9 +4,11 @@ import java.util.Arrays;
 
 public class ThreeSumClosest {
     public static void main(String[] args) {
-        int[] nums = new int[]{-1, 2, 1, -4};
-        int target = 1;
-        System.out.println(threeSumClosest(nums, target));
+        int[] nums = new int[]{-6, -2, 0, 1, 4, 8, 15};
+        System.out.println(binarySearchClosest(nums, 0, -20));
+//        int[] nums = new int[]{-1, 2, 1, -4};
+//        int target = 1;
+//        System.out.println(threeSumClosest(nums, target));
     }
 
     private static int threeSumClosest(int[] nums, int target) {
@@ -20,8 +22,8 @@ public class ThreeSumClosest {
         for (int i = 0; i < nums.length - 2; i++) {
             for (int j = i + 1; j < nums.length - 1; j++) {
                 int k = target - nums[i] - nums[j];
-                int closestK = linearSearch(nums, j + 1, k);
-//                int closestK = binarySearchClosest(nums, j + 1, k);
+//                int closestK = linearSearch(nums, j + 1, k);
+                int closestK = binarySearchClosest(nums, j + 1, k);
                 if (Math.abs(k - closestK) < margin) {
                     margin = Math.abs(k - closestK);
                     closest = nums[i] + nums[j] + closestK;
@@ -32,18 +34,30 @@ public class ThreeSumClosest {
         return closest;
     }
 
-//    private static int binarySearchClosest(int[] nums, int start, int target) {
-////        nums is ascending sorting array
-//        int left = start;
-//        int right = nums.length - 1;
-//        int margin = Integer.MAX_VALUE;
-//        while (left < right) {
-//            int mid = (left + right) / 2;
-//
-//
-//        }
-//        return nums[left];
-//    }
+    private static int binarySearchClosest(int[] nums, int start, int target) {
+//        nums is ascending sorting array
+        int left = start;
+        int right = nums.length - 1;
+        int margin = Math.abs(target - nums[left]);
+        int closest = nums[left];
+        while (left < right) {
+            int mid = (left + right + 1) / 2;
+            if (nums[mid] == target) {
+                return target;
+            }
+            int diff = nums[mid] - target;
+            if (Math.abs(diff) < margin) {
+                margin = Math.abs(diff);
+                closest = nums[mid];
+            }
+            if (diff < 0) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return closest;
+    }
 
     private static int linearSearch(int[] nums, int start, int target) {
         int margin = Integer.MAX_VALUE;
