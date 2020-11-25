@@ -1,39 +1,37 @@
 package november.no98;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ValidateBinarySearchTree {
+    private static long lastValue = Long.MAX_VALUE;
+
     public static void main(String[] args) {
         TreeNode root1 = new TreeNode(2, new TreeNode(1), new TreeNode(3));
         TreeNode root2 = new TreeNode(5, new TreeNode(1), new TreeNode(4, new TreeNode(3), new TreeNode(6)));
+        TreeNode root3 = new TreeNode(0);
+        TreeNode root4 = new TreeNode(Integer.MAX_VALUE, new TreeNode(Integer.MAX_VALUE), null);
         System.out.println(isValidBST1(root1));
         System.out.println(isValidBST1(root2));
+        System.out.println(isValidBST1(root3));
+        System.out.println(isValidBST1(root4));
     }
 
     private static boolean isValidBST1(TreeNode root) {
+//        if the tree is BST, then its inorder traversal(中序遍历) should be ascending
+//        recursive, time is O(n), space is O(n)
+        lastValue = Long.MAX_VALUE;
+        return inorderRecursive(root);
+    }
+
+    private static boolean inorderRecursive(TreeNode root) {
         if (root == null) {
             return true;
         }
-//        if the tree is BST, then its inorder traversal(中序遍历) should be ascending
-//        recursive, time is O(n), space is O(n)
-        List<Integer> result = new ArrayList<>();
-        inorderTraverse(root, result);
-        int i = 0;
-        for (; i < result.size() - 1; i++) {
-            if (result.get(i) >= result.get(i + 1)) {
-                break;
-            }
+        boolean leftResult = inorderRecursive(root.left);
+        if (lastValue != Long.MAX_VALUE && lastValue >= root.val) {
+            return false;
         }
-        return i + 1 == result.size();
-    }
-
-    private static void inorderTraverse(TreeNode root, List<Integer> result) {
-        if (root != null) {
-            inorderTraverse(root.left, result);
-            result.add(root.val);
-            inorderTraverse(root.right, result);
-        }
+        lastValue = root.val;
+        boolean rightResult = inorderRecursive(root.right);
+        return leftResult && rightResult;
     }
 }
 
