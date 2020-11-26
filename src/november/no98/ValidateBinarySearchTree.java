@@ -8,10 +8,28 @@ public class ValidateBinarySearchTree {
         TreeNode root2 = new TreeNode(5, new TreeNode(1), new TreeNode(4, new TreeNode(3), new TreeNode(6)));
         TreeNode root3 = new TreeNode(0);
         TreeNode root4 = new TreeNode(Integer.MAX_VALUE, new TreeNode(Integer.MAX_VALUE), null);
-        System.out.println(isValidBST1(root1));
-        System.out.println(isValidBST1(root2));
-        System.out.println(isValidBST1(root3));
-        System.out.println(isValidBST1(root4));
+        System.out.println(isValidBST2(root1));
+        System.out.println(isValidBST2(root2));
+        System.out.println(isValidBST2(root3));
+        System.out.println(isValidBST2(root4));
+    }
+
+    private static boolean isValidBST2(TreeNode root) {
+//        recusive
+        return validate(root, null, null);
+    }
+
+    private static boolean validate(TreeNode root, TreeNode min, TreeNode max) {
+        if (root == null) {
+            return true;
+        }
+        if (min != null && min.val >= root.val) {
+            return false;
+        }
+        if (max != null && max.val <= root.val) {
+            return false;
+        }
+        return validate(root.left, min, root) && validate(root.right, root, max);
     }
 
     private static boolean isValidBST1(TreeNode root) {
