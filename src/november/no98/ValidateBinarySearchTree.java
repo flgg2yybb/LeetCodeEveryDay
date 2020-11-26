@@ -1,7 +1,7 @@
 package november.no98;
 
 public class ValidateBinarySearchTree {
-    private static long lastValue = Long.MAX_VALUE;
+    private static TreeNode prev = null;
 
     public static void main(String[] args) {
         TreeNode root1 = new TreeNode(2, new TreeNode(1), new TreeNode(3));
@@ -17,7 +17,7 @@ public class ValidateBinarySearchTree {
     private static boolean isValidBST1(TreeNode root) {
 //        if the tree is BST, then its inorder traversal(中序遍历) should be ascending
 //        recursive, time is O(n), space is O(n)
-        lastValue = Long.MAX_VALUE;
+        prev = null;
         return inorderRecursive(root);
     }
 
@@ -26,10 +26,10 @@ public class ValidateBinarySearchTree {
             return true;
         }
         boolean leftResult = inorderRecursive(root.left);
-        if (lastValue != Long.MAX_VALUE && lastValue >= root.val) {
+        if (prev != null && prev.val >= root.val) {
             return false;
         }
-        lastValue = root.val;
+        prev = root;
         boolean rightResult = inorderRecursive(root.right);
         return leftResult && rightResult;
     }
