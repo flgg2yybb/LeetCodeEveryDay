@@ -6,9 +6,34 @@ public class BinaryTreeLevelOrderTraversal {
     public static void main(String[] args) {
         TreeNode root1 = new TreeNode(3, new TreeNode(9), new TreeNode(20, new TreeNode(5), new TreeNode(7)));
         TreeNode root2 = new TreeNode(1, new TreeNode(2, new TreeNode(3, new TreeNode(4, new TreeNode(5, new TreeNode(6), null), null), null), null), null);
-
-        List<List<Integer>> result = levelOrder(root2);
+        TreeNode root3 = null;
+        List<List<Integer>> result = levelOrderTemplate(root3);
         result.forEach(System.out::println);
+    }
+
+    private static List<List<Integer>> levelOrderTemplate(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int currentLevel = queue.size();
+            List<Integer> levelResult = new ArrayList<>();
+            for (int i = 0; i < currentLevel; i++) {
+                TreeNode node = queue.poll();
+                levelResult.add(node.val);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            result.add(levelResult);
+        }
+        return result;
     }
 
     private static List<List<Integer>> levelOrder(TreeNode root) {
