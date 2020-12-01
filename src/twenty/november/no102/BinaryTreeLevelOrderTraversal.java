@@ -7,8 +7,32 @@ public class BinaryTreeLevelOrderTraversal {
         TreeNode root1 = new TreeNode(3, new TreeNode(9), new TreeNode(20, new TreeNode(5), new TreeNode(7)));
         TreeNode root2 = new TreeNode(1, new TreeNode(2, new TreeNode(3, new TreeNode(4, new TreeNode(5, new TreeNode(6), null), null), null), null), null);
         TreeNode root3 = null;
-        List<List<Integer>> result = levelOrderTemplate(root3);
+//        List<List<Integer>> result = levelOrderTemplate(root3);
+        List<List<Integer>> result = levelOrder2(root2);
         result.forEach(System.out::println);
+    }
+
+    private static List<List<Integer>> levelOrder2(TreeNode root) {
+//        use dfs
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        dfs(root, result, 0);
+        return result;
+    }
+
+    private static void dfs(TreeNode root, List<List<Integer>> result, int level) {
+        if (result.size() < level + 1) {
+            result.add(new ArrayList<>());
+        }
+        result.get(level).add(root.val);
+        if (root.left != null) {
+            dfs(root.left, result, level + 1);
+        }
+        if (root.right != null) {
+            dfs(root.right, result, level + 1);
+        }
     }
 
     private static List<List<Integer>> levelOrderTemplate(TreeNode root) {
