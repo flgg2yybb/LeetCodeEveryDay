@@ -1,13 +1,39 @@
 package twenty.december.no104;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class MaximumDepthOfBinaryTree {
     public static void main(String[] args) {
         TreeNode root1 = new TreeNode(3, new TreeNode(9), new TreeNode(20, new TreeNode(15), new TreeNode(7)));
         TreeNode root2 = null;
         TreeNode root3 = new TreeNode(1, new TreeNode(2, new TreeNode(3, new TreeNode(4, new TreeNode(5), null), null), null), null);
-        System.out.println(maxDepth(root1));
-        System.out.println(maxDepth(root2));
-        System.out.println(maxDepth(root3));
+        System.out.println(bfs(root1));
+        System.out.println(bfs(root2));
+        System.out.println(bfs(root3));
+    }
+
+    private static int bfs(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int count = 0;
+        while (!queue.isEmpty()) {
+            int currentSize = queue.size();
+            count++;
+            for (int i = 0; i < currentSize; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+        }
+        return count;
     }
 
     private static int maxDepth(TreeNode root) {
