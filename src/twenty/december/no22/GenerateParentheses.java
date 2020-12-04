@@ -8,8 +8,30 @@ public class GenerateParentheses {
         int n1 = 3;
         int n2 = 0;
         int n3 = 5;
-        List<String> resultList = bruteForce(n3);
+        List<String> resultList = bruteForceEnhancedEdition(n1);
         resultList.forEach(System.out::println);
+    }
+
+    private static List<String> bruteForceEnhancedEdition(int n) {
+//        brute force enhanced edition, use dfs and pruning
+        List<String> validParentheses = new ArrayList<>();
+        generateValid(new char[2 * n], 0, 0, validParentheses);
+        return validParentheses;
+    }
+
+    private static void generateValid(char[] chars, int index, int balance, List<String> validParentheses) {
+        if (index == chars.length) {
+            validParentheses.add(new String(chars));
+        } else {
+            if (balance < chars.length - index) {
+                chars[index] = '(';
+                generateValid(chars, index + 1, balance + 1, validParentheses);
+            }
+            if (balance > 0) {
+                chars[index] = ')';
+                generateValid(chars, index + 1, balance - 1, validParentheses);
+            }
+        }
     }
 
     public static List<String> bruteForce(int n) {
