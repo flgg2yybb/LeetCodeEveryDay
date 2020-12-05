@@ -1,65 +1,70 @@
 package twenty.december.no51;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class NQueens {
     public static void main(String[] args) {
-        int n = 4;
-        List<List<String>> resultList = solveNQueens(n);
+        int n1 = 4;
+        int n2 = 8;
+        int n3 = 1;
+        List<List<String>> resultList = solveNQueens(n1);
         disp(resultList);
     }
 
     public static List<List<String>> solveNQueens(int n) {
         List<List<String>> resultList = new ArrayList<>();
-        if (n < 3) {
+        if (n == 0) {
             return resultList;
         }
         Set<Integer> col = new HashSet<>();
         Set<Integer> diff = new HashSet<>();
         Set<Integer> sum = new HashSet<>();
-        dfs(n, 0, resultList, new ArrayList<>(), col, diff, sum);
+        int[] queens = new int[n];
+//        -1 stand for nothing
+        Arrays.fill(queens, -1);
+        dfs(n, 0, resultList, queens, col, diff, sum);
         return resultList;
     }
 
     //    dfs 按层递归，level即行下标
     private static void dfs(int n, int level,
-                            List<List<String>> resultList, List<String> result,
+                            List<List<String>> resultList, int[] queens,
                             Set<Integer> col, Set<Integer> diff, Set<Integer> sum) {
         if (level == n) {
-            resultList.add(result);
+            resultList.add(getBoard(queens));
         }
         int y = level;
         for (int x = 0; x < n; x++) {
             if (col.contains(x) || diff.contains(y - x) || sum.contains(y + x)) {
                 continue;
             }
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < x; i++) {
-                sb.append(".");
-            }
-            sb.append("Q");
-            for (int i = x + 1; i < n; i++) {
-                sb.append(".");
-            }
-            result.add(sb.toString());
+            queens[level] = x;
             col.add(x);
             diff.add(y - x);
             sum.add(y + x);
-            dfs(n, level + 1, resultList, result, col, diff, sum);
+            dfs(n, level + 1, resultList, queens, col, diff, sum);
+//            recover
+            queens[level] = -1;
             col.remove(x);
             diff.remove(y - x);
             sum.remove(y + x);
         }
     }
 
+    private static List<String> getBoard(int[] queens) {
+        List<String> result = new ArrayList<>();
+        Arrays.stream(queens).forEach(queneCol -> {
+            char[] chars = new char[queens.length];
+            Arrays.fill(chars, '.');
+            chars[queneCol] = 'Q';
+            result.add(new String(chars));
+        });
+        return result;
+    }
+
     private static void disp(List<List<String>> resultList) {
         resultList.forEach(list -> {
-            list.forEach(str -> {
-                System.out.println(str);
-            });
+            list.forEach(System.out::println);
             System.out.println();
         });
     }
