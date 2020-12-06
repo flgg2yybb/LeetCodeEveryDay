@@ -59,7 +59,32 @@ public class ValidSudoku {
         System.out.println(isValidSudoku(board4));
     }
 
-    public static boolean isValidSudoku(char[][] board) {
+    private static boolean isValidSudoku(char[][] board) {
+        int size = board.length;
+        int[][] rows = new int[size][size];
+        int[][] cols = new int[size][size];
+        int[][] boxes = new int[size][size];
+//        行表示第i个row、col、boxes集合
+//        列表示第i个row、col、boxes集合中 1到9的元素是否出现过，0为未出现，1为出现过，用此数组代替Set/Map
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == '.') {
+                    continue;
+                }
+                int value = board[i][j] - '1';
+                int boxesIndex = (i / 3) * 3 + j / 3;
+                if (rows[i][value] == 1 || cols[j][value] == 1 || boxes[boxesIndex][value] == 1) {
+                    return false;
+                }
+                rows[i][value] = 1;
+                cols[j][value] = 1;
+                boxes[boxesIndex][value] = 1;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isValidSudoku2(char[][] board) {
         int size = board.length;
         Set<Character> rowSet = new HashSet<>();
         Set<Character> colSet = new HashSet<>();
