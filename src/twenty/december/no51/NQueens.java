@@ -22,14 +22,14 @@ public class NQueens {
         int[] queens = new int[n];
 //        -1 stand for nothing
         Arrays.fill(queens, -1);
-        dfs(n, 0, resultList, queens, col, diff, sum);
+        backtrack(n, 0, resultList, queens, col, diff, sum);
         return resultList;
     }
 
     //    dfs 按层递归，level即行下标
-    private static void dfs(int n, int level,
-                            List<List<String>> resultList, int[] queens,
-                            Set<Integer> col, Set<Integer> diff, Set<Integer> sum) {
+    private static void backtrack(int n, int level,
+                                  List<List<String>> resultList, int[] queens,
+                                  Set<Integer> col, Set<Integer> diff, Set<Integer> sum) {
         if (level == n) {
             resultList.add(getBoard(queens));
         }
@@ -42,7 +42,7 @@ public class NQueens {
             col.add(x);
             diff.add(y - x);
             sum.add(y + x);
-            dfs(n, level + 1, resultList, queens, col, diff, sum);
+            backtrack(n, level + 1, resultList, queens, col, diff, sum);
 //            recover
             queens[level] = -1;
             col.remove(x);

@@ -24,10 +24,10 @@ public class NQueens2 {
         Set<Integer> col = new HashSet<>();
         Set<Integer> diff = new HashSet<>();
         Set<Integer> sum = new HashSet<>();
-        return dfs(n, 0, col, diff, sum);
+        return backtract(n, 0, col, diff, sum);
     }
 
-    private static int dfs(int n, int level, Set<Integer> col, Set<Integer> diff, Set<Integer> sum) {
+    private static int backtract(int n, int level, Set<Integer> col, Set<Integer> diff, Set<Integer> sum) {
         if (n == level) {
             return 1;
         }
@@ -40,7 +40,7 @@ public class NQueens2 {
             col.add(x);
             diff.add(y - x);
             sum.add(y + x);
-            count += dfs(n, level + 1, col, diff, sum);
+            count += backtract(n, level + 1, col, diff, sum);
             col.remove(x);
             diff.remove(y - x);
             sum.remove(y + x);
