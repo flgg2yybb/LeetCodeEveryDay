@@ -19,7 +19,54 @@ public class SudokuSolver {
     }
 
     public static void solveSudoku(char[][] board) {
+        int size = board.length;
+        int[][] rows = new int[size][size];
+        int[][] cols = new int[size][size];
+        int[][] boxes = new int[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == '.') {
+                    continue;
+                }
+                int value = board[i][j] - '1';
+                rows[i][value] = 1;
+                cols[j][value] = 1;
+                boxes[(i / 3) * 3 + j / 3][value] = 1;
+            }
+        }
+        backtrack(board, rows, cols, boxes, 0, 0);
+    }
 
+    private static boolean backtrack(char[][] board, int[][] rows, int[][] cols, int[][] boxes, int row_index, int col_index) {
+        int size = board.length;
+        if (col_index == size) {
+            col_index = 0;
+            row_index++;
+            if (row_index == size) {
+                return true;
+            }
+        }
+        if (board[row_index][col_index] != '.') {
+            return backtrack(board, rows, cols, boxes, row_index, col_index + 1);
+        }
+        for (char c = '1'; c <= '9'; c++) {
+            int value = c - '1';
+            if (rows[row_index][value] == 1 || cols[col_index][value] == 1 || boxes[(row_index / 3) * 3 + col_index / 3][value] == 1) {
+                continue;
+            }
+            board[row_index][col_index] = c;
+            rows[row_index][value] = 1;
+            cols[col_index][value] = 1;
+            boxes[(row_index / 3) * 3 + col_index / 3][value] = 1;
+            if (backtrack(board, rows, cols, boxes, row_index, col_index + 1)) {
+                return true;
+            }
+            board[row_index][col_index] = '.';
+            rows[row_index][value] = 0;
+            cols[col_index][value] = 0;
+            boxes[(row_index / 3) * 3 + col_index / 3][value] = 0;
+        }
+        return false;
     }
 
     private static void disp(char[][] board) {
