@@ -8,11 +8,32 @@ public class SqrtX {
         int x3 = 0;
         int x4 = Integer.MAX_VALUE;
         int x5 = 1;
-        System.out.println(mySqrt(x1));
-        System.out.println(mySqrt(x2));
-        System.out.println(mySqrt(x3));
-        System.out.println(mySqrt(x4));
-        System.out.println(mySqrt(x5));
+        System.out.println(mySqrt1(x1));
+        System.out.println(mySqrt1(x2));
+        System.out.println(mySqrt1(x3));
+        System.out.println(mySqrt1(x4));
+        System.out.println(mySqrt1(x5));
+    }
+
+    private static int mySqrt1(int x) {
+        if (x == 0 || x == 1) {
+            return x;
+        }
+        int ans = -1;
+        int low = 0;
+        int high = x;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (mid == x / mid) {
+                return mid;
+            } else if (mid < x / mid) {
+                low = mid + 1;
+                ans = mid;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return ans;
     }
 
     public static int mySqrt(int x) {
