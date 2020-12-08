@@ -1,15 +1,12 @@
 package twenty.december.no208;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ImplementTrie {
     public static void main(String[] args) {
         Trie trie = new Trie();
         trie.insert("apple");
         System.out.println(trie.search("apple"));   //true
         System.out.println(trie.search("app"));     //false
-        System.out.println(trie.startsWith("app"));     //true
+        System.out.println(trie.startsWith("app"));      //true
         trie.insert("app");
         System.out.println(trie.search("app"));     //true
     }
@@ -18,15 +15,13 @@ public class ImplementTrie {
 class Trie {
 
     private static final int MAX_SIZE = 26;
-    private Map<Character, Trie> childrenMap = null;
+    private final Trie[] childrens = new Trie[MAX_SIZE];
     private boolean isEnd = false;
 
     /**
      * Initialize your data structure here.
      */
     public Trie() {
-        childrenMap = new HashMap<>(MAX_SIZE);
-        isEnd = false;
     }
 
     /**
@@ -36,58 +31,59 @@ class Trie {
         Trie node = this;
         for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
-            Trie nextNode;
-            if (!node.getChildrenMap().containsKey(c)) {
-                nextNode = new Trie();
-                node.getChildrenMap().put(c, nextNode);
-            } else {
-                nextNode = node.getChildrenMap().get(c);
+            if (!node.containsKey(c)) {
+                node.put(c, new Trie());
             }
-            node = nextNode;
+            node = node.get(c);
         }
-        node.setEnd(true);
+        node.setEnd();
     }
 
     /**
      * Returns if the word is in the trie.
      */
     public boolean search(String word) {
-        Trie node = this;
-        for (int i = 0; i < word.length(); i++) {
-            char c = word.charAt(i);
-            if (!node.getChildrenMap().containsKey(c)) {
-                return false;
-            }
-            node = node.getChildrenMap().get(c);
-        }
-        return node.isEnd();
+        Trie trie = searchPrefix(word);
+        return trie != null && trie.isEnd();
     }
 
     /**
      * Returns if there is any word in the trie that starts with the given prefix.
      */
     public boolean startsWith(String prefix) {
-        Trie node = this;
-        for (int i = 0; i < prefix.length(); i++) {
-            char c = prefix.charAt(i);
-            if (!node.getChildrenMap().containsKey(c)) {
-                return false;
-            }
-            node = node.getChildrenMap().get(c);
-        }
-        return true;
+        return searchPrefix(prefix) != null;
     }
 
-    public Map<Character, Trie> getChildrenMap() {
-        return childrenMap;
+    private Trie searchPrefix(String prefex) {
+        Trie node = this;
+        for (int i = 0; i < prefex.length(); i++) {
+            char c = prefex.charAt(i);
+            if (!node.containsKey(c)) {
+                return null;
+            }
+            node = node.get(c);
+        }
+        return node;
+    }
+
+    private void put(char c, Trie node) {
+        childrens[c - 'a'] = node;
+    }
+
+    private Trie get(char c) {
+        return childrens[c - 'a'];
+    }
+
+    private boolean containsKey(char c) {
+        return childrens[c - 'a'] != null;
     }
 
     public boolean isEnd() {
         return isEnd;
     }
 
-    public void setEnd(boolean end) {
-        isEnd = end;
+    public void setEnd() {
+        isEnd = true;
     }
 }
 
