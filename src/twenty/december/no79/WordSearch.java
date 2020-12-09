@@ -22,21 +22,22 @@ public class WordSearch {
             return false;
         }
         char start = word.charAt(0);
-        boolean exist = false;
-        int[][] path = new int[board.length][board[0].length];
+        int[][] visited = new int[board.length][board[0].length];
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if (board[i][j] == start) {
-                    path[i][j] = 1;
-                    exist = exist || dfs(board, path, i, j, word, 0);
-                    path[i][j] = 0;
+                    visited[i][j] = 1;
+                    if (dfs2(board, visited, i, j, word, 0)) {
+                        return true;
+                    }
+                    visited[i][j] = 0;
                 }
             }
         }
-        return exist;
+        return false;
     }
 
-    private static boolean dfs(char[][] board, int[][] path, int row, int col, String word, int pos) {
+    private static boolean dfs2(char[][] board, int[][] visited, int row, int col, String word, int pos) {
         if (pos == word.length() - 1) {
             return true;
         }
@@ -44,33 +45,58 @@ public class WordSearch {
         int colMax = board[0].length - 1;   //x
         int nextPos = pos + 1;
         int nextChar = word.charAt(nextPos);
-        if (row - 1 >= 0 && path[row - 1][col] == 0 && board[row - 1][col] == nextChar) {
-            path[row - 1][col] = 1;
-            if (dfs(board, path, row - 1, col, word, nextPos)) {
-                return true;
+        int[][] direction = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for (int i = 0; i < direction.length; i++) {
+            int newRow = row + direction[i][0];
+            int newCol = col + direction[i][1];
+            if (newRow >= 0 && newRow <= rowMax && newCol >= 0 && newCol <= colMax) {
+                if (visited[newRow][newCol] == 0 && board[newRow][newCol] == nextChar) {
+                    visited[newRow][newCol] = 1;
+                    if (dfs2(board, visited, newRow, newCol, word, nextPos)) {
+                        return true;
+                    }
+                    visited[newRow][newCol] = 0;
+                }
             }
-            path[row - 1][col] = 0;
         }
-        if (row + 1 <= rowMax && path[row + 1][col] == 0 && board[row + 1][col] == nextChar) {
-            path[row + 1][col] = 1;
-            if (dfs(board, path, row + 1, col, word, nextPos)) {
-                return true;
-            }
-            path[row + 1][col] = 0;
+        return false;
+    }
+
+    private static boolean dfs(char[][] board, int[][] visited, int row, int col, String word, int pos) {
+        if (pos == word.length() - 1) {
+            return true;
         }
-        if (col - 1 >= 0 && path[row][col - 1] == 0 && board[row][col - 1] == nextChar) {
-            path[row][col - 1] = 1;
-            if (dfs(board, path, row, col - 1, word, nextPos)) {
+        int rowMax = board.length - 1;      //y
+        int colMax = board[0].length - 1;   //x
+        int nextPos = pos + 1;
+        int nextChar = word.charAt(nextPos);
+        if (row - 1 >= 0 && visited[row - 1][col] == 0 && board[row - 1][col] == nextChar) {
+            visited[row - 1][col] = 1;
+            if (dfs(board, visited, row - 1, col, word, nextPos)) {
                 return true;
             }
-            path[row][col - 1] = 0;
+            visited[row - 1][col] = 0;
         }
-        if (col + 1 <= colMax && path[row][col + 1] == 0 && board[row][col + 1] == nextChar) {
-            path[row][col + 1] = 1;
-            if (dfs(board, path, row, col + 1, word, nextPos)) {
+        if (row + 1 <= rowMax && visited[row + 1][col] == 0 && board[row + 1][col] == nextChar) {
+            visited[row + 1][col] = 1;
+            if (dfs(board, visited, row + 1, col, word, nextPos)) {
                 return true;
             }
-            path[row][col + 1] = 0;
+            visited[row + 1][col] = 0;
+        }
+        if (col - 1 >= 0 && visited[row][col - 1] == 0 && board[row][col - 1] == nextChar) {
+            visited[row][col - 1] = 1;
+            if (dfs(board, visited, row, col - 1, word, nextPos)) {
+                return true;
+            }
+            visited[row][col - 1] = 0;
+        }
+        if (col + 1 <= colMax && visited[row][col + 1] == 0 && board[row][col + 1] == nextChar) {
+            visited[row][col + 1] = 1;
+            if (dfs(board, visited, row, col + 1, word, nextPos)) {
+                return true;
+            }
+            visited[row][col + 1] = 0;
         }
         return false;
     }
