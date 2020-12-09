@@ -11,11 +11,68 @@ public class WordSearch {
         System.out.println(exist(board, "ABCCED"));
         System.out.println(exist(board, "SEE"));
         System.out.println(exist(board, "ABCB"));
+        System.out.println(exist(board, "CCC"));
+        System.out.println(exist(board, "CCEE"));
+        System.out.println(exist(board, "CCES"));
         System.out.println(exist(board, ""));
     }
 
-    public static boolean exist(char[][] board, String word]) {
+    public static boolean exist(char[][] board, String word) {
+        if (word == null || word.length() == 0 || board.length == 0 || board[0].length == 0) {
+            return false;
+        }
+        char start = word.charAt(0);
+        boolean exist = false;
+        int[][] path = new int[board.length][board[0].length];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] == start) {
+                    path[i][j] = 1;
+                    exist = exist || dfs(board, path, i, j, word, 0);
+                    path[i][j] = 0;
+                }
+            }
+        }
+        return exist;
+    }
 
+    private static boolean dfs(char[][] board, int[][] path, int row, int col, String word, int pos) {
+        if (pos == word.length() - 1) {
+            return true;
+        }
+        int rowMax = board.length - 1;      //y
+        int colMax = board[0].length - 1;   //x
+        int nextPos = pos + 1;
+        int nextChar = word.charAt(nextPos);
+        if (row - 1 >= 0 && path[row - 1][col] == 0 && board[row - 1][col] == nextChar) {
+            path[row - 1][col] = 1;
+            if (dfs(board, path, row - 1, col, word, nextPos)) {
+                return true;
+            }
+            path[row - 1][col] = 0;
+        }
+        if (row + 1 <= rowMax && path[row + 1][col] == 0 && board[row + 1][col] == nextChar) {
+            path[row + 1][col] = 1;
+            if (dfs(board, path, row + 1, col, word, nextPos)) {
+                return true;
+            }
+            path[row + 1][col] = 0;
+        }
+        if (col - 1 >= 0 && path[row][col - 1] == 0 && board[row][col - 1] == nextChar) {
+            path[row][col - 1] = 1;
+            if (dfs(board, path, row, col - 1, word, nextPos)) {
+                return true;
+            }
+            path[row][col - 1] = 0;
+        }
+        if (col + 1 <= colMax && path[row][col + 1] == 0 && board[row][col + 1] == nextChar) {
+            path[row][col + 1] = 1;
+            if (dfs(board, path, row, col + 1, word, nextPos)) {
+                return true;
+            }
+            path[row][col + 1] = 0;
+        }
+        return false;
     }
 }
 
