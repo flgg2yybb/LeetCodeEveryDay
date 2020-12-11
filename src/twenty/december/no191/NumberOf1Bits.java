@@ -7,11 +7,11 @@ public class NumberOf1Bits {
         int n3 = 0b11111111111111111111111111111101;
         int n4 = 0b11111111111111111111111111111111;
         int n5 = 0b00000000000000000000000000000000;
-        System.out.println(hammingWeight(n1));
-        System.out.println(hammingWeight(n2));
-        System.out.println(hammingWeight(n3));
-        System.out.println(hammingWeight(n4));
-        System.out.println(hammingWeight(n5));
+        System.out.println(hammingWeight2(n1));
+        System.out.println(hammingWeight2(n2));
+        System.out.println(hammingWeight2(n3));
+        System.out.println(hammingWeight2(n4));
+        System.out.println(hammingWeight2(n5));
     }
 
     public static int hammingWeight(int n) {
@@ -19,6 +19,34 @@ public class NumberOf1Bits {
         while (n != 0) {
             n = n & (n - 1);
             count++;
+        }
+        return count;
+    }
+
+    private static int hammingWeight2(int n) {
+        int count = 0;
+//        mask是只存在一个1的32位二进制序列，用来与n做与操作
+        int mask = 1;
+        for (int i = 0; i < 32; i++) {
+            if ((n & mask) == mask) {
+                count++;
+            }
+//            mask左移一位，相当于mask *= 2
+            mask <<= 1;
+        }
+        return count;
+    }
+
+    private static int hammingWeightByStr(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        String str = Integer.toBinaryString(n);
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '1') {
+                count++;
+            }
         }
         return count;
     }
