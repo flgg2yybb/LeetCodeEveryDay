@@ -8,13 +8,17 @@ public class PowerOfTwo {
         int n3 = 218;
         int n4 = Integer.MIN_VALUE;
         int n5 = 0;
-        System.out.println(isPowerOfTwo(n1));
-        System.out.println(isPowerOfTwo(n2));
-        System.out.println(isPowerOfTwo(n3));
-        System.out.println(isPowerOfTwo(n4));
-        System.out.println(isPowerOfTwo(n5));
+        System.out.println(isPowerOfTwo2(n1));
+        System.out.println(isPowerOfTwo2(n2));
+        System.out.println(isPowerOfTwo2(n3));
+        System.out.println(isPowerOfTwo2(n4));
+        System.out.println(isPowerOfTwo2(n5));
         System.out.println(Math.pow(2, 31));
 
+    }
+
+    private static boolean isPowerOfTwo2(int n) {
+        return n > 0 && (n & (-n)) == n;
     }
 
     private static boolean isPowerOfTwo(int n) {
