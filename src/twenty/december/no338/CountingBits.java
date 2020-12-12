@@ -7,16 +7,28 @@ public class CountingBits {
         int n1 = 0;
         int n2 = 2;
         int n3 = 5;
-        disp(countBits2(n1));
-        disp(countBits2(n2));
-        disp(countBits2(n3));
+        disp(countBits3(n1));
+        disp(countBits3(n2));
+        disp(countBits3(n3));
+    }
+
+    private static int[] countBits3(int num) {
+//        动态规划，递推公式： result[i] = result[i >> 1] + i % 2;
+//          i >> 1 为右移一位，则 i >> 1 的 1的位数 与 i 的 1的位数就取决与右移的那一位是否为 1，
+//          因此只需加上 i % 2即可得最低位是否为 1
+        int[] result = new int[num + 1];
+        for (int i = 1; i <= num; i++) {
+            result[i] = result[i >> 1] + i % 2;
+        }
+        return result;
     }
 
     private static int[] countBits2(int num) {
+//        动态规划，递推公式： result[i] = result[i & (i - 1)] + 1;
+//          i & (i - 1) 意味着把 i 中的最低位的 1 拿掉，那么 i 的二进制中 1 的位数，就比 i & (i - 1) 的二进制中的
+//          1 的位数多 1，且 i > i & (i - 1)，所以可用递推公式计算，初始值 0 的 bits count为 0
         int[] result = new int[num + 1];
         for (int i = 1; i <= num; i++) {
-//            i & (i - 1) 意味着把 i 中的最低位的 1 拿掉，那么 i 的二进制中 1 的位数，就比 i & (i - 1) 的二进制中的
-//            1 的位数多 1，且 i > i & (i - 1)，所以可用递推公式计算，初始值 0 的 bits count为 0
             result[i] = result[i & (i - 1)] + 1;
         }
         return result;
