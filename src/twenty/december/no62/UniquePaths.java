@@ -6,13 +6,29 @@ public class UniquePaths {
         int m2 = 3, n2 = 2;
         int m3 = 7, n3 = 3;
         int m4 = 3, n4 = 3;
-        System.out.println(uniquePaths2(m1, n1));
-        System.out.println(uniquePaths2(m2, n2));
-        System.out.println(uniquePaths2(m3, n3));
-        System.out.println(uniquePaths2(m4, n4));
+        System.out.println(uniquePaths3(m1, n1));
+        System.out.println(uniquePaths3(m2, n2));
+        System.out.println(uniquePaths3(m3, n3));
+        System.out.println(uniquePaths3(m4, n4));
+    }
+
+    private static int uniquePaths3(int m, int n) {
+//      DP, use rolling array, time is O(mn), space is O(min(m,n))
+        int row = Math.min(m, n);
+        int col = Math.max(m, n);
+//        滚动数组
+        int[] arr = new int[row];
+        arr[0] = 1;
+        for (int i = 0; i < col; i++) {
+            for (int j = 1; j < row; j++) {
+                arr[j] = arr[j] + arr[j - 1];
+            }
+        }
+        return arr[row - 1];
     }
 
     private static int uniquePaths2(int m, int n) {
+//        DP， change status transfer direction
         int[][] dp = new int[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
