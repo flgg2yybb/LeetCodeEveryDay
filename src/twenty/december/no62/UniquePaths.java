@@ -6,10 +6,28 @@ public class UniquePaths {
         int m2 = 3, n2 = 2;
         int m3 = 7, n3 = 3;
         int m4 = 3, n4 = 3;
-        System.out.println(uniquePaths3(m1, n1));
-        System.out.println(uniquePaths3(m2, n2));
-        System.out.println(uniquePaths3(m3, n3));
-        System.out.println(uniquePaths3(m4, n4));
+        int m5 = 10, n5 = 10;
+        System.out.println(uniquePaths4(m1, n1));
+        System.out.println(uniquePaths4(m2, n2));
+        System.out.println(uniquePaths4(m3, n3));
+        System.out.println(uniquePaths4(m4, n4));
+        System.out.println(uniquePaths4(m5, n5));
+    }
+
+    private static int uniquePaths4(int m, int n) {
+//                                              (m-1)
+//       permutation and combination, result = C(m+n-2)
+        int row = Math.min(m, n) - 1;
+        int col = m + n - 2;
+        long son = 1;        //分子
+        long parent = 1;     //分母
+        for (int i = row; i > 0; i--) {
+            parent *= i;
+//            存在整形越界
+            son *= col;
+            col--;
+        }
+        return (int) (son / parent);
     }
 
     private static int uniquePaths3(int m, int n) {
