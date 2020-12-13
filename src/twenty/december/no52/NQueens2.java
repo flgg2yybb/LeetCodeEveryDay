@@ -10,11 +10,38 @@ public class NQueens2 {
         int n3 = 3;
         int n4 = 4;
         int n5 = 8;
-        System.out.println(totalNQueens(n1));
-        System.out.println(totalNQueens(n2));
-        System.out.println(totalNQueens(n3));
-        System.out.println(totalNQueens(n4));
-        System.out.println(totalNQueens(n5));
+        System.out.println(totalNQueens2(n1));
+        System.out.println(totalNQueens2(n2));
+        System.out.println(totalNQueens2(n3));
+        System.out.println(totalNQueens2(n4));
+        System.out.println(totalNQueens2(n5));
+    }
+
+    private static int totalNQueens2(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        return dfsByBitOpration(n, 0, 0, 0, 0);
+    }
+
+    private static int dfsByBitOpration(int n, int row, int col, int pie, int na) {
+        if (n == row) {
+            return 1;
+        }
+//        col、pie、na中的 1 代表先前的皇后可以攻击到，0 代表安全区
+//        bits 将col、pie、na所有的 1与起来，再取反，同时将二进制中多余的 1变为 0，则剩下的 1即为这层可放皇后的位置（安全区）
+        int count = 0;
+        int bits = (~(col | pie | na)) & ((1 << n) - 1);
+        while (bits > 0) {
+//            获取bits中的最后一个 1
+            int queenCol = bits & (-bits);
+//            递归，进入下一层，则row + 1， 改层皇后占了 queenCol的位置，则下一层 col中的queenCol也不能放置皇后，
+//            同时 pie 与 queenCol后需要向左移一位， na则右移一位（画图理解）
+            count += dfsByBitOpration(n, row + 1, col | queenCol, (pie | queenCol) << 1, (na | queenCol) >> 1);
+//            将bits中最后一个 1去掉
+            bits = bits & (bits - 1);
+        }
+        return count;
     }
 
     private static int totalNQueens(int n) {
