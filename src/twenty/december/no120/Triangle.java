@@ -12,7 +12,21 @@ public class Triangle {
         List<Integer> row3 = Arrays.asList(6, 5, 7);
         List<Integer> row4 = Arrays.asList(4, 1, 8, 3);
         List<List<Integer>> triangle = Arrays.asList(row1, row2, row3, row4);
-        System.out.println(minimumTotal(triangle));
+        System.out.println(minimumTotal2(triangle));
+    }
+
+    private static int minimumTotal2(List<List<Integer>> triangle) {
+        if (triangle == null || triangle.size() == 0) {
+            return 0;
+        }
+        int[] dp = new int[triangle.size() + 1];
+        for (int i = triangle.size() - 1; i >= 0; i--) {
+            List<Integer> row = triangle.get(i);
+            for (int j = 0; j < row.size(); j++) {
+                dp[j] = row.get(j) + Math.min(dp[j], dp[j + 1]);
+            }
+        }
+        return dp[0];
     }
 
     public static int minimumTotal(List<List<Integer>> triangle) {
