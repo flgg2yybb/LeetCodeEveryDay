@@ -21,16 +21,13 @@ public class Triangle {
         }
         int[] dp = new int[triangle.size()];
         dp[0] = triangle.get(0).get(0);
-        int[] rowMin = new int[triangle.size()];
         for (int i = 1; i < triangle.size(); i++) {
             List<Integer> rowList = triangle.get(i);
+            int first = Integer.MAX_VALUE;
             for (int j = 0; j < rowList.size(); j++) {
-                int first = j > 0 ? dp[j - 1] : Integer.MAX_VALUE;
                 int second = j < rowList.size() - 1 ? dp[j] : Integer.MAX_VALUE;
-                rowMin[j] = Math.min(first, second);
-            }
-            for (int j = 0; j < rowList.size(); j++) {
-                dp[j] = rowMin[j] + rowList.get(j);
+                dp[j] = Math.min(first, second) + rowList.get(j);
+                first = second;
             }
         }
         return IntStream.of(dp).min().orElse(Integer.MAX_VALUE);
