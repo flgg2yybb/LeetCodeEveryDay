@@ -7,9 +7,28 @@ public class MaximumProductSubarray {
         int[] num1 = new int[]{2, 3, -2, 4};
         int[] num2 = new int[]{-2, 0, -1};
         int[] num3 = new int[]{2, 3, -2, -4};
-        System.out.println(maxProduct2(num1));
-        System.out.println(maxProduct2(num2));
-        System.out.println(maxProduct2(num3));
+        System.out.println(maxProduct3(num1));
+        System.out.println(maxProduct3(num2));
+        System.out.println(maxProduct3(num3));
+    }
+
+    private static int maxProduct3(int[] nums) {
+//        DP, max为nums数组从下标为0的元素到当前元素的最大子序列乘积
+//            min为nums数组从下标为0的元素到当前元素的最小子序列乘积
+//            max = max{max * nums[i], min * nums[i], nums[i]}
+//            min = min{max * nums[i], min * nums[i], nums[i]}
+//            则，最大子序列乘积为变化的max中的最大值，用ans记录
+        int max = nums[0];
+        int min = nums[0];
+        int ans = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int element1 = max * nums[i];
+            int element2 = min * nums[i];
+            max = Math.max(nums[i], Math.max(element1, element2));
+            min = Math.min(nums[i], Math.min(element1, element2));
+            ans = Math.max(ans, max);
+        }
+        return ans;
     }
 
     private static int maxProduct2(int[] nums) {
@@ -17,6 +36,7 @@ public class MaximumProductSubarray {
 //            fmax[i]为nums数组中从下标为0的元素到下标为i元素中的最小子序列乘积
 //            fmax[i] = fmax{fmax[i - 1] * nums[i], fmin[i - 1] * nums[i], nums[i]}
 //            fmin[i] = fmin{fmax[i - 1] * nums[i], fmin[i - 1] * nums[i], nums[i]}
+//            则，nums中最大子序列乘积即为fmax数组中的最大值
         int[] fmax = new int[nums.length];
         int[] fmin = new int[nums.length];
         fmax[0] = nums[0];
