@@ -3,7 +3,29 @@ package twenty.december.no309;
 public class BestTimeToBuyAndSellStockWithCooldown {
     public static void main(String[] args) {
         int[] prices1 = new int[]{1, 2, 3, 0, 2};
-        System.out.println(maxProfit(prices1));
+        System.out.println(maxProfit2(prices1));
+    }
+
+    private static int maxProfit2(int[] prices) {
+        if (prices == null || prices.length < 2) {
+            return 0;
+        }
+        final int N = prices.length;
+//        当前持有股票
+        int dp0 = -prices[0];
+//        当前未持股票，处于冷冻期
+        int dp1 = 0;
+//        当前未持股票，不处于冷冻期
+        int dp2 = 0;
+        for (int i = 1; i < N; i++) {
+            int lastDp0 = dp0;
+            int lastDp1 = dp1;
+            int lastDp2 = dp2;
+            dp0 = Math.max(lastDp0, lastDp2 - prices[i]);
+            dp1 = lastDp0 + prices[i];
+            dp2 = Math.max(lastDp2, lastDp1);
+        }
+        return Math.max(dp1, dp2);
     }
 
     public static int maxProfit(int[] prices) {
