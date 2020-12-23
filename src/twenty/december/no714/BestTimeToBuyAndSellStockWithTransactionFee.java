@@ -4,7 +4,24 @@ public class BestTimeToBuyAndSellStockWithTransactionFee {
     public static void main(String[] args) {
         int[] prices = new int[]{1, 3, 2, 8, 4, 9};
         int fee = 2;
-        System.out.println(maxProfit(prices, fee));
+        System.out.println(maxProfit2(prices, fee));
+    }
+
+    private static int maxProfit2(int[] prices, int fee) {
+        if (prices == null || prices.length < 2) {
+            return 0;
+        }
+//        当前无股票的最大利益
+        int dp0 = 0;
+//        当前有股票的最大利益
+        int dp1 = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            int newDp0 = Math.max(dp0, dp1 + prices[i] - fee);
+            int newDp1 = Math.max(dp1, dp0 - prices[i]);
+            dp0 = newDp0;
+            dp1 = newDp1;
+        }
+        return dp0;
     }
 
     public static int maxProfit(int[] prices, int fee) {
