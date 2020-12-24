@@ -8,10 +8,40 @@ public class LongestIncreasingSubsequence {
         int[] nums1 = new int[]{10, 9, 2, 5, 3, 7, 101, 18};
         int[] nums2 = new int[]{0, 1, 0, 3, 2, 3};
         int[] nums3 = new int[]{7, 7, 7, 7, 7, 7, 7};
-        System.out.println(lengthOfLIS(nums1));
-        System.out.println(lengthOfLIS(nums2));
-        System.out.println(lengthOfLIS(nums3));
+        System.out.println(lengthOfLIS2(nums1));
+        System.out.println(lengthOfLIS2(nums2));
+        System.out.println(lengthOfLIS2(nums3));
 
+    }
+
+    private static int lengthOfLIS2(int[] nums) {
+        if (nums == null || nums.length < 1) {
+            return 0;
+        }
+        int[] lis = new int[nums.length];
+        lis[0] = nums[0];
+        int size = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] > lis[size - 1]) {
+                lis[size++] = nums[i];
+                continue;
+            }
+            int left = 0;
+            int right = size - 1;
+            while (left < right) {
+                int mid = (left + right) >> 1;
+                if (nums[i] > lis[mid]) {
+                    left = mid + 1;
+                } else {
+                    right = mid;
+                }
+            }
+            lis[left] = nums[i];
+            if (left >= size) {
+                size++;
+            }
+        }
+        return size;
     }
 
     public static int lengthOfLIS(int[] nums) {
