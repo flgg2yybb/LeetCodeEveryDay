@@ -28,7 +28,30 @@ public class CoinChange {
 
     }
 
-    public static int coinChange(int[] coins, int amount) {
+    private static int coinChange(int[] coins, int amount) {
+        /* DP，自下而上
+         * 状态定义：
+         * dp[i]为凑成金额 i所需的最少硬币个数
+         * 状态转移方程：
+         * dp[i] = min{dp[i - j]} + 1, j 为 coins中的任意一枚硬币金额
+         * 初始值：
+         * dp[0] = 0
+         * */
+        final int MAX = amount + 1;
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, MAX);
+        dp[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (int coin : coins) {
+                if (coin <= i) {
+                    dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+                }
+            }
+        }
+        return dp[amount] == MAX ? -1 : dp[amount];
+    }
+
+    public static int coinChangeByBacktrack(int[] coins, int amount) {
 //        Backtrack, time limit exceeded
         if (coins == null || coins.length == 0) {
             return -1;
@@ -97,7 +120,7 @@ public class CoinChange {
 提示：
 
 1 <= coins.length <= 12
-1 <= coins[i] <= 231 - 1
+1 <= coins[i] <= 2^31 - 1
 0 <= amount <= 104
 
 来源：力扣（LeetCode）
