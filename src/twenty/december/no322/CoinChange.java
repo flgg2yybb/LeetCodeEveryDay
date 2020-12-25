@@ -18,14 +18,42 @@ public class CoinChange {
         int amount6 = 6249;
         int[] coins7 = new int[]{1, 2, 5, 10, 20, 50, 100, 150};
         int amount7 = 999999;
-        System.out.println(coinChange(coins1, amount1));
-        System.out.println(coinChange(coins2, amount2));
-        System.out.println(coinChange(coins3, amount3));
-        System.out.println(coinChange(coins4, amount4));
-        System.out.println(coinChange(coins5, amount5));
-        System.out.println(coinChange(coins6, amount6));
-        System.out.println(coinChange(coins7, amount7));
+        System.out.println(coinChange2(coins1, amount1));
+        System.out.println(coinChange2(coins2, amount2));
+        System.out.println(coinChange2(coins3, amount3));
+        System.out.println(coinChange2(coins4, amount4));
+        System.out.println(coinChange2(coins5, amount5));
+        System.out.println(coinChange2(coins6, amount6));
+        System.out.println(coinChange2(coins7, amount7));
 
+    }
+
+    private static int coinChange2(int[] coins, int amount) {
+        /* DP, 自上而下
+         * IDEA运行会栈溢出！
+         * */
+        return recusive(coins, amount, new int[amount + 1]);
+    }
+
+    private static int recusive(int[] coins, int amount, int[] counts) {
+        if (amount < 0) {
+            return -1;
+        }
+        if (amount == 0) {
+            return 0;
+        }
+        if (counts[amount] != 0) {
+            return counts[amount];
+        }
+        int min = Integer.MAX_VALUE;
+        for (int coin : coins) {
+            int count = recusive(coins, amount - coin, counts);
+            if (count != -1) {
+                min = Math.min(min, count + 1);
+            }
+        }
+        counts[amount] = min == Integer.MAX_VALUE ? -1 : min;
+        return counts[amount];
     }
 
     private static int coinChange(int[] coins, int amount) {
