@@ -17,8 +17,30 @@ public class NumberOfIslands {
                 {'0', '0', '1', '0', '0'},
                 {'0', '0', '0', '1', '1'}
         };
-        System.out.println(numIslands2(grid1));
-        System.out.println(numIslands2(grid2));
+        System.out.println(numIslands3(grid1));
+        System.out.println(numIslands3(grid2));
+    }
+
+    private static int numIslands3(char[][] grid) {
+        UnionFind unionFind = new UnionFind(grid);
+        int n = grid.length;
+        int m = grid[0].length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == '1') {
+//                    从左上角开始遍历，只需要查询下以及右即可
+                    int[][] directions = new int[][]{{1, 0}, {0, 1}};
+                    for (int[] direction : directions) {
+                        int newRow = i + direction[0];
+                        int newCol = j + direction[1];
+                        if (newRow < n && newCol < m && grid[newRow][newCol] == '1') {
+                            unionFind.union(i * m + j, newRow * m + newCol);
+                        }
+                    }
+                }
+            }
+        }
+        return unionFind.getCount();
     }
 
     private static int numIslands2(char[][] grid) {
@@ -83,6 +105,55 @@ public class NumberOfIslands {
 
     private static boolean isLegalAccess(char[][] grid, int newRow, int newCol) {
         return newRow >= 0 && newRow <= grid.length - 1 && newCol >= 0 && newCol <= grid[0].length - 1;
+    }
+}
+
+//并查集
+class UnionFind {
+    private final int[] parent;   //父亲节点的索引
+    private final int[] rank;     //相当于深度
+    private int count;      //集合个数
+
+    public UnionFind(char[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        count = 0;
+        parent = new int[n * m];
+        rank = new int[n * m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == '1') {
+                    parent[i * m + j] = i * m + j;
+                    count++;
+                }
+            }
+        }
+    }
+
+    public int find(int i) {
+        return parent[i] == i ? i : find(parent[i]);
+    }
+
+    public void union(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+        if (rootX == rootY) {
+//            已经为一个集合
+            return;
+        }
+        if (rank[rootX] < rank[rootY]) {
+            parent[rootX] = rootY;
+        } else if (rank[rootX] > rank[rootY]) {
+            parent[rootY] = rootX;
+        } else {
+            parent[rootY] = rootX;
+            rank[rootX]++;
+        }
+        count--;
+    }
+
+    public int getCount() {
+        return count;
     }
 }
 
