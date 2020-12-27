@@ -12,9 +12,37 @@ public class FriendCircles {
                 {1, 1, 1},
                 {1, 1, 1}
         };
-        System.out.println(findCircleNum(M1));
-        System.out.println(findCircleNum(M2));
+        int[][] M3 = new int[][]{
+                {1, 0, 0, 1},
+                {0, 1, 1, 0},
+                {0, 1, 1, 1},
+                {1, 0, 1, 1}
+        };
+        System.out.println(findCircleNumByDFS(M1));
+        System.out.println(findCircleNumByDFS(M2));
+        System.out.println(findCircleNumByDFS(M3));
+    }
 
+    private static int findCircleNumByDFS(int[][] M) {
+//        DFS, 将 M看为邻阶矩阵，则相当于在 M.length个节点中，找连通数
+        int count = 0;
+        boolean[] visited = new boolean[M.length];
+        for (int i = 0; i < M.length; i++) {
+            if (!visited[i]) {
+                dfs(M, visited, i);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private static void dfs(int[][] M, boolean[] visited, int i) {
+        visited[i] = true;
+        for (int j = 0; j < M.length; j++) {
+            if (!visited[j] && M[i][j] == 1) {
+                dfs(M, visited, j);
+            }
+        }
     }
 
     public static int findCircleNum(int[][] M) {
