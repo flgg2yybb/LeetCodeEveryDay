@@ -1,5 +1,8 @@
 package twenty.december.no547;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class FriendCircles {
     public static void main(String[] args) {
         int[][] M1 = new int[][]{
@@ -18,9 +21,39 @@ public class FriendCircles {
                 {0, 1, 1, 1},
                 {1, 0, 1, 1}
         };
-        System.out.println(findCircleNumByDFS(M1));
-        System.out.println(findCircleNumByDFS(M2));
-        System.out.println(findCircleNumByDFS(M3));
+        System.out.println(findCircleNumByBFS(M1));
+        System.out.println(findCircleNumByBFS(M2));
+        System.out.println(findCircleNumByBFS(M3));
+    }
+
+    private static int findCircleNumByBFS(int[][] M) {
+//        BFS, 将 M看为邻阶矩阵，则相当于在 M.length个节点中，找连通数
+        int count = 0;
+        boolean[] visited = new boolean[M.length];
+        for (int root = 0; root < M.length; root++) {
+            if (!visited[root]) {
+                bfs(M, visited, root);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private static void bfs(int[][] M, boolean[] visited, int root) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(root);
+        visited[root] = true;
+        while (!queue.isEmpty()) {
+            for (int i = 0; i < queue.size(); i++) {
+                Integer node = queue.poll();
+                for (int nextNode = 0; nextNode < M.length; nextNode++) {
+                    if (!visited[nextNode] && M[node][nextNode] == 1) {
+                        queue.offer(nextNode);
+                        visited[nextNode] = true;
+                    }
+                }
+            }
+        }
     }
 
     private static int findCircleNumByDFS(int[][] M) {
