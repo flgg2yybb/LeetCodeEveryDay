@@ -1,5 +1,8 @@
 package twenty.december.no200;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class NumberOfIslands {
     public static void main(String[] args) {
         char[][] grid1 = new char[][]{
@@ -14,8 +17,41 @@ public class NumberOfIslands {
                 {'0', '0', '1', '0', '0'},
                 {'0', '0', '0', '1', '1'}
         };
-        System.out.println(numIslands(grid1));
-        System.out.println(numIslands(grid2));
+        System.out.println(numIslands2(grid1));
+        System.out.println(numIslands2(grid2));
+    }
+
+    private static int numIslands2(char[][] grid) {
+//        bfs
+        boolean[][] visited = new boolean[grid.length][grid[0].length];
+        int count = 0;
+        Queue<Position> queue = new LinkedList<>();
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (visited[i][j] || grid[i][j] != '1') {
+                    continue;
+                }
+                count++;
+                queue.offer(new Position(i, j));
+                visited[i][j] = true;
+                while (!queue.isEmpty()) {
+                    int size = queue.size();
+                    for (int k = 0; k < size; k++) {
+                        Position pos = queue.poll();
+                        int[][] directions = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+                        for (int[] direction : directions) {
+                            int newX = pos.x + direction[0];
+                            int newY = pos.y + direction[1];
+                            if (isLegalAccess(grid, newX, newY) && !visited[newX][newY] && grid[newX][newY] == '1') {
+                                visited[newX][newY] = true;
+                                queue.offer(new Position(newX, newY));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     public static int numIslands(char[][] grid) {
@@ -48,6 +84,17 @@ public class NumberOfIslands {
     private static boolean isLegalAccess(char[][] grid, int newRow, int newCol) {
         return newRow >= 0 && newRow <= grid.length - 1 && newCol >= 0 && newCol <= grid[0].length - 1;
     }
+}
+
+class Position {
+    int x;
+    int y;
+
+    public Position(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
 }
 
 /*给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。
