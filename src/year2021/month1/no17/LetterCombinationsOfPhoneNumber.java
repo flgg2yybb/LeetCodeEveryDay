@@ -7,8 +7,29 @@ public class LetterCombinationsOfPhoneNumber {
 
     public static void main(String[] args) {
         String digits1 = "23";
-        List<String> strings = letterCombinations(digits1);
+        List<String> strings = letterCombinations1(digits1);
         System.out.println(strings);
+    }
+
+    private static List<String> letterCombinations1(String digits) {
+        List<String> result = new ArrayList<>();
+        if (digits == null || digits.length() == 0) {
+            return result;
+        }
+        char[][] letters = getLetters();
+        dfs(digits, result, letters, new StringBuilder(), 0);
+        return result;
+    }
+
+    private static void dfs(String digits, List<String> result, char[][] letters, StringBuilder sb, int pos) {
+        if (pos == digits.length()) {
+            result.add(new String(sb));
+            return;
+        }
+        int index = digits.charAt(pos) - '0';
+        for (int i = 0; i < letters[index].length; i++) {
+            dfs(digits, result, letters, new StringBuilder(sb).append(letters[index][i]), pos + 1);
+        }
     }
 
     public static List<String> letterCombinations(String digits) {
@@ -17,11 +38,11 @@ public class LetterCombinationsOfPhoneNumber {
             return result;
         }
         char[][] letters = getLetters();
-        backtract(digits, result, letters, new StringBuilder(), 0);
+        backtrack(digits, result, letters, new StringBuilder(), 0);
         return result;
     }
 
-    private static void backtract(String digits, List<String> result, char[][] letters, StringBuilder sb, int pos) {
+    private static void backtrack(String digits, List<String> result, char[][] letters, StringBuilder sb, int pos) {
         if (pos == digits.length()) {
             result.add(new String(sb));
             return;
@@ -29,7 +50,7 @@ public class LetterCombinationsOfPhoneNumber {
         int index = digits.charAt(pos) - '0';
         for (int i = 0; i < letters[index].length; i++) {
             sb.append(letters[index][i]);
-            backtract(digits, result, letters, sb, pos + 1);
+            backtrack(digits, result, letters, sb, pos + 1);
             sb.deleteCharAt(pos);
         }
     }
