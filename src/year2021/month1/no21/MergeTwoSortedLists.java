@@ -10,10 +10,28 @@ public class MergeTwoSortedLists {
         ListNode node32 = new ListNode(4, new ListNode(6, new ListNode(8)));
         ListNode node41 = null;
         ListNode node42 = null;
-        disp(mergeTwoLists(node11, node12));
-        disp(mergeTwoLists(node21, node22));
-        disp(mergeTwoLists(node31, node32));
-        disp(mergeTwoLists(node41, node42));
+        disp(mergeTwoLists1(node11, node12));
+        disp(mergeTwoLists1(node21, node22));
+        disp(mergeTwoLists1(node31, node32));
+        disp(mergeTwoLists1(node41, node42));
+    }
+
+    private static ListNode mergeTwoLists1(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode(-1);
+        ListNode pre = head;
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                pre.next = l1;
+                pre = pre.next;
+                l1 = l1.next;
+            } else {
+                pre.next = l2;
+                pre = pre.next;
+                l2 = l2.next;
+            }
+        }
+        pre.next = l1 == null ? l2 : l1;
+        return head.next;
     }
 
     public static ListNode mergeTwoLists(ListNode l1, ListNode l2) {
