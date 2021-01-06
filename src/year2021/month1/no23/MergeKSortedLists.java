@@ -15,10 +15,54 @@ public class MergeKSortedLists {
         ListNode list42 = null;
         ListNode list43 = new ListNode(2, new ListNode(6));
         ListNode[] lists4 = new ListNode[]{list41, list42, list43};
-        disp(mergeKLists(lists1));
-        disp(mergeKLists(lists2));
-        disp(mergeKLists(lists3));
-        disp(mergeKLists(lists4));
+        disp(mergeKLists2(lists1));
+        disp(mergeKLists2(lists2));
+        disp(mergeKLists2(lists3));
+        disp(mergeKLists2(lists4));
+    }
+
+    private static ListNode mergeKLists2(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        return merge(lists, 0, lists.length - 1);
+    }
+
+    private static ListNode merge(ListNode[] lists, int left, int right) {
+        if (left == right) {
+            return lists[left];
+        }
+        int mid = (left + right) / 2;
+        return mergeTwoLists(merge(lists, left, mid), merge(lists, mid + 1, right));
+    }
+
+    private static ListNode mergeKLists1(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        ListNode ans = null;
+        for (int i = 0; i < lists.length; i++) {
+            ans = mergeTwoLists(ans, lists[i]);
+        }
+        return ans;
+    }
+
+    private static ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode(-1);
+        ListNode pre = head;
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                pre.next = l1;
+                pre = pre.next;
+                l1 = l1.next;
+            } else {
+                pre.next = l2;
+                pre = pre.next;
+                l2 = l2.next;
+            }
+        }
+        pre.next = l1 == null ? l2 : l1;
+        return head.next;
     }
 
     public static ListNode mergeKLists(ListNode[] lists) {
