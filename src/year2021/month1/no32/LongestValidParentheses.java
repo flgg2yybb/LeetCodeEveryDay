@@ -1,15 +1,52 @@
 package year2021.month1.no32;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class LongestValidParentheses {
     public static void main(String[] args) {
         String s1 = "(()";
         String s2 = ")()())";
         String s3 = "";
         String s4 = ")())()())";
-        System.out.println(longestValidParentheses(s1));
-        System.out.println(longestValidParentheses(s2));
-        System.out.println(longestValidParentheses(s3));
-        System.out.println(longestValidParentheses(s4));
+        System.out.println(longestValidParentheses1(s1));
+        System.out.println(longestValidParentheses1(s2));
+        System.out.println(longestValidParentheses1(s3));
+        System.out.println(longestValidParentheses1(s4));
+    }
+
+    private static int longestValidParentheses1(String s) {
+        /*栈
+         * 思路类似于检查字符串是否为有效括号字符串
+         * 我们始终保持栈底元素为当前已经遍历过的元素中【最后一个没有被匹配的右括号的下标】
+         * 对于'('，
+         *   将其压入栈
+         * 对于‘)’，
+         *   首先进行出栈操作，之后
+         *   若栈为空，则代表着之前出栈的为辅助元素，即目前没有左括号与当前右括号进行匹配，则
+         *       将当前右括号索引压入栈中
+         *   若栈不为空，
+         *       则将当前下标减去栈顶元素，即为以当前右括号为结尾的最长有效括号的长度
+         * */
+        if (s == null || s.length() < 2) {
+            return 0;
+        }
+        Deque<Integer> stack = new LinkedList<>();
+        stack.offerLast(-1);
+        int maxLength = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.offerLast(i);
+                continue;
+            }
+            stack.pollLast();
+            if (stack.isEmpty()) {
+                stack.offerLast(i);
+                continue;
+            }
+            maxLength = Math.max(maxLength, i - stack.peekLast());
+        }
+        return maxLength;
     }
 
     public static int longestValidParentheses(String s) {
