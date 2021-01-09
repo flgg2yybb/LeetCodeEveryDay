@@ -10,9 +10,96 @@ public class SearchInRotatedSortedArray {
         int target2 = 3;
         int[] nums3 = new int[]{1};
         int target3 = 0;
-        System.out.println(linearSearch(nums1, target1));
-        System.out.println(linearSearch(nums2, target2));
-        System.out.println(linearSearch(nums3, target3));
+        int[] nums4 = new int[]{0, 1, 2, 4, 5, 6, 7};
+        int target4 = 2;
+        System.out.println(search2(nums1, target1));
+        System.out.println(search2(nums2, target2));
+        System.out.println(search2(nums3, target3));
+        System.out.println(search2(nums4, target4));
+    }
+
+    private static int search2(int[] nums, int target) {
+        /*二分查找
+         * 直接对整个数组进行二分查找，根据mid可分为左子数组和友子数组，可知左右子数组至少有一个是有序的
+         * 对于有序的子数组，可以知道上下界，根据上下界与target的大小关系可知应该在哪一个子数组进行再次查找
+         * 若 nums[mid] == target
+         *   return mid
+         * 若 nums[left] < nums[mid]，则左边有序
+         *   若 nums[left] <= target < nums[mid]
+         *       则 right = mid - 1
+         *   否则，
+         *       left = mid + 1
+         * 否则，右边有序
+         *   若 nums[mid] < target <= nums[right]
+         *       则 left = mid + 1
+         *   否则，
+         *       right = mid - 1
+         * */
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            if (nums[left] <= nums[mid]) {
+//                左边有序
+                if (nums[left] <= target && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+//                右边有序
+                if (nums[mid] < target && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    private static int search(int[] nums, int target) {
+        /*二分查找
+         * 先找出分界点 i, 有 nums[i - 1] > nums[i]，则分界点两边的子数组均递增
+         * 再根据target的值选择相应的一边进行二分查找
+         * */
+        int left = 0;
+        int right = nums.length - 1;
+        int bound = 0;
+        while (left < right) {
+            int mid = (left + right + 1) / 2;
+            if (nums[mid - 1] > nums[mid]) {
+                bound = mid;
+                break;
+            }
+            if (nums[left] < nums[mid]) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+        if (bound == 0) {
+            left = 0;
+            right = nums.length - 1;
+        } else {
+            left = target >= nums[0] ? 0 : bound;
+            right = target >= nums[0] ? bound - 1 : nums.length - 1;
+        }
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return -1;
     }
 
     public static int linearSearch(int[] nums, int target) {
