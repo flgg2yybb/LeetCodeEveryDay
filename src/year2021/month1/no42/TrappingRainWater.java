@@ -1,6 +1,7 @@
 package year2021.month1.no42;
 
-import java.util.Stack;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.stream.IntStream;
 
 public class TrappingRainWater {
@@ -18,21 +19,20 @@ public class TrappingRainWater {
         if (height == null || height.length < 3) {
             return 0;
         }
-        Stack<Integer> stack = new Stack<>();
+        Deque<Integer> stack = new LinkedList<>();
         int i = 0;
-        stack.push(i++);
         int volume = 0;
         while (i < height.length) {
-            while (!stack.isEmpty() && height[stack.peek()] < height[i]) {
-                int top = stack.pop();
+            while (!stack.isEmpty() && height[stack.peekLast()] < height[i]) {
+                int top = stack.pollLast();
                 if (stack.isEmpty()) {
                     break;
                 }
-                int width = i - stack.peek() - 1;
-                int high = Math.min(height[stack.peek()], height[i]) - height[top];
+                int width = i - stack.peekLast() - 1;
+                int high = Math.min(height[stack.peekLast()], height[i]) - height[top];
                 volume += high * width;
             }
-            stack.push(i++);
+            stack.offerLast(i++);
         }
         return volume;
     }
