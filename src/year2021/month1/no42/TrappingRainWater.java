@@ -1,14 +1,35 @@
 package year2021.month1.no42;
 
+import java.util.stream.IntStream;
+
 public class TrappingRainWater {
     public static void main(String[] args) {
         int[] height1 = new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
         int[] height2 = new int[]{4, 2, 0, 3, 2, 5};
         int[] height3 = new int[]{0, 2, 4, 0, 8, 5};
-        System.out.println(trap(height1));
-        System.out.println(trap(height2));
-        System.out.println(trap(height3));
+        System.out.println(trap1(height1));
+        System.out.println(trap1(height2));
+        System.out.println(trap1(height3));
 
+    }
+
+    private static int trap1(int[] height) {
+        if (height == null || height.length < 3) {
+            return 0;
+        }
+        int[] leftBound = new int[height.length];
+        leftBound[0] = height[0];
+        for (int i = 1; i < height.length; i++) {
+            leftBound[i] = Math.max(leftBound[i - 1], height[i]);
+        }
+        int[] rightBound = new int[height.length];
+        rightBound[height.length - 1] = height[height.length - 1];
+        for (int i = height.length - 2; i >= 0; i--) {
+            rightBound[i] = Math.max(rightBound[i + 1], height[i]);
+        }
+        return IntStream.range(0, height.length)
+                .map(i -> Math.min(leftBound[i], rightBound[i]) - height[i])
+                .sum();
     }
 
     public static int trap(int[] height) {
