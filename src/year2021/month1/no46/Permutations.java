@@ -1,6 +1,7 @@
 package year2021.month1.no46;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -8,7 +9,29 @@ import java.util.stream.IntStream;
 public class Permutations {
     public static void main(String[] args) {
         int[] nums = new int[]{1, 2, 3};
-        System.out.println(permute(nums));
+        System.out.println(permute1(nums));
+    }
+
+    private static List<List<Integer>> permute1(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return result;
+        }
+        List<Integer> permutation = IntStream.of(nums).boxed().collect(Collectors.toList());
+        backtrack1(nums, result, permutation, 0);
+        return result;
+    }
+
+    private static void backtrack1(int[] nums, List<List<Integer>> result, List<Integer> permutation, int level) {
+        if (level == nums.length) {
+            result.add(new ArrayList<>(permutation));
+            return;
+        }
+        for (int i = level; i < nums.length; i++) {
+            Collections.swap(permutation, level, i);
+            backtrack1(nums, result, permutation, level + 1);
+            Collections.swap(permutation, level, i);
+        }
     }
 
     public static List<List<Integer>> permute(int[] nums) {
