@@ -9,7 +9,34 @@ import java.util.stream.IntStream;
 public class Permutations {
     public static void main(String[] args) {
         int[] nums = new int[]{1, 2, 3};
-        System.out.println(permute1(nums));
+        System.out.println(permute2(nums));
+    }
+
+    private static List<List<Integer>> permute2(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return result;
+        }
+        backtrack2(nums, result, 0);
+        return result;
+    }
+
+    private static void backtrack2(int[] nums, List<List<Integer>> result, int level) {
+        if (level == nums.length) {
+            result.add(IntStream.of(nums).boxed().collect(Collectors.toList()));
+            return;
+        }
+        for (int i = level; i < nums.length; i++) {
+            swap(nums, level, i);
+            backtrack2(nums, result, level + 1);
+            swap(nums, level, i);
+        }
+    }
+
+    private static void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 
     private static List<List<Integer>> permute1(int[] nums) {
