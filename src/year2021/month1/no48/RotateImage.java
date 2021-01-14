@@ -29,10 +29,10 @@ public class RotateImage {
         Position leftBottom = new Position();
         for (int i = 0; i < len / 2; i++) {
             int swapTimes = len - i * 2 - 1;
-            leftTop.setPosition(0 + i, 0 + i);
-            rightTop.setPosition(0 + i, len - 1 - i);
+            leftTop.setPosition(i, i);
+            rightTop.setPosition(i, len - 1 - i);
             rightBottom.setPosition(len - 1 - i, len - 1 - i);
-            leftBottom.setPosition(len - 1 - i, 0 + i);
+            leftBottom.setPosition(len - 1 - i, i);
             while (swapTimes > 0) {
                 circleSwap(matrix, leftTop, rightTop, rightBottom, leftBottom);
                 leftTop.y++;
@@ -70,9 +70,6 @@ public class RotateImage {
 class Position {
     int x;
     int y;
-
-    public Position() {
-    }
 
     public void setPosition(int x, int y) {
         this.x = x;
