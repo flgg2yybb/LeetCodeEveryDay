@@ -10,7 +10,12 @@ import java.util.stream.IntStream;
 public class GroupAnagrams {
     public static void main(String[] args) {
         String[] strs1 = new String[]{"eat", "tea", "tan", "ate", "nat", "bat"};
-        disp(groupAnagrams2(strs1));
+        disp(groupAnagrams3(strs1));
+    }
+
+    private static List<List<String>> groupAnagrams3(String[] strs) {
+        // str -> intstream -> sort -> collect by StringBuilder
+        return new ArrayList<>(Arrays.stream(strs).collect(Collectors.groupingBy(str -> str.chars().sorted().collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString())).values());
     }
 
     private static List<List<String>> groupAnagrams2(String[] strs) {
