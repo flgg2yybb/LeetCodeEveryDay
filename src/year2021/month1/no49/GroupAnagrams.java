@@ -10,7 +10,26 @@ import java.util.stream.IntStream;
 public class GroupAnagrams {
     public static void main(String[] args) {
         String[] strs1 = new String[]{"eat", "tea", "tan", "ate", "nat", "bat"};
-        disp(groupAnagrams1(strs1));
+        disp(groupAnagrams2(strs1));
+    }
+
+    private static List<List<String>> groupAnagrams2(String[] strs) {
+        return new ArrayList<>(Arrays.stream(strs)
+                .collect(Collectors.groupingBy(str -> {
+                    int[] set = new int[26];
+                    for (int i = 0; i < str.length(); i++) {
+                        set[str.charAt(i) - 'a']++;
+                    }
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < 26; i++) {
+                        // 这里的 if 是可省略的，但是加上 if 以后，生成的 sb 更短，后续 groupingBy 会更快。
+                        if (set[i] != 0) {
+                            sb.append((char) ('a' + i));
+                            sb.append(set[i]);
+                        }
+                    }
+                    return sb.toString();
+                })).values());
     }
 
     private static List<List<String>> groupAnagrams1(String[] strs) {
