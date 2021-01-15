@@ -4,12 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class GroupAnagrams {
     public static void main(String[] args) {
         String[] strs1 = new String[]{"eat", "tea", "tan", "ate", "nat", "bat"};
-        disp(groupAnagrams(strs1));
+        disp(groupAnagrams1(strs1));
+    }
+
+    private static List<List<String>> groupAnagrams1(String[] strs) {
+        return new ArrayList<>(Arrays.stream(strs)
+                .collect(Collectors.groupingBy(str -> {
+                    char[] chars = str.toCharArray();
+                    Arrays.sort(chars);
+                    return new String(chars);
+                })).values());
     }
 
     public static List<List<String>> groupAnagrams(String[] strs) {
