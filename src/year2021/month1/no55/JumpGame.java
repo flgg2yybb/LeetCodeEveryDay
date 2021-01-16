@@ -4,8 +4,34 @@ public class JumpGame {
     public static void main(String[] args) {
         int[] nums1 = new int[]{2, 3, 1, 1, 4};
         int[] nums2 = new int[]{3, 2, 1, 0, 4};
-        System.out.println(canJump1(nums1));
-        System.out.println(canJump1(nums2));
+        System.out.println(canJump3(nums1));
+        System.out.println(canJump3(nums2));
+    }
+
+    private static boolean canJump3(int[] nums) {
+//        canJump2优化版本
+        int reach = 0;
+        for (int i = 0; i <= reach && reach < nums.length - 1; i++) {
+            reach = Math.max(reach, i + nums[i]);
+        }
+        return reach >= nums.length - 1;
+    }
+
+    private static boolean canJump2(int[] nums) {
+        /*Greedy,
+         * 从遍历每个元素，并更新当前所能达到的最远位置
+         * 若某一个位置的索引大于能达到的最远位置，则意为着当前位置无法到达，
+         * 则最后一个位置也必无法到达
+         * 若顺利遍历到最后一个元素，则说明可以到达最后一个元素
+         * */
+        int reach = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i > reach) {
+                return false;
+            }
+            reach = Math.max(reach, i + nums[i]);
+        }
+        return true;
     }
 
     private static boolean canJump1(int[] nums) {
