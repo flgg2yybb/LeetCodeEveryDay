@@ -4,8 +4,31 @@ public class JumpGame {
     public static void main(String[] args) {
         int[] nums1 = new int[]{2, 3, 1, 1, 4};
         int[] nums2 = new int[]{3, 2, 1, 0, 4};
-        System.out.println(canJump(nums1));
-        System.out.println(canJump(nums2));
+        System.out.println(canJump1(nums1));
+        System.out.println(canJump1(nums2));
+    }
+
+    private static boolean canJump1(int[] nums) {
+        /*DP，
+         * 状态定义：
+         * dp[i]表示索引为i的元素可以抵达最后一个位置
+         * 状态转移方程：
+         * dp[i] = dp[i + nums[i]] || dp[i + nums[i - 1]] || ... || dp[i + 1]
+         * 初始值：
+         * dp[nums.length - 1] = true
+         * */
+        boolean[] dp = new boolean[nums.length];
+        dp[nums.length - 1] = true;
+        for (int i = nums.length - 2; i >= 0; i--) {
+            int maxStep = Math.min(nums.length - 1, i + nums[i]);
+            for (int j = maxStep; j > i; j--) {
+                if (dp[j]) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[0];
     }
 
     public static boolean canJump(int[] nums) {
