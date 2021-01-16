@@ -34,6 +34,22 @@ public class JumpGame {
         return true;
     }
 
+    private static boolean canJump4(int[] nums) {
+        /*canJump1 优化版本
+         * 逆向往前遍历，用last最早可以跳到最后一个位置的元素的索引，
+         * 逆向遍历时，若当前元素可以跳的范围超过last，则更新last
+         * 指向当前元素索引
+         * 遍历完后，若last == 0，意味着第一个元素可以跳到最后一个元素
+         * */
+        int last = nums.length - 1;
+        for (int i = nums.length - 2; i >= 0; i--) {
+            if (i + nums[i] >= last) {
+                last = i;
+            }
+        }
+        return last == 0;
+    }
+
     private static boolean canJump1(int[] nums) {
         /*DP，
          * 状态定义：
