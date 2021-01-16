@@ -3,7 +3,25 @@ package year2021.month1.no53;
 public class MaximumSubarray {
     public static void main(String[] args) {
         int[] nums1 = new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4};
-        System.out.println(maxSubArray(nums1));
+        System.out.println(maxSubArray1(nums1));
+    }
+
+    public static int maxSubArray1(int[] nums) {
+        /*DP，
+         * 状态定义：
+         * dp[i]为包含下班i的连续子数组的最大和
+         * 状态转移方程：
+         * dp[i] = dp[i - 1] > 0 ? dp[i - 1] + nums[i] : nums[i]
+         * 空间压缩：
+         * 动态方程只与dp[i-1]有关，则可用pre变量指向dp[i-1]
+         * */
+        int max = nums[0];
+        int pre = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            pre = pre > 0 ? pre + nums[i] : nums[i];
+            max = Math.max(max, pre);
+        }
+        return max;
     }
 
     public static int maxSubArray(int[] nums) {
