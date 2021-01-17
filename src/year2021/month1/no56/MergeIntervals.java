@@ -9,10 +9,37 @@ public class MergeIntervals {
     public static void main(String[] args) {
         int[][] intervals1 = new int[][]{{1, 4}, {2, 3}};
         int[][] intervals2 = new int[][]{{2, 6}, {1, 3}, {15, 18}, {8, 10}};
-        int[][] merge1 = merge(intervals1);
-        int[][] merge2 = merge(intervals2);
+        int[][] merge1 = merge1(intervals1);
+        int[][] merge2 = merge1(intervals2);
         disp(merge1);
         disp(merge2);
+    }
+
+    private static int[][] merge1(int[][] intervals) {
+        if (intervals == null || intervals.length < 2) {
+            return intervals;
+        }
+        quickSort(intervals, 0, intervals.length - 1);
+        int[][] result = new int[intervals.length][2];
+        int index = 0;
+        int count = 0;
+        while (index < intervals.length) {
+            int start = intervals[index][0];
+            int end = intervals[index][1];
+            int next = index + 1;
+            while (next < intervals.length) {
+                if (intervals[next][0] > end) {
+                    break;
+                }
+                end = Math.max(end, intervals[next][1]);
+                next++;
+            }
+            result[count][0] = start;
+            result[count][1] = end;
+            count++;
+            index = next;
+        }
+        return Arrays.copyOf(result, count);
     }
 
     public static int[][] merge(int[][] intervals) {
