@@ -9,14 +9,31 @@ public class SortColors {
         int[] nums2 = new int[]{2, 0, 1};
         int[] nums3 = new int[]{0};
         int[] nums4 = new int[]{1};
-        sortColors(nums1);
-        sortColors(nums2);
-        sortColors(nums3);
-        sortColors(nums4);
+        sortColors1(nums1);
+        sortColors1(nums2);
+        sortColors1(nums3);
+        sortColors1(nums4);
         disp(nums1);
         disp(nums2);
         disp(nums3);
         disp(nums4);
+    }
+
+    private static void sortColors1(int[] nums) {
+//        counting sort - 计数排序
+        int max = 2;
+        int min = 0;
+        int[] count = new int[max - min + 1];
+        for (int i = 0; i < nums.length; i++) {
+            count[nums[i] - min]++;
+        }
+        int index = 0;
+        for (int i = 0; i < count.length; i++) {
+            while (count[i] > 0) {
+                nums[index++] = i;
+                count[i]--;
+            }
+        }
     }
 
     public static void sortColors(int[] nums) {
