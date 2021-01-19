@@ -9,14 +9,47 @@ public class SortColors {
         int[] nums2 = new int[]{2, 0, 1};
         int[] nums3 = new int[]{0};
         int[] nums4 = new int[]{1};
-        sortColors1(nums1);
-        sortColors1(nums2);
-        sortColors1(nums3);
-        sortColors1(nums4);
+        sortColors2(nums1);
+        sortColors2(nums2);
+        sortColors2(nums3);
+        sortColors2(nums4);
         disp(nums1);
         disp(nums2);
         disp(nums3);
         disp(nums4);
+    }
+
+    private static void sortColors2(int[] nums) {
+        int len = nums.length;
+        if (len < 2) {
+            return;
+        }
+//        循环不变量定义
+//        [0, p1) = 0
+//        [p1, i) = 1
+//        [p2, len) = 2
+        int p1 = 0;
+        int i = 0;
+        int p2 = len;
+        while (i < p2) {
+            if (nums[i] == 0) {
+                swap(nums, i, p1);
+                p1++;
+                i++;
+            } else if (nums[i] == 1) {
+                i++;
+            } else {
+                //  nums[i] == 2
+                p2--;
+                swap(nums, i, p2);
+            }
+        }
+    }
+
+    private static void swap(int[] nums, int x, int y) {
+        int temp = nums[x];
+        nums[x] = nums[y];
+        nums[y] = temp;
     }
 
     private static void sortColors1(int[] nums) {
