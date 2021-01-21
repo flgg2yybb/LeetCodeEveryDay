@@ -8,8 +8,27 @@ public class Subsets {
     public static void main(String[] args) {
         int[] nums1 = new int[]{1, 2, 3};
         int[] nums2 = new int[]{0};
-        System.out.println(subsets(nums1));
-        System.out.println(subsets(nums2));
+        System.out.println(subsets1(nums1));
+        System.out.println(subsets1(nums2));
+    }
+
+    private static List<List<Integer>> subsets1(int[] nums) {
+//        位运算，因nums.length <= 10，则int不会溢出
+//        生成二进制位，0代表当前位置不选，1代表选
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> subSet = new ArrayList<>();
+//        子集的数量等于： 2 ^ nums.length
+        int max = 1 << nums.length;
+        for (int i = 0; i < max; i++) {
+            subSet.clear();
+            for (int j = 0; j < nums.length; j++) {
+                if ((i & (1 << j)) != 0) {
+                    subSet.add(nums[j]);
+                }
+            }
+            result.add(new ArrayList<>(subSet));
+        }
+        return result;
     }
 
     public static List<List<Integer>> subsets(int[] nums) {
