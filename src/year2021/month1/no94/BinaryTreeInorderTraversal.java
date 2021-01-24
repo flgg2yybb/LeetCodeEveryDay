@@ -1,9 +1,6 @@
 package year2021.month1.no94;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class BinaryTreeInorderTraversal {
     public static void main(String[] args) {
@@ -12,11 +9,39 @@ public class BinaryTreeInorderTraversal {
         TreeNode root3 = new TreeNode(1);
         TreeNode root4 = new TreeNode(1, new TreeNode(2), null);
         TreeNode root5 = new TreeNode(1, null, new TreeNode(2));
-        System.out.println(inorderTraversal1(root1));
-//        System.out.println(inorderTraversal1(root2));
-//        System.out.println(inorderTraversal1(root3));
-//        System.out.println(inorderTraversal1(root4));
-//        System.out.println(inorderTraversal1(root5));
+        System.out.println(inorderTraversal2(root1));
+        System.out.println(inorderTraversal2(root2));
+        System.out.println(inorderTraversal2(root3));
+        System.out.println(inorderTraversal2(root4));
+        System.out.println(inorderTraversal2(root5));
+    }
+
+    private static List<Integer> inorderTraversal2(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        Deque<TreeNode> stack = new LinkedList<>();
+//        用Set代表节点是否访问过
+        Set<TreeNode> set = new HashSet<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode pop = stack.pop();
+            if (pop == null) {
+                continue;
+            }
+            if (set.contains(pop)) {
+//                节点已访问过，则输出其值
+                result.add(pop.val);
+                continue;
+            }
+//            栈为：先进后出，而中序遍历为：左中右，故进栈顺序为：右中左，且需要将当前访问元素pop标记为已访问，并再次入栈
+            stack.push(pop.right);
+            stack.push(pop);
+            set.add(pop);
+            stack.push(pop.left);
+        }
+        return result;
     }
 
     private static List<Integer> inorderTraversal1(TreeNode root) {
