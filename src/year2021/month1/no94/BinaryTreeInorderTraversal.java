@@ -9,11 +9,40 @@ public class BinaryTreeInorderTraversal {
         TreeNode root3 = new TreeNode(1);
         TreeNode root4 = new TreeNode(1, new TreeNode(2), null);
         TreeNode root5 = new TreeNode(1, null, new TreeNode(2));
-        System.out.println(inorderTraversal2(root1));
-        System.out.println(inorderTraversal2(root2));
-        System.out.println(inorderTraversal2(root3));
-        System.out.println(inorderTraversal2(root4));
-        System.out.println(inorderTraversal2(root5));
+        System.out.println(inorderTraversal3(root1));
+        System.out.println(inorderTraversal3(root2));
+        System.out.println(inorderTraversal3(root3));
+        System.out.println(inorderTraversal3(root4));
+        System.out.println(inorderTraversal3(root5));
+    }
+
+    private static List<Integer> inorderTraversal3(TreeNode root) {
+//        巧用类型来辨别节点是否访问过，以节省inorderTraversal2中的set的空间
+        List<Integer> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        Deque<Object> stack = new LinkedList<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            Object pop = stack.pop();
+            if (pop == null) {
+                continue;
+            }
+            if (pop instanceof Integer) {
+                Integer val = (Integer) pop;
+                result.add(val);
+                continue;
+            }
+            TreeNode node = (TreeNode) pop;
+//            压入右节点（TreeNode）
+            stack.push(node.right);
+//            压入当前节点的值（Integer）
+            stack.push(node.val);
+//            压入左节点（TreeNode）
+            stack.push(node.left);
+        }
+        return result;
     }
 
     private static List<Integer> inorderTraversal2(TreeNode root) {
