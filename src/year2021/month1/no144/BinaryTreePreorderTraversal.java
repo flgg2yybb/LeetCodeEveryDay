@@ -12,11 +12,27 @@ public class BinaryTreePreorderTraversal {
         TreeNode root3 = new TreeNode(1);
         TreeNode root4 = new TreeNode(1, new TreeNode(2), null);
         TreeNode root5 = new TreeNode(1, null, new TreeNode(2));
-        System.out.println(preorderTraversal1(root1));
-        System.out.println(preorderTraversal1(root2));
-        System.out.println(preorderTraversal1(root3));
-        System.out.println(preorderTraversal1(root4));
-        System.out.println(preorderTraversal1(root5));
+        System.out.println(preorderTraversal2(root1));
+        System.out.println(preorderTraversal2(root2));
+        System.out.println(preorderTraversal2(root3));
+        System.out.println(preorderTraversal2(root4));
+        System.out.println(preorderTraversal2(root5));
+    }
+
+    private static List<Integer> preorderTraversal2(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode node = root;
+        while (node != null || !stack.isEmpty()) {
+            while (node != null) {
+                result.add(node.val);
+                stack.push(node);
+                node = node.left;
+            }
+            node = stack.pop();
+            node = node.right;
+        }
+        return result;
     }
 
     private static List<Integer> preorderTraversal1(TreeNode root) {
