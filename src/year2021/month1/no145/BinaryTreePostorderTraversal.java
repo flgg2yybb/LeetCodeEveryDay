@@ -12,11 +12,37 @@ public class BinaryTreePostorderTraversal {
         TreeNode root3 = new TreeNode(1);
         TreeNode root4 = new TreeNode(1, new TreeNode(2), null);
         TreeNode root5 = new TreeNode(1, null, new TreeNode(2));
-        System.out.println(postorderTraversal1(root1));
-        System.out.println(postorderTraversal1(root2));
-        System.out.println(postorderTraversal1(root3));
-        System.out.println(postorderTraversal1(root4));
-        System.out.println(postorderTraversal1(root5));
+        System.out.println(postorderTraversal2(root1));
+        System.out.println(postorderTraversal2(root2));
+        System.out.println(postorderTraversal2(root3));
+        System.out.println(postorderTraversal2(root4));
+        System.out.println(postorderTraversal2(root5));
+    }
+
+    private static List<Integer> postorderTraversal2(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode node = root;
+        TreeNode pre = null;
+        while (node != null || !stack.isEmpty()) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+            node = stack.peek();
+            if (node.right != null && pre != node.right) {
+//                有右节点，且未访问过
+                node = node.right;
+            } else {
+//                无右节点，或右节点已访问
+                stack.pop();
+                result.add(node.val);
+//                更新pre指向当前访问的节点
+                pre = node;
+                node = null;
+            }
+        }
+        return result;
     }
 
     private static List<Integer> postorderTraversal1(TreeNode root) {
