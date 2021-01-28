@@ -15,9 +15,26 @@ public class SymmetricTree {
                 new TreeNode(2, new TreeNode(2), null),
                 new TreeNode(2, new TreeNode(2), null));
 
-        System.out.println(isSymmetric(root1)); //true
-        System.out.println(isSymmetric(root2)); //false
-        System.out.println(isSymmetric(root3)); //false
+        System.out.println(isSymmetric1(root1)); //true
+        System.out.println(isSymmetric1(root2)); //false
+        System.out.println(isSymmetric1(root3)); //false
+    }
+
+    private static boolean isSymmetric1(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return check(root.left, root.right);
+    }
+
+    private static boolean check(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        }
+        if (p == null || q == null) {
+            return false;
+        }
+        return p.val == q.val && check(p.left, q.right) && check(p.right, q.left);
     }
 
     public static boolean isSymmetric(TreeNode root) {
