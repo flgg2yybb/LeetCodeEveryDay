@@ -1,5 +1,8 @@
 package year2021.month1.no105;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ConstructBinaryTreeFromPreorderAndInorderTraversal {
     public static void main(String[] args) {
         int[] preorder = new int[]{3, 9, 20, 15, 7};
@@ -11,22 +14,28 @@ public class ConstructBinaryTreeFromPreorderAndInorderTraversal {
     }
 
     public static TreeNode buildTree(int[] preorder, int[] inorder) {
-        return buildTree(preorder, inorder, 0, 0, preorder.length);
+        Map<Integer, Integer> nodeIndexMap = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            nodeIndexMap.put(inorder[i], i);
+        }
+        return buildTree(preorder, nodeIndexMap, 0, 0, preorder.length);
     }
 
-    private static TreeNode buildTree(int[] preorder, int[] inorder, int preStart, int inStart, int len) {
+    private static TreeNode buildTree(int[] preorder, Map<Integer, Integer> nodeIndexMap, int preStart, int inStart, int len) {
         if (len == 0) {
             return null;
         }
         int rootValue = preorder[preStart];
-        int leftSize = getLeftSize(rootValue, inorder, inStart, len);
+        int rootInOrderIndex = nodeIndexMap.get(rootValue);
+        int leftSize = rootInOrderIndex - inStart;
         int rightSize = len - leftSize - 1;
         TreeNode root = new TreeNode(rootValue);
-        root.left = buildTree(preorder, inorder, preStart + 1, inStart, leftSize);
-        root.right = buildTree(preorder, inorder, preStart + 1 + leftSize, inStart + 1 + leftSize, rightSize);
+        root.left = buildTree(preorder, nodeIndexMap, preStart + 1, inStart, leftSize);
+        root.right = buildTree(preorder, nodeIndexMap, preStart + 1 + leftSize, inStart + 1 + leftSize, rightSize);
         return root;
     }
 
+    //    Use map to optimize
     private static int getLeftSize(int rootValue, int[] inorder, int inStart, int len) {
         int count = 0;
         for (int i = inStart; i < inStart + len; i++) {
