@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FlattenBinaryTreeToLinkedList {
-    private static TreeNode pre;
 
     public static void main(String[] args) {
         TreeNode root1 = new TreeNode(1,
@@ -12,15 +11,32 @@ public class FlattenBinaryTreeToLinkedList {
                 new TreeNode(5, null, new TreeNode(6)));
         TreeNode root2 = null;
         TreeNode root3 = new TreeNode(0);
-        flatten(root1);
-        flatten(root2);
-        flatten(root3);
+        flatten1(root1);
+        flatten1(root2);
+        flatten1(root3);
         disp(root1);
         preOrderTraverse(root1);
         disp(root2);
         preOrderTraverse(root2);
         disp(root3);
         preOrderTraverse(root3);
+    }
+
+    private static void flatten1(TreeNode root) {
+        TreeNode cur = root;
+        while (cur != null) {
+            if (cur.left != null) {
+                TreeNode next = cur.left;
+                TreeNode preAncestor = next;
+                while (preAncestor.right != null) {
+                    preAncestor = preAncestor.right;
+                }
+                preAncestor.right = cur.right;
+                cur.right = next;
+                cur.left = null;
+            }
+            cur = cur.right;
+        }
     }
 
     public static void flatten(TreeNode root) {
