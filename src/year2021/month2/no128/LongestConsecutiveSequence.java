@@ -1,6 +1,8 @@
 package year2021.month2.no128;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LongestConsecutiveSequence {
     public static void main(String[] args) {
@@ -9,11 +11,35 @@ public class LongestConsecutiveSequence {
         int[] nums3 = new int[]{1};
         int[] nums4 = new int[0];
         int[] nums5 = new int[]{0, 2, 1, 1};
-        System.out.println(longestConsecutive(nums1));  //4
-        System.out.println(longestConsecutive(nums2));  //9
-        System.out.println(longestConsecutive(nums3));  //1
-        System.out.println(longestConsecutive(nums4));  //0
-        System.out.println(longestConsecutive(nums5));  //3
+        System.out.println(longestConsecutive1(nums1));  //4
+        System.out.println(longestConsecutive1(nums2));  //9
+        System.out.println(longestConsecutive1(nums3));  //1
+        System.out.println(longestConsecutive1(nums4));  //0
+        System.out.println(longestConsecutive1(nums5));  //3
+    }
+
+    private static int longestConsecutive1(int[] nums) {
+        if (nums.length < 2) {
+            return nums.length;
+        }
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            set.add(nums[i]);
+        }
+        int max = 0;
+        for (Integer num : set) {
+            if (set.contains(num - 1)) {
+                continue;
+            }
+            int count = 1;
+            int next = num + 1;
+            while (set.contains(next)) {
+                next++;
+                count++;
+            }
+            max = Math.max(max, count);
+        }
+        return max;
     }
 
     public static int longestConsecutive(int[] nums) {
