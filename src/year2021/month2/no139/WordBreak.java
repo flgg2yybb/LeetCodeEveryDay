@@ -13,9 +13,30 @@ public class WordBreak {
         List<String> wordDict2 = Arrays.asList("apple", "pen");
         String s3 = "catsandog";
         List<String> wordDict3 = Arrays.asList("cats", "dog", "sand", "and", "cat");
-        System.out.println(wordBreak(s1, wordDict1));
-        System.out.println(wordBreak(s2, wordDict2));
-        System.out.println(wordBreak(s3, wordDict3));
+        System.out.println(wordBreak1(s1, wordDict1));
+        System.out.println(wordBreak1(s2, wordDict2));
+        System.out.println(wordBreak1(s3, wordDict3));
+    }
+
+    private static boolean wordBreak1(String s, List<String> wordDict) {
+        /*DP
+         * 状态定义：
+         * dp[i]表示s中从下标 0开始长度为 i子串是否可以分割
+         * 状态转移方程：
+         * dp[i] = dp[j] && wordDict.contans(s.substring(j, i)), j = 0, 1, ... , i - 1
+         * */
+        Set<String> set = new HashSet<>(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && set.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
     }
 
     public static boolean wordBreak(String s, List<String> wordDict) {
