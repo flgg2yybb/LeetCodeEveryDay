@@ -21,20 +21,26 @@ public class WordBreak {
     public static boolean wordBreak(String s, List<String> wordDict) {
         Set<String> set = new HashSet<>(wordDict);
         char[] chars = s.toCharArray();
-        return dfs(chars, set, 0);
+        Boolean[] canBreak = new Boolean[s.length()];
+        return dfs(chars, set, canBreak, 0);
     }
 
-    private static boolean dfs(char[] chars, Set<String> set, int pos) {
+    private static boolean dfs(char[] chars, Set<String> set, Boolean[] canBreak, int pos) {
         if (chars.length == pos) {
             return true;
+        }
+        if (canBreak[pos] != null) {
+            return canBreak[pos];
         }
         StringBuilder sb = new StringBuilder();
         for (int i = pos; i < chars.length; i++) {
             sb.append(chars[i]);
-            if (set.contains(sb.toString()) && dfs(chars, set, i + 1)) {
+            if (set.contains(sb.toString()) && dfs(chars, set, canBreak, i + 1)) {
+                canBreak[pos] = true;
                 return true;
             }
         }
+        canBreak[pos] = false;
         return false;
     }
 }
