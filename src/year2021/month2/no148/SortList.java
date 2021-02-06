@@ -13,7 +13,53 @@ public class SortList {
         disp(sortList(head4));
     }
 
-    public static ListNode sortList(ListNode head) {
+    private static ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode middleNode = findMiddleNode(head);
+        ListNode rightHead = middleNode.next;
+        middleNode.next = null;
+        ListNode left = sortList(head);
+        ListNode right = sortList(rightHead);
+        return mergeTwoSortList(left, right);
+    }
+
+    private static ListNode findMiddleNode(ListNode head) {
+//        用快满指针找到中间结点，慢指针一次走一步，快指针一次走两步
+//        链表数量为奇数时，慢指针为中间结点，数量为偶数时，慢指针为中间结点的前驱节点
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next;
+            if (fast.next != null) {
+                slow = slow.next;
+                fast = fast.next;
+            }
+        }
+        return slow;
+    }
+
+    private static ListNode mergeTwoSortList(ListNode left, ListNode right) {
+//        合并两个有序链表
+        ListNode root = new ListNode(-1);
+        ListNode rear = root;
+        while (left != null && right != null) {
+            if (left.val < right.val) {
+                rear.next = left;
+                left = left.next;
+            } else {
+                rear.next = right;
+                right = right.next;
+            }
+            rear = rear.next;
+            rear.next = null;
+        }
+        rear.next = left == null ? right : left;
+        return root.next;
+    }
+
+    public static ListNode sortList1(ListNode head) {
 //        直接插入排序, time is O(n^2), space is O(1), node为当前准备插入的节点
         ListNode root = new ListNode(-1, head);
         ListNode cur = root;
