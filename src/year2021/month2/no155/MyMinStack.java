@@ -2,8 +2,6 @@ package year2021.month2.no155;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class MyMinStack {
 
@@ -22,24 +20,25 @@ public class MyMinStack {
 class MinStack {
 
     private final Deque<Integer> stack;
-    private final Queue<Integer> minStack;
+    private final Deque<Integer> minStack;
 
     /**
      * initialize your data structure here.
      */
     public MinStack() {
         stack = new LinkedList<>();
-        minStack = new PriorityQueue<>();
+        minStack = new LinkedList<>();
+        minStack.push(Integer.MAX_VALUE);   //just in case occur null pointer when push
     }
 
     public void push(int x) {
         stack.push(x);
-        minStack.offer(x);
+        minStack.push(Math.min(minStack.peek(), x));
     }
 
     public void pop() {
-        Integer pop = stack.pop();
-        minStack.remove(pop);
+        stack.pop();
+        minStack.pop();
     }
 
     public int top() {
