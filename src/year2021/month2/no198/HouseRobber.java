@@ -9,6 +9,28 @@ public class HouseRobber {
 
     }
 
+    public static int rob1(int[] nums) {
+        /*DP,
+         * 状态定义：
+         * 定义p为不偷当前房间,q为偷当前房间
+         * 状态转移方程：
+         * p = max{lastP, lastQ}
+         * q = lastP + nums[i]
+         * */
+        if (nums.length == 0) {
+            return 0;
+        }
+        int p = 0;
+        int q = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int lastP = p;
+            int lastQ = q;
+            p = Math.max(lastP, lastQ);
+            q = lastP + nums[i];
+        }
+        return Math.max(p, q);
+    }
+
     public static int rob(int[] nums) {
         /*DP,
          * 状态定义：
