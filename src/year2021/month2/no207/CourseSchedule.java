@@ -11,8 +11,64 @@ public class CourseSchedule {
         int[][] prerequisites1 = new int[][]{{1, 0}};
         int numCourses2 = 2;
         int[][] prerequisites2 = new int[][]{{1, 0}, {0, 1}};
-        System.out.println(canFinish(numCourses1, prerequisites1));
-        System.out.println(canFinish(numCourses2, prerequisites2));
+        System.out.println(canFinish1(numCourses1, prerequisites1));
+        System.out.println(canFinish1(numCourses2, prerequisites2));
+    }
+
+    private static boolean canFinish1(int numCourses, int[][] prerequisites) {
+        /* Topological Sort (拓扑排序) + DFS,
+         * time is O(E + V), space is O(E + V), E为有向图边数，V为节点数
+         * 数据结构：
+         * adjacencyList为邻接表，索引为源节点，值为源节点指向的目标节点的集合
+         * 算法：
+         * 对于每一个节点，赋予其三种状态
+         *      * 未访问：-1
+         *      * 正在访问：0
+         *      * 已访问： 1
+         * dfs遍历所有未访问的节点，对于每个访问的节点，在访问之初将其标记为正在访问，
+         * 并dfs遍历当前节点可以访问的所有候选节点，若候选节点状态为：
+         *      *未访问，则对其进行dfs遍历
+         *      *正在访问，则表示存在环，则return false
+         *      *已访问，则跳过
+         * 若dfs可以正常访问所有节点，则代表无环，return true
+         * */
+        List<List<Integer>> adjacencyList = new ArrayList<>();  //邻接表
+        int[] flags = new int[numCourses];
+        for (int i = 0; i < numCourses; i++) {                  //初始化邻接表以及flags数组
+            adjacencyList.add(new ArrayList<>());
+            flags[i] = -1;
+        }
+        for (int[] prerequisite : prerequisites) {        //更新邻接表
+            int from = prerequisite[1];
+            int to = prerequisite[0];
+            adjacencyList.get(from).add(to);
+        }
+        for (int i = 0; i < numCourses; i++) {                  //dfs访问每个节点
+            if (dfs(adjacencyList, flags, i)) {                //若dfs返回false，则代表有环
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean dfs(List<List<Integer>> adjacencyList, int[] flags, int node) {
+        if (flags[node] == 1) {     //已访问
+            return false;
+        }
+        if (flags[node] == 0) {     //正在访问
+            return true;
+        }
+//        将当前节点标记为正在访问
+        flags[node] = 0;
+        List<Integer> nextNodes = adjacencyList.get(node);
+        for (int nextNode : nextNodes) {
+            if (dfs(adjacencyList, flags, nextNode)) {
+                return true;
+            }
+        }
+//        将当前节点标记为已访问
+        flags[node] = 1;
+        return false;
     }
 
     public static boolean canFinish(int numCourses, int[][] prerequisites) {
@@ -36,9 +92,9 @@ public class CourseSchedule {
             adjacencyList.add(new ArrayList<>());
         }
         int[] inDegree = new int[numCourses];                   //入度表
-        for (int i = 0; i < prerequisites.length; i++) {        //初始化邻接表和入度表
-            int from = prerequisites[i][1];
-            int to = prerequisites[i][0];
+        for (int[] prerequisite : prerequisites) {        //初始化邻接表和入度表
+            int from = prerequisite[1];
+            int to = prerequisite[0];
             inDegree[to]++;
             adjacencyList.get(from).add(to);
         }
@@ -55,8 +111,7 @@ public class CourseSchedule {
             count++;
             List<Integer> nextNodes = adjacencyList.get(poll);
 //            更新当前出队节点可以访问的所有节点的入度，若入度更新后为0，则将其入队
-            for (int i = 0; i < nextNodes.size(); i++) {
-                int nextNode = nextNodes.get(i);
+            for (int nextNode : nextNodes) {
                 inDegree[nextNode]--;
                 if (inDegree[nextNode] == 0) {
                     queue.offerLast(nextNode);
