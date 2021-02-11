@@ -2,6 +2,7 @@ package year2021.month2.no215;
 
 import java.util.Arrays;
 import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 public class KthLargestElementInArray {
@@ -10,8 +11,54 @@ public class KthLargestElementInArray {
         int k1 = 2;
         int[] nums2 = new int[]{3, 2, 3, 1, 2, 4, 5, 5, 6};
         int k2 = 4;
-        System.out.println(findKthLargest2(nums1, k1));
-        System.out.println(findKthLargest2(nums2, k2));
+        System.out.println(findKthLargest3(nums1, k1));
+        System.out.println(findKthLargest3(nums2, k2));
+    }
+
+    private static int findKthLargest3(int[] nums, int k) {
+        int kSmallestIndex = nums.length - k;
+        return quickSelectKSmallest(nums, 0, nums.length - 1, kSmallestIndex);
+    }
+
+    private static int quickSelectKSmallest(int[] nums, int left, int right, int kSmallestIndex) {
+        if (kSmallestIndex < left || kSmallestIndex > right) {
+            throw new IllegalArgumentException();
+        }
+        int pivotIndex = partition(nums, left, right);
+        if (kSmallestIndex == pivotIndex) {
+            return nums[pivotIndex];
+        }
+        return kSmallestIndex < pivotIndex ? quickSelectKSmallest(nums, left, pivotIndex - 1, kSmallestIndex) :
+                quickSelectKSmallest(nums, pivotIndex + 1, right, kSmallestIndex);
+    }
+
+    private static int partition(int[] nums, int left, int right) {
+        if (left < right) {
+            Random random = new Random();
+            int randomIndex = left + random.nextInt(right - left);
+            swap(nums, left, randomIndex);
+        }
+        int pivot = nums[left];
+        int l = left;
+        int r = right;
+        while (l < r) {
+            while (l < r && nums[r] >= pivot) {
+                r--;
+            }
+            nums[l] = nums[r];
+            while (l < r && nums[l] <= pivot) {
+                l++;
+            }
+            nums[r] = nums[l];
+        }
+        nums[l] = pivot;
+        return l;
+    }
+
+    private static void swap(int[] nums, int x, int y) {
+        int temp = nums[x];
+        nums[x] = nums[y];
+        nums[y] = temp;
     }
 
     private static int findKthLargest2(int[] nums, int k) {
