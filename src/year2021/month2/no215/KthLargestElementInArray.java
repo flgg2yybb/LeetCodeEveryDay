@@ -17,14 +17,30 @@ public class KthLargestElementInArray {
 
     private static int findKthLargest3(int[] nums, int k) {
         int kSmallestIndex = nums.length - k;
-        return quickSelectKSmallest(nums, 0, nums.length - 1, kSmallestIndex);
+        return quickSelectKSmallest1(nums, 0, nums.length - 1, kSmallestIndex);
+    }
+
+    private static int quickSelectKSmallest1(int[] nums, int left, int right, int kSmallestIndex) {
+        if (kSmallestIndex < left || kSmallestIndex > right) {
+            throw new IllegalArgumentException();
+        }
+        while (true) {
+            int pivotIndex = randomPartition(nums, left, right);
+            if (kSmallestIndex == pivotIndex) {
+                return nums[pivotIndex];
+            } else if (kSmallestIndex < pivotIndex) {
+                right = pivotIndex - 1;
+            } else {
+                left = pivotIndex + 1;
+            }
+        }
     }
 
     private static int quickSelectKSmallest(int[] nums, int left, int right, int kSmallestIndex) {
         if (kSmallestIndex < left || kSmallestIndex > right) {
             throw new IllegalArgumentException();
         }
-        int pivotIndex = partition(nums, left, right);
+        int pivotIndex = randomPartition(nums, left, right);
         if (kSmallestIndex == pivotIndex) {
             return nums[pivotIndex];
         }
@@ -32,12 +48,30 @@ public class KthLargestElementInArray {
                 quickSelectKSmallest(nums, pivotIndex + 1, right, kSmallestIndex);
     }
 
-    private static int partition(int[] nums, int left, int right) {
+    private static int randomPartition(int[] nums, int left, int right) {
         if (left < right) {
             Random random = new Random();
             int randomIndex = left + random.nextInt(right - left);
             swap(nums, left, randomIndex);
         }
+        int pivot = nums[left];
+        int l = left;
+        int r = right;
+        while (l < r) {
+            while (l < r && nums[r] >= pivot) {
+                r--;
+            }
+            nums[l] = nums[r];
+            while (l < r && nums[l] <= pivot) {
+                l++;
+            }
+            nums[r] = nums[l];
+        }
+        nums[l] = pivot;
+        return l;
+    }
+
+    private static int partition(int[] nums, int left, int right) {
         int pivot = nums[left];
         int l = left;
         int r = right;
