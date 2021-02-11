@@ -1,6 +1,8 @@
 package year2021.month2.no215;
 
 import java.util.Arrays;
+import java.util.PriorityQueue;
+import java.util.stream.IntStream;
 
 public class KthLargestElementInArray {
     public static void main(String[] args) {
@@ -8,8 +10,38 @@ public class KthLargestElementInArray {
         int k1 = 2;
         int[] nums2 = new int[]{3, 2, 3, 1, 2, 4, 5, 5, 6};
         int k2 = 4;
-        System.out.println(findKthLargest(nums1, k1));
-        System.out.println(findKthLargest(nums2, k2));
+        System.out.println(findKthLargest2(nums1, k1));
+        System.out.println(findKthLargest2(nums2, k2));
+    }
+
+    private static int findKthLargest2(int[] nums, int k) {
+//        用一个最小堆维护最大的K个数字，适用于动态数据流中查找Top Kth元素
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>(k);
+//        先向最小堆中装入k个元素
+        IntStream.range(0, k).forEach(index -> minHeap.offer(nums[index]));
+        IntStream.range(k, nums.length).forEach(index -> {
+            if (nums[index] > minHeap.peek()) {
+                minHeap.poll();
+                minHeap.offer(nums[index]);
+            }
+        });
+        return minHeap.peek();
+    }
+
+    private static int findKthLargest1(int[] nums, int k) {
+//        用一个最小堆维护最大的K个数字，适用于动态数据流中查找Top Kth元素
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>(k);
+        Arrays.stream(nums).boxed().forEach(num -> {
+            if (minHeap.size() < k) {
+                minHeap.offer(num);
+                return;
+            }
+            if (num > minHeap.peek()) {
+                minHeap.poll();
+                minHeap.offer(num);
+            }
+        });
+        return minHeap.peek();
     }
 
     public static int findKthLargest(int[] nums, int k) {
