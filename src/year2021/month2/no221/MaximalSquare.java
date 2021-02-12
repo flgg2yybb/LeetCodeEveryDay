@@ -2,12 +2,6 @@ package year2021.month2.no221;
 
 public class MaximalSquare {
     public static void main(String[] args) {
-        char[][] matrix1 = new char[][]{
-                {'1', '0', '1', '0', '0'},
-                {'1', '0', '1', '1', '1'},
-                {'1', '1', '1', '1', '1'},
-                {'1', '0', '0', '1', '0'}
-        };
         char[][] matrix2 = new char[][]{
                 {'0', '1'},
                 {'1', '0'}
@@ -15,10 +9,45 @@ public class MaximalSquare {
         char[][] matrix3 = new char[][]{
                 {'0'}
         };
-        System.out.println(maximalSquare1(matrix1));
-        System.out.println(maximalSquare1(matrix2));
-        System.out.println(maximalSquare1(matrix3));
+        char[][] matrix1 = new char[][]{
+                {'1', '0', '1', '0', '0'},
+                {'1', '0', '1', '1', '1'},
+                {'1', '1', '1', '1', '1'},
+                {'1', '0', '0', '1', '0'}
+        };
+        char[][] matrix4 = new char[][]{
+                {'1', '1', '1', '1', '1'},
+                {'1', '1', '1', '1', '1'},
+                {'0', '0', '0', '0', '0'},
+                {'1', '1', '1', '1', '1'},
+                {'1', '1', '1', '1', '1'}
+        };
+//        System.out.println(maximalSquare2(matrix1));
+//        System.out.println(maximalSquare2(matrix2));
+//        System.out.println(maximalSquare2(matrix3));
+        System.out.println(maximalSquare2(matrix4));
+    }
 
+    private static int maximalSquare2(char[][] matrix) {
+//        空间压缩
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int[] dp = new int[col + 1];
+        int leftTopDp = 0;
+        int maxSide = 0;
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; j <= col; j++) {
+                int nextLeftTopDp = dp[j];
+                if (matrix[i - 1][j - 1] == '0') {      //滚动数组需要对为0的情况处理dp数组
+                    dp[j] = 0;
+                } else {
+                    dp[j] = Math.min(leftTopDp, Math.min(dp[j - 1], dp[j])) + 1;
+                    maxSide = Math.max(maxSide, dp[j]);
+                }
+                leftTopDp = nextLeftTopDp;
+            }
+        }
+        return maxSide * maxSide;
     }
 
     private static int maximalSquare1(char[][] matrix) {
