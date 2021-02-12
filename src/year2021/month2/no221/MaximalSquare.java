@@ -15,10 +15,27 @@ public class MaximalSquare {
         char[][] matrix3 = new char[][]{
                 {'0'}
         };
-        System.out.println(maximalSquare(matrix1));
-        System.out.println(maximalSquare(matrix2));
-        System.out.println(maximalSquare(matrix3));
+        System.out.println(maximalSquare1(matrix1));
+        System.out.println(maximalSquare1(matrix2));
+        System.out.println(maximalSquare1(matrix3));
 
+    }
+
+    private static int maximalSquare1(char[][] matrix) {
+//        扩充dp数组，可使得对第一行第一列的处理与其他行列一致，简化代码
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int[][] dp = new int[row + 1][col + 1];
+        int maxSide = 0;
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; j <= col; j++) {
+                if (matrix[i - 1][j - 1] == '1') {
+                    dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i][j - 1], dp[i - 1][j])) + 1;
+                    maxSide = Math.max(maxSide, dp[i][j]);
+                }
+            }
+        }
+        return maxSide * maxSide;
     }
 
     public static int maximalSquare(char[][] matrix) {
