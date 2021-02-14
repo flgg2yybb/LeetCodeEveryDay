@@ -9,10 +9,43 @@ public class PalindromeLinkedList {
         ListNode head2 = new ListNode(2);
         ListNode head3 = new ListNode(2, new ListNode(3, new ListNode(2)));
         ListNode head4 = new ListNode(2, new ListNode(3, new ListNode(3)));
-        System.out.println(isPalindrome(head1));
-        System.out.println(isPalindrome(head2));
-        System.out.println(isPalindrome(head3));
-        System.out.println(isPalindrome(head4));
+        ListNode head5 = new ListNode(2, new ListNode(3, new ListNode(3, new ListNode(2))));
+        ListNode head6 = new ListNode(2, new ListNode(3, new ListNode(3, new ListNode(4))));
+        System.out.println(isPalindrome1(head1));
+        System.out.println(isPalindrome1(head2));
+        System.out.println(isPalindrome1(head3));
+        System.out.println(isPalindrome1(head4));
+        System.out.println(isPalindrome1(head5));
+        System.out.println(isPalindrome1(head6));
+    }
+
+    private static boolean isPalindrome1(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = slow;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode left = head;
+        ListNode right = reverseLinkedList(slow);
+        while (left != null && right != null) {
+            if (left.val != right.val) {
+                return false;
+            }
+            left = left.next;
+            right = right.next;
+        }
+        return true;
+    }
+
+    private static ListNode reverseLinkedList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode newHead = reverseLinkedList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return newHead;
     }
 
     public static boolean isPalindrome(ListNode head) {
