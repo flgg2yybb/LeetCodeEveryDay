@@ -27,7 +27,7 @@ public class PalindromeLinkedList {
             fast = fast.next.next;
         }
         ListNode left = head;
-        ListNode right = reverseLinkedList(slow);
+        ListNode right = reverseLinkedList1(slow);
         while (left != null && right != null) {
             if (left.val != right.val) {
                 return false;
@@ -36,6 +36,17 @@ public class PalindromeLinkedList {
             right = right.next;
         }
         return true;
+    }
+
+    private static ListNode reverseLinkedList1(ListNode head) {
+        ListNode pre = null;
+        while (head != null) {
+            ListNode newHead = head.next;
+            head.next = pre;
+            pre = head;
+            head = newHead;
+        }
+        return pre;
     }
 
     private static ListNode reverseLinkedList(ListNode head) {
