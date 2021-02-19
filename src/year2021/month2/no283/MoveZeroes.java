@@ -6,8 +6,27 @@ import java.util.stream.Collectors;
 public class MoveZeroes {
     public static void main(String[] args) {
         int[] nums1 = new int[]{0, 1, 0, 3, 12};
-        moveZeroes(nums1);
+        moveZeroes1(nums1);
         disp(nums1);
+    }
+
+    private static void moveZeroes1(int[] nums) {
+//        类似快排partition的交换方法
+        int left = 0;
+        int right = 0;
+        while (right < nums.length) {
+            if (nums[right] != 0) {
+                swap(nums, left, right);
+                left++;
+            }
+            right++;
+        }
+    }
+
+    private static void swap(int[] nums, int x, int y) {
+        int temp = nums[x];
+        nums[x] = nums[y];
+        nums[y] = temp;
     }
 
     public static void moveZeroes(int[] nums) {
