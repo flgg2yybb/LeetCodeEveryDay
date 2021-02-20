@@ -9,10 +9,30 @@ public class FindTheDuplicateNumber {
         int[] nums2 = new int[]{3, 1, 3, 4, 2};
         int[] nums3 = new int[]{1, 1};
         int[] nums4 = new int[]{1, 1, 2};
-        System.out.println(findDuplicate(nums1));
-        System.out.println(findDuplicate(nums2));
-        System.out.println(findDuplicate(nums3));
-        System.out.println(findDuplicate(nums4));
+        System.out.println(findDuplicate1(nums1));
+        System.out.println(findDuplicate1(nums2));
+        System.out.println(findDuplicate1(nums3));
+        System.out.println(findDuplicate1(nums4));
+    }
+
+    private static int findDuplicate1(int[] nums) {
+        /*快慢指针，Floyd判圈算法
+         * 由于nums数组长度为 n+1，元素均在[1,n]范围内，其中只有一个元素出现两次及以上
+         * 则可将nums的值视为指针，指向下一个节点，因其中有元素重复出现，则必然在形成的
+         * 图中，至少有两个指针指向同一个入口，该入口即为重复元素的值
+         * */
+        int slow = 0;
+        int fast = 0;
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+        slow = 0;
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
     }
 
     public static int findDuplicate(int[] nums) {
