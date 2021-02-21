@@ -15,10 +15,38 @@ public class HouseRobberIII {
                 new TreeNode(5, null, new TreeNode(1)));
         TreeNode root3 = null;
         TreeNode root4 = new TreeNode(5);
-        System.out.println(rob(root1));
-        System.out.println(rob(root2));
-        System.out.println(rob(root3));
-        System.out.println(rob(root4));
+        TreeNode root5 = new TreeNode(2, null, new TreeNode(3, null, new TreeNode(2)));
+        System.out.println(rob1(root1));
+        System.out.println(rob1(root2));
+        System.out.println(rob1(root3));
+        System.out.println(rob1(root4));
+        System.out.println(rob1(root5));    //should be 4
+    }
+
+    private static int rob1(TreeNode root) {
+        /*树形dp
+         * 采用后序遍历，自底向上遍历
+         * 状态定义
+         * dp[node][0]表示不偷第node个节点所得到的以i为根的子树的最高金额
+         * dp[node][1]表示偷第node个节点所得到的以i为根的子树的最高金额
+         * 状态转移方程
+         * dp[parent][0] = max{dp[left][0], dp[left][1]} + max{dp[right][0], dp[right][1]}
+         * dp[parent][1] = dp[left][0] + dp[right][0] + levelOrder.get(i)
+         * */
+        int[] result = postOrderDFS(root);
+        return Math.max(result[0], result[1]);
+    }
+
+    private static int[] postOrderDFS(TreeNode root) {
+        if (root == null) {
+            return new int[]{0, 0};
+        }
+        int[] left = postOrderDFS(root.left);
+        int[] right = postOrderDFS(root.right);
+        int[] result = new int[2];
+        result[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        result[1] = left[0] + right[0] + root.val;
+        return result;
     }
 
     public static int rob(TreeNode root) {
