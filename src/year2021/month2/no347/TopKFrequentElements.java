@@ -9,8 +9,49 @@ public class TopKFrequentElements {
         int k1 = 2;
         int[] nums2 = new int[]{1};
         int k2 = 1;
-        disp(topKFrequent(nums1, k1));
-        disp(topKFrequent(nums2, k2));
+        disp(topKFrequent1(nums1, k1));
+        disp(topKFrequent1(nums2, k2));
+    }
+
+    private static int[] topKFrequent1(int[] nums, int k) {
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int num : nums) {
+            countMap.put(num, countMap.getOrDefault(num, 0) + 1);
+        }
+        // 使用Quick Sort中的Partition操作找出第k个高频元素出现的次数，即在出现次数数组中查找第k大的元素，
+        // avg time is O(n), worse time is O(n^2), space is O(n)
+        int[] counts = countMap.values().stream().mapToInt(Integer::valueOf).toArray();
+        int kCount = getKthMinElement(counts, counts.length - k);
+        return countMap.keySet().stream().filter(key -> countMap.get(key) >= kCount)
+                .mapToInt(Integer::valueOf).toArray();
+    }
+
+    private static int getKthMinElement(int[] nums, int k) {
+        return recursiveGetKthMax(nums, k, 0, nums.length - 1);
+    }
+
+    private static int recursiveGetKthMax(int[] nums, int k, int start, int end) {
+        if (k < start || k > end) {
+            throw new IllegalArgumentException();
+        }
+        int left = start;
+        int right = end;
+        int pivot = nums[left];
+        while (left < right) {
+            while (left < right && nums[right] >= pivot) {
+                right--;
+            }
+            nums[left] = nums[right];
+            while (left < right && nums[left] <= pivot) {
+                left++;
+            }
+            nums[right] = nums[left];
+        }
+        nums[left] = pivot;
+        if (left == k) {
+            return nums[left];
+        }
+        return left < k ? recursiveGetKthMax(nums, k, left + 1, end) : recursiveGetKthMax(nums, k, start, left - 1);
     }
 
     public static int[] topKFrequent(int[] nums, int k) {
