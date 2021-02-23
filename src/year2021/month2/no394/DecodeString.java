@@ -4,6 +4,9 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 public class DecodeString {
+
+    private static int index = 0;
+
     public static void main(String[] args) {
         String s1 = "3[a]2[bc]";
         String s2 = "3[a2[c]]";
@@ -11,12 +14,12 @@ public class DecodeString {
         String s4 = "abc3[cd]xyz";
         String s5 = "abccdxyz";
         String s6 = "10[leetcode]";
-        System.out.println(decodeString1(s1));
-        System.out.println(decodeString1(s2));
-        System.out.println(decodeString1(s3));
-        System.out.println(decodeString1(s4));
-        System.out.println(decodeString1(s5));
-        System.out.println(decodeString1(s6));
+        System.out.println(decodeString2(s1));
+        System.out.println(decodeString2(s2));
+        System.out.println(decodeString2(s3));
+        System.out.println(decodeString2(s4));
+        System.out.println(decodeString2(s5));
+        System.out.println(decodeString2(s6));
     }
 
     private static String decodeString1(String s) {
@@ -45,6 +48,36 @@ public class DecodeString {
             }
         }
         return res.toString();
+    }
+
+    private static String decodeString2(String s) {
+        index = 0;
+        return dfs(s);
+    }
+
+    private static String dfs(String s) {
+        StringBuilder sb = new StringBuilder();
+        char[] chars = s.toCharArray();
+        int count = 0;
+        while (index < chars.length) {
+            char c = chars[index];
+            if (Character.isDigit(c)) {
+                count = count * 10 + c - '0';
+            } else if (c == '[') {
+                index++;
+                String temp = dfs(s);
+                for (int i = 0; i < count; i++) {
+                    sb.append(temp);
+                }
+                count = 0;
+            } else if (c == ']') {
+                break;
+            } else {
+                sb.append(c);
+            }
+            index++;
+        }
+        return sb.toString();
     }
 
     public static String decodeString(String s) {
