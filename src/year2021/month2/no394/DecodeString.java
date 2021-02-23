@@ -20,9 +20,11 @@ public class DecodeString {
         StringBuilder sb = new StringBuilder();
         char[] chars = s.toCharArray();
         StringBuilder digit = new StringBuilder();
-        for (int i = 0; i < chars.length; i++) {
+        int i = 0;
+        while (i < chars.length) {
             if (!Character.isDigit(chars[i])) {
                 sb.append(chars[i]);
+                i++;
                 continue;
             }
             while (Character.isDigit(chars[i])) {
@@ -31,12 +33,11 @@ public class DecodeString {
             }
             int times = Integer.valueOf(digit.toString());
             digit = new StringBuilder();
-            int start = i + 1;
-            int end = start;
+            i++;                //指向[的下一个字符
             int balance = 1;    //括号匹配，代表还需要多少个右括号才能匹配
             StringBuilder temp = new StringBuilder();
-            while (end < chars.length && balance != 0) {
-                char c = chars[end];
+            while (i < chars.length && balance != 0) {
+                char c = chars[i];
                 if (c == '[') {
                     balance++;
                 }
@@ -44,15 +45,14 @@ public class DecodeString {
                     balance--;
                 }
                 if (balance != 0) {
-                    temp.append(chars[end]);
+                    temp.append(chars[i]);
                 }
-                end++;
+                i++;
             }
             String subString = decodeString(new String(temp));
             for (int j = 0; j < times; j++) {
                 sb.append(subString);
             }
-            i = end - 1;
         }
         return sb.toString();
     }
