@@ -1,5 +1,8 @@
 package year2021.month2.no394;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class DecodeString {
     public static void main(String[] args) {
         String s1 = "3[a]2[bc]";
@@ -8,12 +11,40 @@ public class DecodeString {
         String s4 = "abc3[cd]xyz";
         String s5 = "abccdxyz";
         String s6 = "10[leetcode]";
-        System.out.println(decodeString(s1));
-        System.out.println(decodeString(s2));
-        System.out.println(decodeString(s3));
-        System.out.println(decodeString(s4));
-        System.out.println(decodeString(s5));
-        System.out.println(decodeString(s6));
+        System.out.println(decodeString1(s1));
+        System.out.println(decodeString1(s2));
+        System.out.println(decodeString1(s3));
+        System.out.println(decodeString1(s4));
+        System.out.println(decodeString1(s5));
+        System.out.println(decodeString1(s6));
+    }
+
+    private static String decodeString1(String s) {
+        char[] chars = s.toCharArray();
+        Deque<StringBuilder> stack = new LinkedList<>();
+        Deque<Integer> countStack = new LinkedList<>();
+        StringBuilder res = new StringBuilder();
+        int count = 0;
+        for (char c : chars) {
+            if (Character.isDigit(c)) {
+                count = count * 10 + c - '0';
+            } else if (c == '[') {
+                countStack.offerLast(count);
+                stack.offerLast(res);
+                res = new StringBuilder();
+                count = 0;
+            } else if (c == ']') {
+                int times = countStack.pollLast();
+                StringBuilder temp = new StringBuilder();
+                for (int i = 0; i < times; i++) {
+                    temp.append(res);
+                }
+                res = new StringBuilder(stack.pollLast()).append(temp);
+            } else {
+                res.append(c);
+            }
+        }
+        return res.toString();
     }
 
     public static String decodeString(String s) {
