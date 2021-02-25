@@ -8,10 +8,29 @@ public class QueueReconstructionByHeight {
         int[][] people1 = new int[][]{{7, 0}, {4, 4}, {7, 1}, {5, 0}, {6, 1}, {5, 2}};
         int[][] people2 = new int[][]{{6, 0}, {5, 0}, {4, 0}, {3, 2}, {2, 2}, {1, 4}};
         int[][] people3 = new int[][]{{5, 1}, {5, 3}, {5, 0}, {5, 2}, {5, 5}, {5, 4}};
-        disp(reconstructQueue1(people1));
-        disp(reconstructQueue1(people2));
-        disp(reconstructQueue1(people3));
+        disp(reconstructQueue2(people1));
+        disp(reconstructQueue2(people2));
+        disp(reconstructQueue2(people3));
 
+    }
+
+    private static int[][] reconstructQueue2(int[][] people) {
+        /*思路：
+         * 将people数组按 身高降序，按 k升序，则遍历people时
+         * 高个子的人先遍历，身高相同的 k小的先遍历
+         * 则，对于每一个遍历的元素而言，之前已遍历的元素身高必大于等于本身，故只需要找空格位置插入即可
+         * */
+        Arrays.sort(people, (nums1, nums2) -> {
+            if (nums1[0] != nums2[0]) {
+                return nums2[0] - nums1[0];
+            }
+            return nums1[1] - nums2[1];
+        });
+        List<int[]> list = new LinkedList<>();
+        for (int[] nums : people) {
+            list.add(nums[1], nums);
+        }
+        return list.toArray(new int[0][0]);
     }
 
     private static int[][] reconstructQueue1(int[][] people) {
