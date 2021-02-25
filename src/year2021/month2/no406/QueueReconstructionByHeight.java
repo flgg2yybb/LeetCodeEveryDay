@@ -16,8 +16,7 @@ public class QueueReconstructionByHeight {
 
     public static int[][] reconstructQueue(int[][] people) {
 //        time is O(n^2), space is O(n)
-        int[][] res = new int[people.length][2];
-        Arrays.fill(res, new int[]{-1, -1});    //n
+        int[][] res = new int[people.length][];
         PriorityQueue<int[]> minHeap = new PriorityQueue<>((nums1, nums2) -> nums1 != nums2 ? nums1[0] - nums2[0] : nums1[1] - nums2[1]);
         Collections.addAll(minHeap, people);    //nlogn
         while (!minHeap.isEmpty()) {            //n
@@ -25,10 +24,10 @@ public class QueueReconstructionByHeight {
             int count = 0;
             int pos = 0;
             while (pos < res.length) {          //n
-                if (res[pos][0] == -1 && count == nums[1]) {
+                if (res[pos] == null && count == nums[1]) {
                     break;
                 }
-                if (res[pos][0] == -1 || res[pos][0] >= nums[0]) {
+                if (res[pos] == null || res[pos][0] >= nums[0]) {
                     count++;
                 }
                 pos++;
