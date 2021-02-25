@@ -8,10 +8,40 @@ public class QueueReconstructionByHeight {
         int[][] people1 = new int[][]{{7, 0}, {4, 4}, {7, 1}, {5, 0}, {6, 1}, {5, 2}};
         int[][] people2 = new int[][]{{6, 0}, {5, 0}, {4, 0}, {3, 2}, {2, 2}, {1, 4}};
         int[][] people3 = new int[][]{{5, 1}, {5, 3}, {5, 0}, {5, 2}, {5, 5}, {5, 4}};
-        disp(reconstructQueue(people1));
-        disp(reconstructQueue(people2));
-        disp(reconstructQueue(people3));
+        disp(reconstructQueue1(people1));
+        disp(reconstructQueue1(people2));
+        disp(reconstructQueue1(people3));
 
+    }
+
+    private static int[][] reconstructQueue1(int[][] people) {
+        /*思路：
+         * 将people数组按 身高升序，按 k降序，则遍历people时
+         * 矮个子的人先遍历，身高相同的 k大的先遍历
+         * （按 k降序的原因是，对于同身高的人，ki大的一定排在后面，所以ki大的需要先遍历）
+         * 则，对于每一个遍历的元素而言，之前已遍历的元素身高必小于等于本身，故只需要找空格位置插入即可
+         * 对于同身高的元素，因为大k的必排在后面，所以对于小k来说，在遇到大k之前就已经插入队列里了
+         * */
+        Arrays.sort(people, (nums1, nums2) -> {
+            if (nums1[0] != nums2[0]) {
+                return nums1[0] - nums2[0];
+            }
+            return nums2[1] - nums1[1];
+        });
+        int[][] res = new int[people.length][];
+        for (int[] nums : people) {
+            int skip = nums[1];
+            for (int i = 0; i < people.length; i++) {
+                if (res[i] == null) {
+                    if (skip == 0) {
+                        res[i] = nums;
+                        break;
+                    }
+                    skip--;
+                }
+            }
+        }
+        return res;
     }
 
     public static int[][] reconstructQueue(int[][] people) {
