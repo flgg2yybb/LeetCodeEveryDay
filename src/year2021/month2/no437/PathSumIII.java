@@ -1,5 +1,8 @@
 package year2021.month2.no437;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PathSumIII {
     public static void main(String[] args) {
         TreeNode root1 = new TreeNode(10,
@@ -7,8 +10,57 @@ public class PathSumIII {
                         new TreeNode(3, new TreeNode(3), new TreeNode(-2)),
                         new TreeNode(2, null, new TreeNode(1))),
                 new TreeNode(-3, null, new TreeNode(11)));
-        int sum1 = 8;
-        System.out.println(pathSum(root1, sum1));
+        int sum1 = 3;
+        System.out.println(pathSum1(root1, sum1));
+    }
+
+    private static int pathSum1(TreeNode root, int sum) {
+        /*前缀和，time is O(n), space is O(n)
+         * 前缀和：对于树来说，就是从根节点到当前节点的路径和
+         * 前缀和的应用：
+         * 在同一个路径下，如果两个节点的前缀和相等，则这两个节点之间的元素的总和为零（不包括起始节点）
+         * 反推，则有：
+         * 同一路径下的两个节点的路径和，等于末尾节点的路径和 减去先前节点的父节点的前缀和
+         * 如：
+                  10                            A
+                 /  \                          / \
+                5   -3                        B   C
+               / \    \       <==>           / \   \
+              3   2   11                    D   E   F
+             / \   \                       / \   \
+            3  -2   1                     G  H    I
+         *      值                           节点编号
+         *
+         *  需要找的路径和sum为 8
+         *  1、A的前缀和为10，D的前缀和为10 + 5 + 3 = 18，则 BD的路径和 = D的前缀和 - A的前缀和 = 8
+         *  2、A的前缀和为10，I的前缀和为10 + 5 + 2 + 1 = 18，则 BI的路径和 = I的前缀和 - A的前缀和 = 8
+         *  3、A的前缀和为10，F的前缀和为10 - 3 + 11 = 18，则 CF的路径和 = F的前缀和 - A的前缀和 = 8
+         *
+         * */
+        Map<Integer, Integer> prefixSumMap = new HashMap<>();  //key为前缀和, value为等于key的前缀和的节点数量
+//        加入默认前缀和，什么节点都不选的路径，以此使得根节点也会被算上（任意两点A,B的路径和 为B的前缀和 减去 A的*父节点*的前缀和，
+//        因根节点也会被计算在内，所以需要加入什么节点都不选的前缀和）
+        prefixSumMap.put(0, 1);
+        return recursion(root, prefixSumMap, sum, 0);
+    }
+
+    private static int recursion(TreeNode root, Map<Integer, Integer> prefixSumMap, int sum, int prefixSum) {
+        if (root == null) {
+            return 0;
+        }
+        int res = 0;
+//        更新前缀和
+        prefixSum += root.val;
+//        查找当前路径上是否有节点到当前节点的路径和为sum，则在前缀和map中输入差值 (prefixSum - sum)
+        res += prefixSumMap.getOrDefault(prefixSum - sum, 0);
+//        将当前节点的前缀和加入到prefixSumMap中
+        prefixSumMap.put(prefixSum, prefixSumMap.getOrDefault(prefixSum, 0) + 1);
+//        分别递归查找左右子树
+        res += recursion(root.left, prefixSumMap, sum, prefixSum);
+        res += recursion(root.right, prefixSumMap, sum, prefixSum);
+//        以当前节点为跟的子树已遍历完成，需要将当前节点的前缀和移除
+        prefixSumMap.put(prefixSum, prefixSumMap.get(prefixSum) - 1);
+        return res;
     }
 
     public static int pathSum(TreeNode root, int sum) {
