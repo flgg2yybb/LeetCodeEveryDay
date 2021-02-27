@@ -6,10 +6,38 @@ public class PartitionEqualSubsetSum {
         int[] nums2 = {1, 2, 3, 5};
         int[] nums3 = {100, 100, 100, 100, 100, 100, 100};
         int[] nums4 = {100, 100, 100, 100, 100, 100, 100, 100};
-        System.out.println(canPartition(nums1));
-        System.out.println(canPartition(nums2));
-        System.out.println(canPartition(nums3));
-        System.out.println(canPartition(nums4));
+        System.out.println(canPartition1(nums1));
+        System.out.println(canPartition1(nums2));
+        System.out.println(canPartition1(nums3));
+        System.out.println(canPartition1(nums4));
+    }
+
+    private static boolean canPartition1(int[] nums) {
+//        空间压缩
+        int sum = 0;
+        int maxElement = 0;
+        for (int num : nums) {
+            sum += num;
+            maxElement = Math.max(maxElement, num);
+        }
+        if ((sum & 1) == 1) {
+            return false;
+        }
+        int target = sum / 2;
+        if (maxElement > target) {
+            return false;
+        }
+        boolean[] dp = new boolean[target + 1];
+//        初始值
+        dp[0] = true;
+//        dp方程转移
+        for (int i = 1; i < nums.length; i++) {
+            int num = nums[i];
+            for (int j = target; j >= num; j--) {
+                dp[j] = dp[j] || dp[j - nums[i]];
+            }
+        }
+        return dp[target];
     }
 
     public static boolean canPartition(int[] nums) {
