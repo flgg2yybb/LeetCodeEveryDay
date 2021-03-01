@@ -9,8 +9,55 @@ public class FindAllAnagramsInString {
         String p1 = "abc";
         String s2 = "abab";
         String p2 = "ab";
-        System.out.println(findAnagrams(s1, p1));
-        System.out.println(findAnagrams(s2, p2));
+        String s3 = "aa";
+        String p3 = "bb";
+        System.out.println(findAnagrams1(s1, p1));
+        System.out.println(findAnagrams1(s2, p2));
+        System.out.println(findAnagrams1(s3, p3));
+    }
+
+    private static List<Integer> findAnagrams1(String s, String p) {
+        List<Integer> res = new ArrayList<>();
+        if (s == null || p == null || s.length() < p.length()) {
+            return res;
+        }
+        int[] pSet = new int[26];
+        int need = p.length();
+        for (int i = 0; i < p.length(); i++) {
+            pSet[p.charAt(i) - 'a']++;
+        }
+        int left = 0;
+        int right = -1;
+        int[] windowSet = new int[26];
+        for (int i = 0; i < p.length(); i++) {
+            right++;
+            int index = s.charAt(right) - 'a';
+            windowSet[index]++;
+            if (pSet[index] != 0 && windowSet[index] <= pSet[index]) {
+                need--;
+            }
+        }
+        if (need == 0) {
+            res.add(left);
+        }
+        while (right < s.length() - 1) {
+            int leftChar = s.charAt(left) - 'a';
+            if (pSet[leftChar] != 0 && windowSet[leftChar] <= pSet[leftChar]) {
+                need++;
+            }
+            windowSet[leftChar]--;
+            left++;
+            right++;
+            int rightChar = s.charAt(right) - 'a';
+            windowSet[rightChar]++;
+            if (pSet[rightChar] != 0 && windowSet[rightChar] <= pSet[rightChar]) {
+                need--;
+            }
+            if (need == 0) {
+                res.add(left);
+            }
+        }
+        return res;
     }
 
     public static List<Integer> findAnagrams(String s, String p) {
