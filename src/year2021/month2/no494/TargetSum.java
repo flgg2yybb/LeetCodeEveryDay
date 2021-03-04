@@ -4,7 +4,38 @@ public class TargetSum {
     public static void main(String[] args) {
         int[] nums1 = {1, 1, 1, 1, 1};
         int target1 = 3;
-        System.out.println(findTargetSumWays(nums1, target1));
+        System.out.println(findTargetSumWays1(nums1, target1));
+    }
+
+    private static int findTargetSumWays1(int[] nums, int S) {
+        /*DP，背包问题
+         * 状态定义：
+         * dp[i][j]表示数组中[0, i]的子数组能组成和为 j的数量
+         * 状态转移方程：
+         * dp[i][j] = dp[i-1][j - nums[i]] + dp[i-1][j + nums[i]]
+         * 递推形式：
+         * dp[i][j + nums[i]] += dp[i-1][j]
+         * dp[i][j - nums[i]] += dp[i-1][j]
+         * 由于初始数组的和不超过1000，故 j的范围为[-1000, 1000]，
+         * 则需将 j的预加上1000，以防止数组下标为负
+         * 初始值
+         * dp[0][nums[0]] = 1
+         * dp[0][-nums[0]] = 1
+         * */
+        int[][] dp = new int[nums.length][2001];
+        dp[0][1000 + nums[0]] = 1;
+//        这里使用 +=是防止 nums[0]恰好为 0
+        dp[0][1000 - nums[0]] += 1;
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 0; j <= 2000; j++) {
+//                数组从中心向两边扩散，使用上一层有值的点才能扩散，不然会越界
+                if (dp[i - 1][j] > 0) {
+                    dp[i][j + nums[i]] += dp[i - 1][j];
+                    dp[i][j - nums[i]] += dp[i - 1][j];
+                }
+            }
+        }
+        return S > 1000 ? 0 : dp[nums.length - 1][1000 + S];
     }
 
     public static int findTargetSumWays(int[] nums, int S) {
