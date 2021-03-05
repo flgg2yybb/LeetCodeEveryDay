@@ -1,4 +1,4 @@
-package year2021.month2.no494;
+package year2021.month3.no494;
 
 public class TargetSum {
     public static void main(String[] args) {
