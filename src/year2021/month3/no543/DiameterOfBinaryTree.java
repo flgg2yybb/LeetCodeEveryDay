@@ -1,6 +1,7 @@
 package year2021.month3.no543;
 
 public class DiameterOfBinaryTree {
+    private static int nodeNum = 1;
     private static int pathLen = Integer.MIN_VALUE;
 
     public static void main(String[] args) {
@@ -25,11 +26,27 @@ public class DiameterOfBinaryTree {
                                         new TreeNode(9), null),
                                 null)),
                 new TreeNode(3));
-        System.out.println(diameterOfBinaryTree(root1));    //3
-        System.out.println(diameterOfBinaryTree(root2));    //0
-        System.out.println(diameterOfBinaryTree(root3));    //1
-        System.out.println(diameterOfBinaryTree(root4));    //2
-        System.out.println(diameterOfBinaryTree(root5));    //6
+        System.out.println(diameterOfBinaryTree1(root1));    //3
+        System.out.println(diameterOfBinaryTree1(root2));    //0
+        System.out.println(diameterOfBinaryTree1(root3));    //1
+        System.out.println(diameterOfBinaryTree1(root4));    //2
+        System.out.println(diameterOfBinaryTree1(root5));    //6
+    }
+
+    private static int diameterOfBinaryTree1(TreeNode root) {
+        nodeNum = 1;
+        depth(root);
+        return nodeNum - 1;     //直接为路径上的节点数减一
+    }
+
+    private static int depth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = depth(root.left);
+        int right = depth(root.right);
+        nodeNum = Math.max(nodeNum, left + right + 1);  //以当前root节点为连接点的路径的节点数
+        return Math.max(left, right) + 1;
     }
 
     public static int diameterOfBinaryTree(TreeNode root) {
