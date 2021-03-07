@@ -34,9 +34,13 @@ public class DiameterOfBinaryTree {
     }
 
     private static int diameterOfBinaryTree1(TreeNode root) {
-        nodeNum = 1;
+        /* 任意两个节点之间的路径长度，一定就是某一个节点的 左子树最大深度 + 右子树最大深度
+         * 写出递归代码，找出每一个节点的 左子树最大深度 + 右子树最大深度 的值，
+         * 然后不断更新全局变量 res 即可
+         * */
+        nodeNum = 0;
         depth(root);
-        return nodeNum - 1;     //直接为路径上的节点数减一
+        return nodeNum;     //直接为路径上的节点数减一
     }
 
     private static int depth(TreeNode root) {
@@ -45,7 +49,7 @@ public class DiameterOfBinaryTree {
         }
         int left = depth(root.left);
         int right = depth(root.right);
-        nodeNum = Math.max(nodeNum, left + right + 1);  //以当前root节点为连接点的路径的节点数
+        nodeNum = Math.max(nodeNum, left + right);  //以当前root节点为连接点的路径的节点数
         return Math.max(left, right) + 1;
     }
 
