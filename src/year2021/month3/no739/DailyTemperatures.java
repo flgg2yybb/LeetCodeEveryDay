@@ -1,12 +1,29 @@
 package year2021.month3.no739;
 
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 public class DailyTemperatures {
     public static void main(String[] args) {
         int[] T1 = {73, 74, 75, 71, 69, 72, 76, 73};
-        disp(dailyTemperatures(T1));
+        disp(dailyTemperatures1(T1));
+    }
+
+    private static int[] dailyTemperatures1(int[] T) {
+        // 单调不增栈，保存元素索引, time is O(n), space is O(n)
+        int len = T.length;
+        Deque<Integer> stack = new LinkedList<>();
+        int[] res = new int[len];
+        for (int i = 0; i < len; i++) {
+            while (!stack.isEmpty() && T[i] > T[stack.peekLast()]) {
+                Integer index = stack.pollLast();
+                res[index] = i - index;
+            }
+            stack.offerLast(i);
+        }
+        return res;
     }
 
     public static int[] dailyTemperatures(int[] T) {
