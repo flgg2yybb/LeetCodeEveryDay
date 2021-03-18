@@ -8,12 +8,32 @@ public class MoveZeroes {
         int[] nums1 = {0, 1, 0, 3, 12};
         int[] nums2 = {0, 1, 0, 3, 0};
         int[] nums3 = {1};
-        moveZeroes(nums1);
-        moveZeroes(nums2);
-        moveZeroes(nums3);
+        moveZeroes1(nums1);
+        moveZeroes1(nums2);
+        moveZeroes1(nums3);
         disp(nums1);
         disp(nums2);
         disp(nums3);
+    }
+
+    private static void moveZeroes1(int[] nums) {
+//        Partition in Quick Sort
+//        [0, slow)非零，[slow, right)必为零，[right, n)未知
+        int slow = 0;
+        int fast = 0;
+        while (fast < nums.length) {
+            if (nums[fast] != 0) {
+                swap(nums, slow, fast);
+                slow++;
+            }
+            fast++;
+        }
+    }
+
+    private static void swap(int[] nums, int x, int y) {
+        int temp = nums[x];
+        nums[x] = nums[y];
+        nums[y] = temp;
     }
 
     public static void moveZeroes(int[] nums) {
