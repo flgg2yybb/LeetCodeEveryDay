@@ -20,14 +20,36 @@ public class RotateImage {
                 {1, 2},
                 {3, 4}
         };
-//        rotate(matrix1);
-        rotate(matrix2);
-//        rotate(matrix3);
-//        rotate(matrix4);
+        rotate1(matrix1);
+        rotate1(matrix2);
+        rotate1(matrix3);
+        rotate1(matrix4);
         disp(matrix1);
         disp(matrix2);
         disp(matrix3);
         disp(matrix4);
+    }
+
+    private static void rotate1(int[][] matrix) {
+        // 翻转矩阵，先水平翻转（沿x轴），再沿主对角线翻转（矩阵转置），即可得到原矩阵顺时针方向旋转90度的矩阵
+        int len = matrix.length;
+        // 水平翻转
+        for (int top = 0; top < len / 2; top++) {
+            int buttom = len - 1 - top;
+            for (int col = 0; col < len; col++) {
+                int temp = matrix[top][col];
+                matrix[top][col] = matrix[buttom][col];
+                matrix[buttom][col] = temp;
+            }
+        }
+        // 主对角线翻转（矩阵转置）
+        for (int i = 0; i < len; i++) {
+            for (int j = i + 1; j < len; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
     }
 
     public static void rotate(int[][] matrix) {
