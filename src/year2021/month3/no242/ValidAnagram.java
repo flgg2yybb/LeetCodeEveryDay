@@ -6,8 +6,27 @@ public class ValidAnagram {
         String t1 = "nagaram";
         String s2 = "rat";
         String t2 = "car";
-        System.out.println(isAnagram(s1, t1));
-        System.out.println(isAnagram(s2, t2));
+        System.out.println(isAnagram1(s1, t1));
+        System.out.println(isAnagram1(s2, t2));
+    }
+
+    private static boolean isAnagram1(String s, String t) {
+//        优化方案
+        if (s.length() != t.length()) {
+            return false;
+        }
+        int[] map = new int[26];    // 若为 Unicode 字符，则使用 HashMap 即可
+        for (int i = 0; i < s.length(); i++) {
+            map[s.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < t.length(); i++) {
+            map[t.charAt(i) - 'a']--;
+//            因此时 s 与 t 长度相同，若不为字母异位词，则 t 串中必然含有某个字符，其数量大于在其在 s 串中的数量
+            if (map[t.charAt(i) - 'a'] < 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static boolean isAnagram(String s, String t) {
