@@ -5,9 +5,36 @@ public class CountAndSay {
         int n1 = 1;
         int n2 = 4;
         int n3 = 5;
-        System.out.println(countAndSay(n1));
-        System.out.println(countAndSay(n2));
-        System.out.println(countAndSay(n3));
+        System.out.println(countAndSay1(n1));
+        System.out.println(countAndSay1(n2));
+        System.out.println(countAndSay1(n3));
+    }
+
+    private static String countAndSay1(int n) {
+        if (n == 1) {
+            return "1";
+        }
+        StringBuilder res = new StringBuilder("1");
+        for (int i = 2; i <= n; i++) {
+            String pre = res.toString();
+            res = new StringBuilder();
+            char c = pre.charAt(0);
+            int count = 1;
+            for (int j = 1; j < pre.length(); j++) {
+                char cur = pre.charAt(j);
+                if (c == cur) {
+                    count++;
+                    continue;
+                }
+                res.append(count);
+                res.append(c);
+                c = cur;
+                count = 1;
+            }
+            res.append(count);
+            res.append(c);
+        }
+        return res.toString();
     }
 
     public static String countAndSay(int n) {
