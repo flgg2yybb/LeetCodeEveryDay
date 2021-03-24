@@ -10,7 +10,17 @@ public class ReverseLinkedList {
         disp(reverseList(head3));
     }
 
-    public static ListNode reverseList(ListNode head) {
+    private static ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode pre = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;   //防止反转后的最后一个节点成环
+        return pre;
+    }
+
+    public static ListNode reverseList1(ListNode head) {
         ListNode root = null;
         ListNode p = head;
         while (p != null) {
