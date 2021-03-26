@@ -22,8 +22,25 @@ public class ValidateBinarySearchTree {
         System.out.println(isValidBST(root4));
     }
 
-    public static boolean isValidBST(TreeNode root) {
-        return dfsValidBST(root, (long) Integer.MAX_VALUE + 1, (long) Integer.MIN_VALUE - 1);
+    private static long prev = Long.MIN_VALUE;
+
+    private static boolean isValidBST(TreeNode root) {
+        // BST中序遍历为递增序列
+        if (root == null) {
+            return true;
+        }
+        if (!isValidBST(root.left)) {
+            return false;
+        }
+        if (root.val <= prev) {
+            return false;
+        }
+        prev = root.val;
+        return isValidBST(root.right);
+    }
+
+    public static boolean isValidBST1(TreeNode root) {
+        return dfsValidBST(root, Long.MAX_VALUE, Long.MIN_VALUE);
     }
 
     private static boolean dfsValidBST(TreeNode root, long max, long min) {
