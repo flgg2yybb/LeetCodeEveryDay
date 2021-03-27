@@ -1,5 +1,8 @@
 package year2021.month3.no101;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class SymmetricTree {
     public static void main(String[] args) {
         TreeNode root1 = new TreeNode(1,
@@ -16,8 +19,33 @@ public class SymmetricTree {
                 new TreeNode(2,
                         null,
                         new TreeNode(3)));
-        System.out.println(isSymmetric(root1));
-        System.out.println(isSymmetric(root2));
+        System.out.println(isSymmetric1(root1));
+        System.out.println(isSymmetric1(root2));
+    }
+
+    private static boolean isSymmetric1(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        Deque<TreeNode> leftQueue = new LinkedList<>();
+        Deque<TreeNode> rightQueue = new LinkedList<>();
+        leftQueue.offer(root.left);
+        rightQueue.offer(root.right);
+        while (!leftQueue.isEmpty() && !rightQueue.isEmpty()) {
+            TreeNode left = leftQueue.poll();
+            TreeNode right = rightQueue.poll();
+            if (left == null && right == null) {
+                continue;
+            }
+            if (left == null || right == null || left.val != right.val) {
+                return false;
+            }
+            leftQueue.offer(left.left);
+            leftQueue.offer(left.right);
+            rightQueue.offer(right.right);
+            rightQueue.offer(right.left);
+        }
+        return true;
     }
 
     public static boolean isSymmetric(TreeNode root) {
@@ -31,10 +59,7 @@ public class SymmetricTree {
         if (root1 == null && root2 == null) {
             return true;
         }
-        if (root1 == null || root2 == null) {
-            return false;
-        }
-        if (root1.val != root2.val) {
+        if (root1 == null || root2 == null || root1.val != root2.val) {
             return false;
         }
         return dfsSymmetric(root1.left, root2.right) && dfsSymmetric(root1.right, root2.left);
