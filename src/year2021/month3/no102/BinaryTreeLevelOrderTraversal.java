@@ -12,7 +12,25 @@ public class BinaryTreeLevelOrderTraversal {
                 new TreeNode(20,
                         new TreeNode(15),
                         new TreeNode(7)));
-        System.out.println(levelOrder(root1));
+        System.out.println(levelOrder1(root1));
+    }
+
+    private static List<List<Integer>> levelOrder1(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        dfsLevelOrder(root, res, 0);
+        return res;
+    }
+
+    private static void dfsLevelOrder(TreeNode node, List<List<Integer>> res, int level) {
+        if (node == null) {
+            return;
+        }
+        if (res.size() <= level) {
+            res.add(level, new ArrayList<>());
+        }
+        res.get(level).add(node.val);
+        dfsLevelOrder(node.left, res, level + 1);
+        dfsLevelOrder(node.right, res, level + 1);
     }
 
     public static List<List<Integer>> levelOrder(TreeNode root) {
