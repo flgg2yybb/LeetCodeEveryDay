@@ -9,8 +9,24 @@ public class MergeSortedArray {
         int m1 = 3;
         int[] nums2 = {2, 5, 6};
         int n1 = 3;
-        merge(nums1, m1, nums2, n1);
+        merge1(nums1, m1, nums2, n1);
         System.out.println(Arrays.stream(nums1).boxed().collect(Collectors.toList()));
+    }
+
+    private static void merge1(int[] nums1, int m, int[] nums2, int n) {
+        // 从后往前merge，不需要额外空间
+        int k = nums1.length - 1;
+        int i = m - 1;
+        int j = n - 1;
+        while (i >= 0 && j >= 0) {
+            if (nums1[i] >= nums2[j]) {
+                nums1[k--] = nums1[i--];
+            } else {
+                nums1[k--] = nums2[j--];
+            }
+        }
+        // 将剩余的 nums2 数组拷贝进 nums1中，若 nums2 无剩余元素，则下 j == -1，相当于不拷贝元素
+        System.arraycopy(nums2, 0, nums1, 0, j + 1);
     }
 
     public static void merge(int[] nums1, int m, int[] nums2, int n) {
