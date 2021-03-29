@@ -5,8 +5,29 @@ public class ClimbingStairs {
     public static void main(String[] args) {
         int n1 = 5; //8
         int n2 = 7; //21
-        System.out.println(climbStairs2(n1));
-        System.out.println(climbStairs2(n2));
+        System.out.println(climbStairs(n1));
+        System.out.println(climbStairs(n2));
+    }
+
+    private static int climbStairs(int n) {
+        // 记忆化搜索
+        if (n <= 3) {
+            return n;
+        }
+        int[] cache = new int[n];
+        cache[0] = 1;
+        cache[1] = 2;
+        cache[2] = 3;
+        return memorySearch(n - 1, cache);
+    }
+
+    private static int memorySearch(int n, int[] cache) {
+        if (cache[n] != 0) {
+            return cache[n];
+        }
+        int res = memorySearch(n - 1, cache) + memorySearch(n - 2, cache);
+        cache[n] = res;
+        return res;
     }
 
     private static int climbStairs2(int n) {
