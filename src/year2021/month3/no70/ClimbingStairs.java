@@ -5,16 +5,32 @@ public class ClimbingStairs {
     public static void main(String[] args) {
         int n1 = 5; //8
         int n2 = 7; //21
-        System.out.println(climbStairs(n1));
-        System.out.println(climbStairs(n2));
+        System.out.println(climbStairs2(n1));
+        System.out.println(climbStairs2(n2));
     }
 
-    public static int climbStairs(int n) {
+    private static int climbStairs2(int n) {
+        //DP, 空间压缩
+        if (n <= 3) {
+            return n;
+        }
+        int first = 1;
+        int second = 2;
+        int ans = first + second;
+        for (int i = 4; i <= n; i++) {
+            first = second;
+            second = ans;
+            ans = first + second;
+        }
+        return ans;
+    }
+
+    public static int climbStairs1(int n) {
         /*DP
         * dp[i]定义为爬到第 i+1 阶楼梯有多少种不同的方法， i = 0, 1, ... , n-1
         * dp[i] = dp[i-1] + dp[i-2]
         * */
-        if (n == 1) {
+        if (n <= 2) {
             return n;
         }
         int[] dp = new int[n];
