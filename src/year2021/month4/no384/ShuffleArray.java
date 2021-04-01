@@ -1,6 +1,6 @@
 package year2021.month4.no384;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -21,9 +21,11 @@ public class ShuffleArray {
 class Solution {
 
     private final int[] nums;
+    private final Random random;
 
     public Solution(int[] nums) {
         this.nums = nums;
+        random = new Random();
     }
 
     /**
@@ -37,15 +39,18 @@ class Solution {
      * Returns a random shuffling of the array.
      */
     public int[] shuffle() {
-        List<Integer> list = IntStream.of(this.nums).boxed().collect(Collectors.toList());
-        int[] res = new int[this.nums.length];
-        int pos = 0;
-        Random random = new Random();
-        while (!list.isEmpty()) {
-            int randomIndex = random.nextInt(list.size());
-            res[pos++] = list.remove(randomIndex);
+        int[] res = Arrays.copyOf(nums, nums.length);
+        for (int i = 0; i < res.length; i++) {
+            int randomSwapIndex = random.nextInt(res.length - i) + i;
+            swap(res, i, randomSwapIndex);
         }
         return res;
+    }
+
+    private void swap(int[] nums, int x, int y) {
+        int temp = nums[x];
+        nums[x] = nums[y];
+        nums[y] = temp;
     }
 }
 
