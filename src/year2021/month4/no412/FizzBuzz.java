@@ -6,7 +6,22 @@ import java.util.List;
 public class FizzBuzz {
     public static void main(String[] args) {
         int n = 15;
-        System.out.println(fizzBuzz(15));
+        System.out.println(fizzBuzz1(15));
+    }
+
+    private static List<String> fizzBuzz1(int n) {
+        List<String> res = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            StringBuilder sb = new StringBuilder();
+            if (i % 3 == 0) {
+                sb.append("Fizz");
+            }
+            if (i % 5 == 0) {
+                sb.append("Buzz");
+            }
+            res.add(sb.length() == 0 ? String.valueOf(i) : sb.toString());
+        }
+        return res;
     }
 
     public static List<String> fizzBuzz(int n) {
