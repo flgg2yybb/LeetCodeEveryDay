@@ -12,13 +12,10 @@ public class PowerOfThree {
         if (n <= 0) {
             return false;
         }
-        while (n > 1) {
-            if (n % 3 != 0) {
-                return false;
-            }
+        while (n % 3 == 0) {
             n /= 3;
         }
-        return true;
+        return n == 1;
     }
 
     public static boolean isPowerOfThree(int n) {
