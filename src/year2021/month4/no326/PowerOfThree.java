@@ -2,10 +2,23 @@ package year2021.month4.no326;
 
 public class PowerOfThree {
     public static void main(String[] args) {
-        System.out.println(isPowerOfThree(45));
-        System.out.println(isPowerOfThree(27));
-        System.out.println(isPowerOfThree(9));
-        System.out.println(isPowerOfThree(1));
+        System.out.println(isPowerOfThree1(45));
+        System.out.println(isPowerOfThree1(27));
+        System.out.println(isPowerOfThree1(9));
+        System.out.println(isPowerOfThree1(1));
+    }
+
+    private static boolean isPowerOfThree1(int n) {
+        if (n <= 0) {
+            return false;
+        }
+        while (n > 1) {
+            if (n % 3 != 0) {
+                return false;
+            }
+            n /= 3;
+        }
+        return true;
     }
 
     public static boolean isPowerOfThree(int n) {
