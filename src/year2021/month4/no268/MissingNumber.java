@@ -9,10 +9,21 @@ public class MissingNumber {
         int[] nums2 = {0, 1};
         int[] nums3 = {9, 6, 4, 2, 3, 5, 7, 0, 1};
         int[] nums4 = {0};
-        System.out.println(missingNumber(nums1));
-        System.out.println(missingNumber(nums2));
-        System.out.println(missingNumber(nums3));
-        System.out.println(missingNumber(nums4));
+        System.out.println(missingNumber1(nums1));
+        System.out.println(missingNumber1(nums2));
+        System.out.println(missingNumber1(nums3));
+        System.out.println(missingNumber1(nums4));
+    }
+
+    private static int missingNumber1(int[] nums) {
+        // 异或运算，因 x ^ x = 0，故可以将nums数组的元素
+        // 以及 0 -> n 的元素一起做异或运算，剩下的值只出现一次，即为缺失值
+        int n = nums.length;
+        int missingNumber = n;
+        for (int i = 0; i < n; i++) {
+            missingNumber ^= i ^ nums[i];
+        }
+        return missingNumber;
     }
 
     public static int missingNumber(int[] nums) {
