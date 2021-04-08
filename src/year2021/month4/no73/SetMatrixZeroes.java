@@ -1,5 +1,8 @@
 package year2021.month4.no73;
 
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 public class SetMatrixZeroes {
 
     public static void main(String[] args) {
@@ -14,12 +17,49 @@ public class SetMatrixZeroes {
                 {1, 3, 1, 5}
         };
         disp(matrix1);
-        setZeroes(matrix1);
+        setZeroes1(matrix1);
         disp(matrix1);
         disp(matrix2);
-        setZeroes(matrix2);
+        setZeroes1(matrix2);
         disp(matrix2);
 
+    }
+
+    private static void setZeroes1(int[][] matrix) {
+        int row = matrix.length;
+        int col = matrix[0].length;
+        boolean setFirstRowZero = Arrays.stream(matrix[0]).boxed().anyMatch(num -> num == 0);
+        boolean setFirstColZero = IntStream.range(0, matrix.length).boxed().anyMatch(rowIndex -> matrix[rowIndex][0] == 0);
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < col; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[0][j] = 0;
+                    matrix[i][0] = 0;
+                }
+            }
+        }
+        for (int j = 1; j < col; j++) {
+            if (matrix[0][j] == 0) {
+                for (int i = 1; i < row; i++) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        for (int i = 1; i < row; i++) {
+            if (matrix[i][0] == 0) {
+                for (int j = 1; j < col; j++) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if (setFirstRowZero) {
+            Arrays.fill(matrix[0], 0);
+        }
+        if (setFirstColZero) {
+            for (int i = 0; i < row; i++) {
+                matrix[i][0] = 0;
+            }
+        }
     }
 
     public static void setZeroes(int[][] matrix) {
