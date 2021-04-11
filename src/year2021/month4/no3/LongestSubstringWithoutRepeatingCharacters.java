@@ -1,6 +1,8 @@
 package year2021.month4.no3;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class LongestSubstringWithoutRepeatingCharacters {
@@ -10,10 +12,32 @@ public class LongestSubstringWithoutRepeatingCharacters {
         String s2 = "bbbbb";
         String s3 = "pwwkew";
         String s4 = "";
-        System.out.println(lengthOfLongestSubstring(s1));
-        System.out.println(lengthOfLongestSubstring(s2));
-        System.out.println(lengthOfLongestSubstring(s3));
-        System.out.println(lengthOfLongestSubstring(s4));
+        System.out.println(lengthOfLongestSubstring1(s1));
+        System.out.println(lengthOfLongestSubstring1(s2));
+        System.out.println(lengthOfLongestSubstring1(s3));
+        System.out.println(lengthOfLongestSubstring1(s4));
+    }
+
+    private static int lengthOfLongestSubstring1(String s) {
+        // 优化版：sliding window -> (left, right]
+        // 用 map 来记录 right 已经遍历过的元素，其中 key 为元素
+        // value 为 key 这个元素在 s 中的下标
+        // 则在 right 指针右移至已出现的元素时
+        // 可直接将 left 指针移动到 map 中记录的 value （重复元素的下标）
+        // **注意**：map 不移除元素，故 map 作 contains 操作时，可能会被窗口外的元素影响，
+        // 只需保证 left 右移（增加）即可
+        Map<Character, Integer> map = new HashMap<>();
+        int len = 0;
+        for (int left = -1, right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+            if (map.containsKey(c)) {
+                // 用 max 来防止 left 后退（被窗口外的元素影响）
+                left = Math.max(left, map.get(c));
+            }
+            len = Math.max(len, right - left);
+            map.put(c, right);
+        }
+        return len;
     }
 
     public static int lengthOfLongestSubstring(String s) {
