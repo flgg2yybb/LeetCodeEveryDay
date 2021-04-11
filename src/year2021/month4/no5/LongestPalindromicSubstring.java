@@ -8,11 +8,39 @@ public class LongestPalindromicSubstring {
         String s3 = "a";
         String s4 = "ac";
         String s5 = "aaaaa";
-        System.out.println(longestPalindrome(s1));
-        System.out.println(longestPalindrome(s2));
-        System.out.println(longestPalindrome(s3));
-        System.out.println(longestPalindrome(s4));
-        System.out.println(longestPalindrome(s5));
+        System.out.println(longestPalindrome1(s1));
+        System.out.println(longestPalindrome1(s2));
+        System.out.println(longestPalindrome1(s3));
+        System.out.println(longestPalindrome1(s4));
+        System.out.println(longestPalindrome1(s5));
+    }
+
+    private static String longestPalindrome1(String s) {
+        // 中心拓展算法，time is O(n^2), space is O(1)
+        // 枚举中心，依次向两边拓展
+        // 可在每个字符中间加上 # 符号以统一处理奇偶情况
+        char[] chars = s.toCharArray();
+        // 子串为 [start, end)
+        int start = 0;
+        int end = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int oddLength = centerExpand(chars, i, i);
+            int evenLength = centerExpand(chars, i - 1, i);
+            int len = Math.max(oddLength, evenLength);
+            if (len > end - start) {
+                start = i - len / 2;
+                end = start + len;
+            }
+        }
+        return s.substring(start, end);
+    }
+
+    private static int centerExpand(char[] chars, int left, int right) {
+        while (left >= 0 && right < chars.length && chars[left] == chars[right]) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
     }
 
     public static String longestPalindrome(String s) {
