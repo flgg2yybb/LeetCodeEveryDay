@@ -8,11 +8,26 @@ public class IncreasingTripletSubsequence {
         int[] nums3 = {2, 1, 5, 0, 4, 6};   //true, 0,4,6
         int[] nums4 = {2, 5, 4, 3, 6};      //true, 2,4,6
         int[] nums5 = {5, 1, 6};            //false
-//        System.out.println(increasingTriplet(nums1));
-//        System.out.println(increasingTriplet(nums2));
-//        System.out.println(increasingTriplet(nums3));
-//        System.out.println(increasingTriplet(nums4));
-        System.out.println(increasingTriplet(nums5));
+        System.out.println(increasingTriplet1(nums1));
+        System.out.println(increasingTriplet1(nums2));
+        System.out.println(increasingTriplet1(nums3));
+        System.out.println(increasingTriplet1(nums4));
+        System.out.println(increasingTriplet1(nums5));
+    }
+
+    private static boolean increasingTriplet1(int[] nums) {
+        int small = Integer.MAX_VALUE;
+        int mid = Integer.MAX_VALUE;
+        for (int num : nums) {
+            if (num > mid) {
+                return true;
+            } else if (num <= small) {
+                small = num;
+            } else {
+                mid = num;
+            }
+        }
+        return false;
     }
 
     public static boolean increasingTriplet(int[] nums) {
