@@ -14,11 +14,39 @@ public class AddTwoNumbers {
         ListNode l42 = new ListNode(0);
         ListNode l51 = new ListNode(5, new ListNode(9, new ListNode(9)));
         ListNode l52 = new ListNode(5);
-        disp(addTwoNumbers(l11, l12));
-        disp(addTwoNumbers(l21, l22));
-        disp(addTwoNumbers(l31, l32));
-        disp(addTwoNumbers(l41, l42));
-        disp(addTwoNumbers(l51, l52));
+        disp(addTwoNumbers1(l11, l12));
+        disp(addTwoNumbers1(l21, l22));
+        disp(addTwoNumbers1(l31, l32));
+        disp(addTwoNumbers1(l41, l42));
+        disp(addTwoNumbers1(l51, l52));
+    }
+
+    private static ListNode addTwoNumbers1(ListNode l1, ListNode l2) {
+        return dfs(l1, l2, 0);
+    }
+
+    private static ListNode dfs(ListNode l1, ListNode l2, int plus) {
+        if (l1 == null && l2 == null && plus == 0) {
+            return null;
+        }
+        int value = 0;
+        if (l1 != null) {
+            value += l1.val;
+            l1 = l1.next;
+        }
+        if (l2 != null) {
+            value += l2.val;
+            l2 = l2.next;
+        }
+        value += plus;
+        plus = 0;
+        if (value >= 10) {
+            value -= 10;
+            plus = 1;
+        }
+        ListNode node = new ListNode(value);
+        node.next = dfs(l1, l2, plus);
+        return node;
     }
 
     public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
