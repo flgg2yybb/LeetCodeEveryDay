@@ -22,8 +22,41 @@ public class BinaryTreeZigzagLevelOrderTraversal {
                 new TreeNode(3,
                         null,
                         new TreeNode(5)));
-        System.out.println(zigzagLevelOrder(root1));
-        System.out.println(zigzagLevelOrder(root2));
+        System.out.println(zigzagLevelOrder1(root1));
+        System.out.println(zigzagLevelOrder1(root2));
+    }
+
+    private static List<List<Integer>> zigzagLevelOrder1(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int level = 0;
+        while (!queue.isEmpty()) {
+            level++;
+            int size = queue.size();
+            Deque<Integer> levelResult = new LinkedList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode pop = queue.poll();
+                assert pop != null;
+                // 根据层数判断是否倒序添加
+                if ((level & 1) == 1) {
+                    levelResult.offerLast(pop.val);
+                } else {
+                    levelResult.offerFirst(pop.val);
+                }
+                if (pop.left != null) {
+                    queue.offer(pop.left);
+                }
+                if (pop.right != null) {
+                    queue.offer(pop.right);
+                }
+            }
+            result.add(new LinkedList<>(levelResult));
+        }
+        return result;
     }
 
     public static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
