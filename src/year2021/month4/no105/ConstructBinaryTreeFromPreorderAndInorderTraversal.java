@@ -1,5 +1,7 @@
 package year2021.month4.no105;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class ConstructBinaryTreeFromPreorderAndInorderTraversal {
@@ -7,7 +9,27 @@ public class ConstructBinaryTreeFromPreorderAndInorderTraversal {
     public static void main(String[] args) {
         int[] preorder = {3, 9, 20, 15, 7};
         int[] inorder = {9, 3, 15, 20, 7};
-        dfsPrint(buildTree(preorder, inorder));
+        dfsPrint(buildTree1(preorder, inorder));
+    }
+
+    private static TreeNode buildTree1(int[] preorder, int[] inorder) {
+        Map<Integer, Integer> inorderMap = new HashMap<>();
+        IntStream.range(0, inorder.length).forEach(index -> inorderMap.put(inorder[index], index));
+        return dfsBuildTree(preorder, 0, inorderMap, 0, preorder.length);
+    }
+
+    private static TreeNode dfsBuildTree(int[] preorder, int preStart, Map<Integer, Integer> inorderMap, int inStart, int len) {
+        if (len == 0) {
+            return null;
+        }
+        int rootValue = preorder[preStart];
+        TreeNode root = new TreeNode(rootValue);
+        int rootIndexAtInorder = inorderMap.get(rootValue);
+        int leftSize = rootIndexAtInorder - inStart;
+        int rightSize = len - leftSize - 1;
+        root.left = dfsBuildTree(preorder, preStart + 1, inorderMap, inStart, leftSize);
+        root.right = dfsBuildTree(preorder, preStart + 1 + leftSize, inorderMap, rootIndexAtInorder + 1, rightSize);
+        return root;
     }
 
     public static TreeNode buildTree(int[] preorder, int[] inorder) {
