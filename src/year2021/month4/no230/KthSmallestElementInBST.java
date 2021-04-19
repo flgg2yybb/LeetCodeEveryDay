@@ -1,6 +1,12 @@
 package year2021.month4.no230;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class KthSmallestElementInBST {
+
+    private static int count;
+    private static int ans;
 
     public static void main(String[] args) {
         TreeNode root1 = new TreeNode(3,
@@ -17,12 +23,9 @@ public class KthSmallestElementInBST {
                         new TreeNode(4)),
                 new TreeNode(6));
         int k2 = 3;
-        System.out.println(kthSmallest(root1, k1));
-        System.out.println(kthSmallest(root2, k2));
+        System.out.println(kthSmallest1(root1, k1));
+        System.out.println(kthSmallest1(root2, k2));
     }
-
-    private static int count;
-    private static int ans;
 
     public static int kthSmallest(TreeNode root, int k) {
         count = k;
@@ -41,6 +44,23 @@ public class KthSmallestElementInBST {
             }
             dfsInorder(root.right);
         }
+    }
+
+    private static int kthSmallest1(TreeNode root, int k) {
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode p = root;
+        while (p != null || !stack.isEmpty()) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            TreeNode node = stack.pop();
+            if (--k == 0) {
+                return node.val;
+            }
+            p = node.right;
+        }
+        return -1;
     }
 
 }
