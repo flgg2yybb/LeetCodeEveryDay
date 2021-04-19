@@ -23,8 +23,8 @@ public class KthSmallestElementInBST {
                         new TreeNode(4)),
                 new TreeNode(6));
         int k2 = 3;
-        System.out.println(kthSmallest1(root1, k1));
-        System.out.println(kthSmallest1(root2, k2));
+        System.out.println(kthSmallest2(root1, k1));
+        System.out.println(kthSmallest2(root2, k2));
     }
 
     public static int kthSmallest(TreeNode root, int k) {
@@ -59,6 +59,29 @@ public class KthSmallestElementInBST {
                 return node.val;
             }
             p = node.right;
+        }
+        return -1;
+    }
+
+    private static int kthSmallest2(TreeNode root, int k) {
+        Deque<Object> stack = new LinkedList<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            Object pop = stack.pop();
+            if (pop == null) {
+                continue;
+            }
+            if (pop instanceof Integer) {
+                k--;
+                if (k == 0) {
+                    return (int) pop;
+                }
+                continue;
+            }
+            TreeNode node = (TreeNode) pop;
+            stack.push(node.right);
+            stack.push(node.val);
+            stack.push(node.left);
         }
         return -1;
     }
