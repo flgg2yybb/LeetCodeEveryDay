@@ -1,5 +1,8 @@
 package year2021.month4.no200;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class NumberOfIslands {
 
     public static void main(String[] args) {
@@ -15,8 +18,43 @@ public class NumberOfIslands {
                 {'0', '0', '1', '0', '0'},
                 {'0', '0', '0', '1', '1'}
         };
-        System.out.println(numIslands(grid1));
-        System.out.println(numIslands(grid2));
+        System.out.println(numIslands1(grid1));
+        System.out.println(numIslands1(grid2));
+    }
+
+    private static int numIslands1(char[][] grid) {
+        //bfs
+        boolean[][] visited = new boolean[grid.length][grid[0].length];
+        int count = 0;
+        Queue<int[]> queue = new LinkedList<>();
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '0' || visited[i][j]) {
+                    continue;
+                }
+                queue.offer(new int[]{i, j});
+                visited[i][j] = true;
+                count++;
+                while (!queue.isEmpty()) {
+                    int size = queue.size();
+                    for (int k = 0; k < size; k++) {
+                        int[] poll = queue.poll();
+                        int x = poll[0];
+                        int y = poll[1];
+                        int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+                        for (int[] direction : directions) {
+                            int nextX = x + direction[0];
+                            int nextY = y + direction[1];
+                            if (legalIndex(grid, nextX, nextY) && grid[nextX][nextY] == '1' && !visited[nextX][nextY]) {
+                                queue.offer(new int[]{nextX, nextY});
+                                visited[nextX][nextY] = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     public static int numIslands(char[][] grid) {
