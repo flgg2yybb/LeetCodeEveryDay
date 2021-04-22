@@ -8,8 +8,28 @@ public class Subsets {
     public static void main(String[] args) {
         int[] nums1 = {0};
         int[] nums2 = {1, 2, 3};
-        System.out.println(subsets(nums1));
-        System.out.println(subsets(nums2));
+        System.out.println(subsets1(nums1));
+        System.out.println(subsets1(nums2));
+    }
+
+    private static List<List<Integer>> subsets1(int[] nums) {
+        // time is O(n * 2^n), space is O(n), not including the return list space
+        List<List<Integer>> result = new ArrayList<>();
+        // the total amount of subsets of nums
+        int total = 1 << nums.length;
+        List<Integer> subSet = new ArrayList<>();
+        for (int i = 0; i < total; i++) {
+            // 每次循环的 i 的二进制位中，为 1 的位的集合即为当前子集
+            subSet.clear();
+            for (int j = 0; j < nums.length; j++) {
+                // 若 (i & (1 << j)) != 0，代表第 j 位需加入到当前子集中
+                if ((i & (1 << j)) != 0) {
+                    subSet.add(nums[j]);
+                }
+            }
+            result.add(new ArrayList<>(subSet));
+        }
+        return result;
     }
 
     public static List<List<Integer>> subsets(int[] nums) {
