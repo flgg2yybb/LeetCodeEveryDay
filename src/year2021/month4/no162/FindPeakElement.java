@@ -10,11 +10,31 @@ public class FindPeakElement {
         int[] nums3 = {1};
         int[] nums4 = {1, 2};
         int[] nums5 = {2, 1};
-        System.out.println(findPeakElement1(nums1));
-        System.out.println(findPeakElement1(nums2));
-        System.out.println(findPeakElement1(nums3));
-        System.out.println(findPeakElement1(nums4));
-        System.out.println(findPeakElement1(nums5));
+        System.out.println(findPeakElement2(nums1));
+        System.out.println(findPeakElement2(nums2));
+        System.out.println(findPeakElement2(nums3));
+        System.out.println(findPeakElement2(nums4));
+        System.out.println(findPeakElement2(nums5));
+    }
+
+    private static int findPeakElement2(int[] nums) {
+        // 二分查找，由前一步分析的逻辑，可得到
+        // 每次移动都往高处走，即可找到答案
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            // 由于要比较 nums[i] 和 nums[i + 1]，这里 mid 取 (left + right) / 2
+            // 在 left < right 的情况下，mid 不可能取到 right
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == nums[mid + 1]) {
+                return mid;
+            } else if (nums[mid] > nums[mid + 1]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
     }
 
     private static int findPeakElement1(int[] nums) {
