@@ -10,11 +10,22 @@ public class FindPeakElement {
         int[] nums3 = {1};
         int[] nums4 = {1, 2};
         int[] nums5 = {2, 1};
-        System.out.println(findPeakElement(nums1));
-        System.out.println(findPeakElement(nums2));
-        System.out.println(findPeakElement(nums3));
-        System.out.println(findPeakElement(nums4));
-        System.out.println(findPeakElement(nums5));
+        System.out.println(findPeakElement1(nums1));
+        System.out.println(findPeakElement1(nums2));
+        System.out.println(findPeakElement1(nums3));
+        System.out.println(findPeakElement1(nums4));
+        System.out.println(findPeakElement1(nums5));
+    }
+
+    private static int findPeakElement1(int[] nums) {
+        // 由于题目保证了 nums[i] != nums[i + 1]，且 nums[-1] == nums[nums.length] = 负无穷
+        // 则该题一定有解，特殊情况即为 单调递减 以及 单调递增，解分别是头尾元素
+        // 故线性遍历时，只需比较 nums[i] 和 nums[i + 1]
+        // 若 nums[i] > nums[i + 1]，则 i 为答案
+        return IntStream.range(0, nums.length - 1).boxed()
+                .filter(index -> nums[index] > nums[index + 1])
+                .findAny()
+                .orElse(nums.length - 1);
     }
 
     public static int findPeakElement(int[] nums) {
