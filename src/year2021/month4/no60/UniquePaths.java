@@ -4,17 +4,33 @@ public class UniquePaths {
     public static void main(String[] args) {
         int m1 = 3;
         int n1 = 7;
-        System.out.println(uniquePaths1(m1, n1));
+        System.out.println(uniquePaths2(m1, n1));
         int m2 = 3;
         int n2 = 2;
-        System.out.println(uniquePaths1(m2, n2));
+        System.out.println(uniquePaths2(m2, n2));
         int m3 = 7;
         int n3 = 3;
-        System.out.println(uniquePaths1(m3, n3));
+        System.out.println(uniquePaths2(m3, n3));
         int m4 = 3;
         int n4 = 3;
-        System.out.println(uniquePaths1(m4, n4));
+        System.out.println(uniquePaths2(m4, n4));
 
+    }
+
+    private static int uniquePaths2(int m, int n) {
+        // 排列组合，总步数为 m + n - 2, 其中有 m - 1 步往下， n - 1 步往右
+        // 相当于在 m + n - 2 中挑出 m - 1 （或 n - 1）个的组合
+        int total = m + n - 2;
+        int pick = Math.min(m, n) - 1;
+        long top = 1;        //分子
+        long bottom = 1;     //分母
+        for (int i = pick; i > 0; i--) {
+            // 存在整型越界
+            top = top * total;
+            total--;
+            bottom = bottom * i;
+        }
+        return (int) (top / bottom);
     }
 
     private static int uniquePaths1(int m, int n) {
