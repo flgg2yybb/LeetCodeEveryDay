@@ -4,17 +4,30 @@ public class UniquePaths {
     public static void main(String[] args) {
         int m1 = 3;
         int n1 = 7;
-        System.out.println(uniquePaths(m1, n1));
+        System.out.println(uniquePaths1(m1, n1));
         int m2 = 3;
         int n2 = 2;
-        System.out.println(uniquePaths(m2, n2));
+        System.out.println(uniquePaths1(m2, n2));
         int m3 = 7;
         int n3 = 3;
-        System.out.println(uniquePaths(m3, n3));
+        System.out.println(uniquePaths1(m3, n3));
         int m4 = 3;
         int n4 = 3;
-        System.out.println(uniquePaths(m4, n4));
+        System.out.println(uniquePaths1(m4, n4));
 
+    }
+
+    private static int uniquePaths1(int m, int n) {
+        int row = Math.max(m, n);
+        int col = Math.min(m, n);
+        int[] dp = new int[col];
+        dp[col - 1] = 1;
+        for (int i = row - 1; i >= 0; i--) {
+            for (int j = col - 2; j >= 0; j--) {
+                dp[j] = dp[j] + dp[j + 1];
+            }
+        }
+        return dp[0];
     }
 
     public static int uniquePaths(int m, int n) {
