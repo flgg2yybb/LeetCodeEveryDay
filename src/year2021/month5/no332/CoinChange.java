@@ -14,11 +14,46 @@ public class CoinChange {
         int amount4 = 1;
         int[] coins5 = {1};
         int amount5 = 2;
-        System.out.println(coinChange(coins1, amount1));
-        System.out.println(coinChange(coins2, amount2));
-        System.out.println(coinChange(coins3, amount3));
-        System.out.println(coinChange(coins4, amount4));
-        System.out.println(coinChange(coins5, amount5));
+        int[] coins6 = new int[]{186, 419, 83, 408};
+        int amount6 = 6249;
+        int[] coins7 = new int[]{1, 2, 5, 10, 20, 50, 100, 150};
+        int amount7 = 999999;
+        System.out.println(coinChange1(coins1, amount1));
+        System.out.println(coinChange1(coins2, amount2));
+        System.out.println(coinChange1(coins3, amount3));
+        System.out.println(coinChange1(coins4, amount4));
+        System.out.println(coinChange1(coins5, amount5));
+        System.out.println(coinChange1(coins6, amount6));
+        System.out.println(coinChange1(coins7, amount7));
+    }
+
+    private static int coinChange1(int[] coins, int amount) {
+        // 记忆化搜索
+        return memorySearch(amount, coins, new int[amount + 1]);
+    }
+
+    private static int memorySearch(int amount, int[] coins, int[] cache) {
+        if (amount < 0) {
+            return -1;
+        }
+        if (amount == 0) {
+            return 0;
+        }
+        if (cache[amount] != 0) {
+            // -1的情况也要返回
+            return cache[amount];
+        }
+        final int MAX = 10001;
+        int min = MAX;
+        for (int coin : coins) {
+            int num = memorySearch(amount - coin, coins, cache);
+            if (num == -1) {
+                continue;
+            }
+            min = Math.min(min, num + 1);
+        }
+        cache[amount] = min == MAX ? -1 : min;
+        return cache[amount];
     }
 
     public static int coinChange(int[] coins, int amount) {
