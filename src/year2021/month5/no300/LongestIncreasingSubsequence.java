@@ -5,9 +5,48 @@ public class LongestIncreasingSubsequence {
         int[] nums1 = {10, 9, 2, 5, 3, 7, 101, 18};
         int[] nums2 = {0, 1, 0, 3, 2, 3};
         int[] nums3 = {7, 7, 7, 7, 7, 7, 7};
-        System.out.println(lengthOfLIS(nums1));
-        System.out.println(lengthOfLIS(nums2));
-        System.out.println(lengthOfLIS(nums3));
+        System.out.println(lengthOfLIS1(nums1));
+        System.out.println(lengthOfLIS1(nums2));
+        System.out.println(lengthOfLIS1(nums3));
+    }
+
+    private static int lengthOfLIS1(int[] nums) {
+        /*贪心 + 二分
+         * 要使得严格递增子序列尽可能长，那么我们需要子序列尽可能增长得缓慢
+         * 用一个数组来记录当前最长且末位最小的严格递增子序列
+         * 若新元素大于数组末尾元素，则将新元素 append 到数组末尾
+         * 若新元素小于等于数组末尾元素，
+         * 则用二分法找到 数组中最小且大于等于新元素的元素下标
+         * 将其替换为新元素
+         * （可以覆盖到原最长子序列的元素，若替换后的元素属于新的最长子序列
+         * 那么替换元素的下标后的元素也必会被替换）
+         * 结果为数组长度
+         * */
+        // lis 单调递增（不减）
+        int[] lis = new int[nums.length];
+        lis[0] = nums[0];
+        int size = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] > lis[size - 1]) {
+                lis[size] = nums[i];
+                size++;
+                continue;
+            }
+            // 当前元素不大于 lis 数组末尾元素
+            int left = 0;
+            int right = size - 1;
+            int target = nums[i];
+            while (left < right) {
+                int mid = left + (right - left) / 2;
+                if (lis[mid] >= target) {
+                    right = mid;
+                } else {
+                    left = mid + 1;
+                }
+            }
+            lis[left] = target;
+        }
+        return size;
     }
 
     public static int lengthOfLIS(int[] nums) {
