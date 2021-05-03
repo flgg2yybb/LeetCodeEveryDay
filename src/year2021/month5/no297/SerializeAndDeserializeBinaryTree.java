@@ -1,6 +1,8 @@
 package year2021.month5.no297;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class SerializeAndDeserializeBinaryTree {
@@ -43,6 +45,39 @@ class Codec {
     // Encodes a tree to a single string.
     public String serialize(TreeNode root) {
         StringBuilder ans = new StringBuilder();
+        dfsSerialize(root, ans);
+        ans.deleteCharAt(ans.length() - 1);
+        return ans.toString();
+    }
+
+    private void dfsSerialize(TreeNode root, StringBuilder ans) {
+        if (root == null) {
+            ans.append("null,");
+        } else {
+            ans.append(root.val).append(",");
+            dfsSerialize(root.left, ans);
+            dfsSerialize(root.right, ans);
+        }
+    }
+
+    public TreeNode deserialize(String data) {
+        String[] split = data.split(",");
+        List<String> nodes = new LinkedList<>(Arrays.asList(split));
+        return dfsDeserialize(nodes);
+    }
+
+    private TreeNode dfsDeserialize(List<String> nodes) {
+        TreeNode node = parse(nodes.get(0));
+        nodes.remove(0);
+        if (node != null) {
+            node.left = dfsDeserialize(nodes);
+            node.right = dfsDeserialize(nodes);
+        }
+        return node;
+    }
+
+    public String serialize1(TreeNode root) {
+        StringBuilder ans = new StringBuilder();
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         while (!queue.isEmpty()) {
@@ -63,7 +98,7 @@ class Codec {
     }
 
     // Decodes your encoded data to tree.
-    public TreeNode deserialize(String data) {
+    public TreeNode deserialize1(String data) {
         String[] nodes = data.split(",");
         String rootStr = nodes[0];
         TreeNode root = parse(rootStr);
