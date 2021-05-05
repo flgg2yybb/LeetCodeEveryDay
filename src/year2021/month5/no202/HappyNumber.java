@@ -8,8 +8,18 @@ public class HappyNumber {
     public static void main(String[] args) {
         int n1 = 19;
         int n2 = 2;
-        System.out.println(isHappy(n1));
-        System.out.println(isHappy(n2));
+        System.out.println(isHappy1(n1));
+        System.out.println(isHappy1(n2));
+    }
+
+    private static boolean isHappy1(int n) {
+        int fast = n;
+        int slow = n;
+        do {
+            slow = getNext(slow);
+            fast = getNext(getNext(fast));
+        } while (fast != 1 && fast != slow);
+        return fast == 1;
     }
 
     public static boolean isHappy(int n) {
