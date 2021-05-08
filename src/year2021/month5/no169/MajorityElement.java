@@ -1,12 +1,38 @@
 package year2021.month5.no169;
 
+import java.util.Arrays;
+
 public class MajorityElement {
 
     public static void main(String[] args) {
         int[] nums1 = {3, 2, 3};
         int[] nums2 = {2, 2, 1, 1, 1, 2, 2};
-        System.out.println(majorityElement(nums1));
-        System.out.println(majorityElement(nums2));
+        System.out.println(majorityElement1(nums1));
+        System.out.println(majorityElement1(nums2));
+    }
+
+    private static int majorityElement1(int[] nums) {
+        // 分治，将数组对半分，则被拆分的数组中的两个众数必有一个是整个数组的众数
+        return divideAndConquer(nums, 0, nums.length - 1);
+    }
+
+    private static int divideAndConquer(int[] nums, int left, int right) {
+        if (left == right) {
+            return nums[left];
+        }
+        int mid = left + (right - left) / 2;
+        int leftMajority = divideAndConquer(nums, left, mid);
+        int rightMajority = divideAndConquer(nums, mid + 1, right);
+        if (leftMajority == rightMajority) {
+            return leftMajority;
+        }
+        int leftMajorityCount = count(nums, leftMajority, left, mid);
+        int rightMajorityCount = count(nums, rightMajority, mid + 1, right);
+        return leftMajorityCount > rightMajorityCount ? leftMajority : rightMajority;
+    }
+
+    private static int count(int[] nums, int num, int left, int right) {
+        return (int) Arrays.stream(nums).filter(element -> element == num).count();
     }
 
     public static int majorityElement(int[] nums) {
