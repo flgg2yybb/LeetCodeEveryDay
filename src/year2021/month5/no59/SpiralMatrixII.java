@@ -7,8 +7,41 @@ public class SpiralMatrixII {
     public static void main(String[] args) {
         int n1 = 3;
         int n2 = 1;
-        System.out.println(Arrays.deepToString(generateMatrix(n1)));
-        System.out.println(Arrays.deepToString(generateMatrix(n2)));
+        System.out.println(Arrays.deepToString(generateMatrix1(n1)));
+        System.out.println(Arrays.deepToString(generateMatrix1(n2)));
+    }
+
+    private static int[][] generateMatrix1(int n) {
+        int[][] ans = new int[n][n];
+        int num = 1;
+        int target = n * n;
+        int top = 0;
+        int bottom = n - 1;
+        int left = 0;
+        int right = n - 1;
+        while (num <= target) {
+            // left to right
+            for (int i = left; i <= right; i++) {
+                ans[top][i] = num++;
+            }
+            top++;
+            // top to bottom
+            for (int i = top; i <= bottom; i++) {
+                ans[i][right] = num++;
+            }
+            right--;
+            // right to left
+            for (int i = right; i >= left; i--) {
+                ans[bottom][i] = num++;
+            }
+            bottom--;
+            // bottom to top
+            for (int i = bottom; i >= top; i--) {
+                ans[i][left] = num++;
+            }
+            left++;
+        }
+        return ans;
     }
 
     public static int[][] generateMatrix(int n) {
