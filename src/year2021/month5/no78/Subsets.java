@@ -8,8 +8,30 @@ public class Subsets {
     public static void main(String[] args) {
         int[] nums1 = {1, 2, 3};
         int[] nums2 = {0};
-        System.out.println(subsets(nums1));
-        System.out.println(subsets(nums2));
+        System.out.println(subsets1(nums1));
+        System.out.println(subsets1(nums2));
+    }
+
+    private static List<List<Integer>> subsets1(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return ans;
+        }
+        int len = nums.length;
+        int total = (int) Math.pow(2, len);
+        for (int i = 0; i < total; i++) {
+//            i 为 0 -> 2^n - 1, 用二进制表示，且令 1 所在的位置为选中的元素
+            List<Integer> collect = new ArrayList<>();
+            for (int j = 0; j < len; j++) {
+//                遍历 nums 下标, 判断哪个元素需要选中
+                int mask = 1 << j;
+                if ((mask & i) != 0) {
+                    collect.add(nums[j]);
+                }
+            }
+            ans.add(collect);
+        }
+        return ans;
     }
 
     public static List<List<Integer>> subsets(int[] nums) {
