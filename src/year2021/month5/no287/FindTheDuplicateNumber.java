@@ -6,10 +6,48 @@ public class FindTheDuplicateNumber {
         int[] nums2 = {3, 1, 3, 4, 2};
         int[] nums3 = {1, 1};
         int[] nums4 = {1, 1, 2};
-        System.out.println(findDuplicate(nums1));
-        System.out.println(findDuplicate(nums2));
-        System.out.println(findDuplicate(nums3));
-        System.out.println(findDuplicate(nums4));
+        System.out.println(findDuplicate1(nums1));
+        System.out.println(findDuplicate1(nums2));
+        System.out.println(findDuplicate1(nums3));
+        System.out.println(findDuplicate1(nums4));
+    }
+
+    private static int findDuplicate1(int[] nums) {
+        /*快慢指针 - Floyd 判圈法
+         * 前提：nums 中数字范围是 [1,n]
+         * 将数组下标 i 和数 nums[i] 建立一个关系
+         * nums[i] 表示下一个要访问元素的下标，则有如下三种情况
+         * 1. 对于无重复元素数组[1, 3, 4, 2]，从起点 0 出发，有
+         *      0 -> 1
+         *      1 -> 3
+         *      3 -> 2
+         *      2 -> 4
+         *      4 -> null
+         * 2. 对于有重复元素数组[1, 3, 4, 2, 2]，从起点 0 出发，有
+         *      0 -> 1
+         *      1 -> 3
+         *      3 -> 2
+         *      2 -> 4
+         *      4 -> 2
+         *      2 -> 4
+         *       ...
+         *      无限循环
+         * 3. 对于下一个访问的元素位置恰好是当前位置，例如 [4, 1, 2, 3, 2]
+         *     若访问到下标 1 时，会进入死循环，但若 1 不为重复元素时
+         *     从下标 0 出发根本就进入不到 1 这个死循环上，故不影响
+         * */
+        int fast = 0;
+        int slow = 0;
+        do {
+            fast = nums[nums[fast]];
+            slow = nums[slow];
+        } while (fast != slow);
+        slow = 0;
+        while (fast != slow) {
+            fast = nums[fast];
+            slow = nums[slow];
+        }
+        return slow;
     }
 
     public static int findDuplicate(int[] nums) {
