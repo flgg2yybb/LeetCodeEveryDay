@@ -19,14 +19,14 @@ public class CopyListWithRandomPointer {
         node15.random = node11;
         Node head1 = node11;
         System.out.println(head1);
-        System.out.println(copyRandomList(head1));
+        System.out.println(copyRandomList1(head1));
 
         Node node22 = new Node(2);
         Node node21 = new Node(1, node22, node22);
         node22.random = node22;
         Node head2 = node21;
         System.out.println(head2);
-        System.out.println(copyRandomList(head2));
+        System.out.println(copyRandomList1(head2));
 
         Node node33 = new Node(3);
         Node node32 = new Node(3, node33);
@@ -34,10 +34,26 @@ public class CopyListWithRandomPointer {
         node32.random = node31;
         Node head3 = node31;
         System.out.println(head3);
-        System.out.println(copyRandomList(head3));
+        System.out.println(copyRandomList1(head3));
 
         System.out.println("null");
-        System.out.println(copyRandomList(null));
+        System.out.println(copyRandomList1(null));
+    }
+
+    private static Map<Node, Node> visitedMap = new HashMap<>();
+
+    private static Node copyRandomList1(Node head) {
+        if (head == null) {
+            return null;
+        }
+        if (visitedMap.containsKey(head)) {
+            return visitedMap.get(head);
+        }
+        Node node = new Node(head.val);
+        visitedMap.put(head, node);
+        node.next = copyRandomList1(head.next);
+        node.random = copyRandomList1(head.random);
+        return node;
     }
 
     public static Node copyRandomList(Node head) {
