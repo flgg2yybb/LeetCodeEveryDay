@@ -16,14 +16,62 @@ public class SurroundedRegions {
                 {'X', 'X', 'O', 'X', 'X'},
                 {'X', 'O', 'O', 'O', 'X'},
                 {'X', 'X', 'O', 'X', 'X'},
-                {'X', 'X', 'O', 'O', 'X'}
+                {'X', 'X', 'X', 'O', 'X'}
         };
         System.out.println(Arrays.deepToString(board1));
-        solve(board1);
+        solve1(board1);
         System.out.println(Arrays.deepToString(board1));
         System.out.println(Arrays.deepToString(board2));
-        solve(board2);
+        solve1(board2);
         System.out.println(Arrays.deepToString(board2));
+    }
+
+    private static void solve1(char[][] board) {
+        // 并查集，将边界的 O 节点与虚拟头结点 union
+        // 将非边界的 O 节点与其上下左右的 O 节点做 union操作
+        // 则所有 O 节点被分成两批，一批是与虚拟头结点相连，另一批不是
+        int row = board.length;
+        int col = board[0].length;
+        int size = row * col + 1;
+        UnionFind unionFind = new UnionFind(size);
+        int dummyNode = size - 1;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (board[i][j] != 'O') {
+                    continue;
+                }
+                if (i == 0 || i == row - 1 || j == 0 || j == col - 1) {
+                    unionFind.union(dummyNode, getIndex(col, i, j));
+                } else {
+                    if (board[i - 1][j] == 'O') {
+                        unionFind.union(getIndex(col, i, j), getIndex(col, i - 1, j));
+                    }
+                    if (board[i + 1][j] == 'O') {
+                        unionFind.union(getIndex(col, i, j), getIndex(col, i + 1, j));
+                    }
+                    if (board[i][j - 1] == 'O') {
+                        unionFind.union(getIndex(col, i, j), getIndex(col, i, j - 1));
+                    }
+                    if (board[i][j + 1] == 'O') {
+                        unionFind.union(getIndex(col, i, j), getIndex(col, i, j + 1));
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (board[i][j] != 'O') {
+                    continue;
+                }
+                if (!unionFind.isConnected(dummyNode, getIndex(col, i, j))) {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+
+    private static int getIndex(int col, int i, int j) {
+        return col * i + j;
     }
 
     public static void solve(char[][] board) {
@@ -72,6 +120,45 @@ public class SurroundedRegions {
 
     private static boolean isLegalAccess(char[][] board, int x, int y) {
         return x >= 0 && x < board.length && y >= 0 && y < board[x].length;
+    }
+
+}
+
+class UnionFind {
+
+    private final int[] rank;
+    private final int[] parent;
+
+    UnionFind(int size) {
+        this.rank = new int[size];
+        this.parent = new int[size];    // 最后一个位置存贮虚拟根节点
+        for (int i = 0; i < size; i++) {
+            parent[i] = i;
+        }
+    }
+
+    public int find(int x) {
+        return parent[x] == x ? x : find(parent[x]);
+    }
+
+    public void union(int x, int y) {
+        int root1 = find(x);
+        int root2 = find(y);
+        if (root1 == root2) {
+            return;
+        }
+        if (rank[root1] < rank[root2]) {
+            parent[root1] = root2;
+        } else if (rank[root1] > rank[root2]) {
+            parent[root2] = root1;
+        } else {
+            parent[root2] = root1;
+            rank[root1]++;
+        }
+    }
+
+    public boolean isConnected(int x, int y) {
+        return find(x) == find(y);
     }
 
 }
