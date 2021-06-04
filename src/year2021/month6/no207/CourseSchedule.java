@@ -1,5 +1,6 @@
 package year2021.month6.no207;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,8 +13,53 @@ public class CourseSchedule {
         int[][] prerequisites1 = {{1, 0}};
         int numCourses2 = 2;
         int[][] prerequisites2 = {{1, 0}, {0, 1}};
-        System.out.println(canFinish1(numCourses1, prerequisites1));
-        System.out.println(canFinish1(numCourses2, prerequisites2));
+        System.out.println(canFinish2(numCourses1, prerequisites1));
+        System.out.println(canFinish2(numCourses2, prerequisites2));
+    }
+
+    private static boolean canFinish2(int numCourses, int[][] prerequisites) {
+        // DFS, 如果一个有向图可以生成拓扑排序等价于有向图无环
+        // 则使用 DFS 对访问的路径进行标记，若 DFS 可以将所有节点都访问完
+        // 则代表无环，否则碰到先前访问的标记，则代表有环
+        // time is O(N + E), space is O(N + E)
+        List<List<Integer>> adjacentTable = new ArrayList<>(numCourses);
+        for (int i = 0; i < numCourses; i++) {
+            adjacentTable.add(new LinkedList<>());
+        }
+        for (int[] prerequisite : prerequisites) {  //初始化邻接表
+            int from = prerequisite[1];
+            int to = prerequisite[0];
+            adjacentTable.get(from).add(to);
+        }
+        int[] visited = new int[numCourses];    //标记是否访问，-1 未访问，0 正在访问，1 已访问
+        Arrays.fill(visited, -1);           //初始化为 -1 未访问
+        for (int i = 0; i < numCourses; i++) {
+            if (visited[i] != -1) {
+                continue;
+            }
+            if (dfs(adjacentTable, visited, i)) {   // dfs判断是否有环
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean dfs(List<List<Integer>> adjacentTable, int[] visited, int cur) {
+        visited[cur] = 0;   // 标记为 0 正在访问
+        List<Integer> nextNodes = adjacentTable.get(cur);
+        for (int next : nextNodes) {
+            if (visited[next] == 1) {
+                continue;
+            }
+            if (visited[next] == 0) {   // 有环
+                return true;
+            }
+            if (dfs(adjacentTable, visited, next)) {
+                return true;
+            }
+        }
+        visited[cur] = 1;   // 标记为访问完成
+        return false;
     }
 
     private static boolean canFinish1(int numCourses, int[][] prerequisites) {
