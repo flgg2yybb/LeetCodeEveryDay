@@ -3,6 +3,7 @@ package year2021.month6.no207;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class CourseSchedule {
 
@@ -11,8 +12,45 @@ public class CourseSchedule {
         int[][] prerequisites1 = {{1, 0}};
         int numCourses2 = 2;
         int[][] prerequisites2 = {{1, 0}, {0, 1}};
-        System.out.println(canFinish(numCourses1, prerequisites1));
-        System.out.println(canFinish(numCourses2, prerequisites2));
+        System.out.println(canFinish1(numCourses1, prerequisites1));
+        System.out.println(canFinish1(numCourses2, prerequisites2));
+    }
+
+    private static boolean canFinish1(int numCourses, int[][] prerequisites) {
+        // 入度表 + 邻接表 + 拓扑排序 + BFS, time is O(N + E), space is O(N + E)
+        int[] inDegrees = new int[numCourses];
+        List<Integer>[] adjacence = new LinkedList[numCourses];
+        for (int[] prerequisite : prerequisites) {
+            int from = prerequisite[1];
+            int to = prerequisite[0];
+            inDegrees[to]++;
+            if (adjacence[from] == null) {
+                adjacence[from] = new LinkedList<>();
+            }
+            adjacence[from].add(to);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < inDegrees.length; i++) {
+            if (inDegrees[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        int count = 0;
+        // BFS
+        while (!queue.isEmpty()) {
+            Integer node = queue.poll();
+            count++;
+            List<Integer> next = adjacence[node];
+            if (next != null) {
+                next.forEach(item -> {
+                    inDegrees[item]--;
+                    if (inDegrees[item] == 0) {
+                        queue.offer(item);
+                    }
+                });
+            }
+        }
+        return count == numCourses;
     }
 
     public static boolean canFinish(int numCourses, int[][] prerequisites) {
