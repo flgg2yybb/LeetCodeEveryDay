@@ -15,8 +15,47 @@ public class LongestIncreasingPathAnMatrix {
                 {3, 2, 6},
                 {2, 2, 1}
         };
-        System.out.println(longestIncreasingPath(martix1));
-        System.out.println(longestIncreasingPath(martix2));
+        System.out.println(longestIncreasingPath1(martix1));
+        System.out.println(longestIncreasingPath1(martix2));
+    }
+
+    private static int longestIncreasingPath1(int[][] matrix) {
+        /*
+        * 矩阵中的元素只会向更大的元素方向移动，由此构造邻接表
+        * 分别遍历每个元素，比较其最大路径长度
+        * 其中，可对每个元素进行记忆化搜索，以避免重复搜索
+        * time is O(nm), space is O(nm)
+        * */
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int[][] cache = new int[row][col];
+        int longest = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                int len = dfsGetLen(matrix, cache, i, j);
+                longest = Math.max(longest, len);
+            }
+        }
+        return longest;
+    }
+
+    private static int dfsGetLen(int[][] matrix, int[][] cache, int x, int y) {
+        if (cache[x][y] != 0) {
+            return cache[x][y];
+        }
+        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+        int selfStep = 1;
+        int nextStep = 0;
+        for (int[] direction : directions) {
+            int nextRow = x + direction[0];
+            int nextCol = y + direction[1];
+            if (isLegalAccess(matrix.length, matrix[0].length, nextRow, nextCol) && matrix[nextRow][nextCol] > matrix[x][y]) {
+                nextStep = Math.max(nextStep, dfsGetLen(matrix, cache, nextRow, nextCol));
+            }
+        }
+        int totalStep = selfStep + nextStep;
+        cache[x][y] = totalStep;
+        return totalStep;
     }
 
     public static int longestIncreasingPath(int[][] matrix) {
