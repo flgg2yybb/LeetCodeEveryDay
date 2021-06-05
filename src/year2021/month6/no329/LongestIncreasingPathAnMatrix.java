@@ -1,22 +1,77 @@
 package year2021.month6.no329;
 
+import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class LongestIncreasingPathAnMatrix {
 
     public static void main(String[] args) {
-        int[][] martix1 = {
+        int[][] matrix1 = {
                 {9, 10, 4},
                 {6, 6, 8},
                 {2, 1, 1}
         };
-        int[][] martix2 = {
+        int[][] matrix2 = {
                 {3, 4, 5},
                 {3, 2, 6},
                 {2, 2, 1}
         };
-        System.out.println(longestIncreasingPath1(martix1));
-        System.out.println(longestIncreasingPath1(martix2));
+        System.out.println(longestIncreasingPath2(matrix1));
+        System.out.println(longestIncreasingPath2(matrix2));
+    }
+
+    private static int longestIncreasingPath2(int[][] matrix) {
+        /*
+        * 思路类似于 DP，使用拓扑排序（Topological Sorting）
+        * 显而易见，此矩阵所代表的有向图无环
+        * 首先计算所有节点的出度（入度也可），将出度为 0 的元素入队
+        * 进行广度遍历，则一定有一个出度为 0 的起始元素其递增序列最长
+        * */
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int[][] outDegrees = new int[row][col];
+        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                for (int[] direction : directions) {
+                    int nextRow = i + direction[0];
+                    int nextCol = j + direction[1];
+                    if (isLegalAccess(matrix.length, matrix[0].length, nextRow, nextCol) && matrix[nextRow][nextCol] > matrix[i][j]) {
+                        outDegrees[i][j]++;
+                    }
+                }
+            }
+        }
+        Queue<int[]> queue = new LinkedList<>();
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (outDegrees[i][j] == 0) {
+                    queue.offer(new int[]{i, j});
+                }
+            }
+        }
+        int longest = 0;
+        while (!queue.isEmpty()) {
+            longest++;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] poll = queue.poll();
+                int x = poll[0];
+                int y = poll[1];
+                for (int[] direction : directions) {
+                    int nextRow = x + direction[0];
+                    int nextCol = y + direction[1];
+                    if (isLegalAccess(matrix.length, matrix[0].length, nextRow, nextCol) && matrix[nextRow][nextCol] < matrix[x][y]) {
+                        outDegrees[nextRow][nextCol]--;
+                        if (outDegrees[nextRow][nextCol] == 0) {
+                            queue.offer(new int[]{nextRow, nextCol});
+                        }
+                    }
+                }
+            }
+        }
+        return longest;
     }
 
     private static int longestIncreasingPath1(int[][] matrix) {
