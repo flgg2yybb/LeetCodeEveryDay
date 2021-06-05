@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class LongestIncreasingPathAnMatrix {
+public class LongestIncreasingPathInMatrix {
 
     public static void main(String[] args) {
         int[][] matrix1 = {
