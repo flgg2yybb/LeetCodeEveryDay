@@ -9,9 +9,48 @@ public class PalindromePartitioning {
         String s1 = "aab";
         String s2 = "a";
         String s3 = "aabaab";
-        System.out.println(partition(s1));
-        System.out.println(partition(s2));
-        System.out.println(partition(s3));
+        System.out.println(partition1(s1));
+        System.out.println(partition1(s2));
+        System.out.println(partition1(s3));
+    }
+
+    private static List<List<String>> partition1(String s) {
+        // 记忆化搜索 + 回溯
+        int length = s.length();
+        List<List<String>> ans = new ArrayList<>();
+        int[][] cache = new int[length][length];
+        memorySearchAndBacktrack(s, cache, ans, new ArrayList<>(), 0);
+        return ans;
+    }
+
+    private static void memorySearchAndBacktrack(String s, int[][] cache, List<List<String>> ans, List<String> strings, int pos) {
+        if (pos == s.length()) {
+            ans.add(new ArrayList<>(strings));
+            return;
+        }
+        for (int i = pos; i < s.length(); i++) {
+            if (isPalindrome(s, cache, pos, i)) {
+                strings.add(s.substring(pos, i + 1));
+                memorySearchAndBacktrack(s, cache, ans, strings, i + 1);
+                strings.remove(strings.size() - 1);
+            }
+        }
+    }
+
+    private static boolean isPalindrome(String s, int[][] cache, int i, int j) {
+        // cache 取值为 0 未搜索； -1 不是回文串； 1 是回文串
+        if (cache[i][j] != 0) {
+            return cache[i][j] == 1;
+        }
+        if (i >= j) {
+            cache[i][j] = 1;
+        } else if (s.charAt(i) == s.charAt(j)) {
+            // 当长度为 2 时，即 j = i + 1 时，回去搜索 cache[j][i]，刚好猜中上一个条件为 true
+            return isPalindrome(s, cache, i + 1, j - 1);
+        } else {
+            cache[i][j] = -1;
+        }
+        return cache[i][j] == 1;
     }
 
     public static List<List<String>> partition(String s) {
