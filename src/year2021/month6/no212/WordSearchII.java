@@ -1,9 +1,9 @@
 package year2021.month6.no212;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,7 +29,7 @@ public class WordSearchII {
         for (String word : words) {
             root.insert(word);
         }
-        Set<String> ans = new HashSet<>();
+        List<String> ans = new ArrayList<>(words.length);
         int row = board.length;
         int col = board[0].length;
         boolean[][] visited = new boolean[row][col];
@@ -37,17 +37,21 @@ public class WordSearchII {
             for (int j = 0; j < col; j++) {
                 if (root.containsChild(board[i][j])) {
                     visited[i][j] = true;
-                    dfs(board, visited, ans, i, j, root.getChild(board[i][j]));
+                    dfs(board, visited, ans, i, j, root);
                     visited[i][j] = false;
                 }
             }
         }
-        return new ArrayList<>(ans);
+        return ans;
     }
 
-    private static void dfs(char[][] board, boolean[][] visited, Set<String> ans, int x, int y, Trie trie) {
-        if (trie.isEnd) {
-            ans.add(trie.value);
+    private static void dfs(char[][] board, boolean[][] visited, List<String> ans, int x, int y, Trie parent) {
+        char currentChar = board[x][y];
+        Trie currentNode = parent.getChild(currentChar);
+        if (currentNode.isEnd) {
+            ans.add(currentNode.value);
+            currentNode.isEnd = false;     // remove word from trie to avoid duplicated result set
+            currentNode.value = null;
         }
         int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
         for (int[] direction : directions) {
@@ -55,12 +59,16 @@ public class WordSearchII {
             int nextY = y + direction[1];
             if (isLegalAccess(board, nextX, nextY) && !visited[nextX][nextY]) {
                 char nextChar = board[nextX][nextY];
-                if (trie.containsChild(nextChar)) {
+                if (currentNode.containsChild(nextChar)) {
                     visited[nextX][nextY] = true;
-                    dfs(board, visited, ans, nextX, nextY, trie.getChild(nextChar));
+                    dfs(board, visited, ans, nextX, nextY, currentNode);
                     visited[nextX][nextY] = false;
                 }
             }
+        }
+        // pruning optimization, remove empty node when children is empty (the leaf will be removed recursively)
+        if (currentNode.noChild()) {
+            parent.removeChild(currentChar);
         }
     }
 
@@ -115,33 +123,39 @@ public class WordSearchII {
 
 class Trie {
 
-    final Trie[] childrens;     // size is 26, the index represent the lowercase letter, a, b, ..., z
+    private final Map<Character, Trie> childrens;
     boolean isEnd;  // is end of word
     String value;   // present only if isEnd = true
 
     public Trie() {
-        this.childrens = new Trie[26];
+        this.childrens = new HashMap<>();
         this.isEnd = false;
     }
 
     public boolean containsChild(char c) {
-        return getChild(c) != null;
+        return childrens.containsKey(c);
     }
 
     public Trie getChild(char c) {
-        int index = c - 'a';
-        return childrens[index];
+        return childrens.get(c);
+    }
+
+    public boolean noChild() {
+        return childrens.isEmpty();
+    }
+
+    public void removeChild(char c) {
+        childrens.remove(c);
     }
 
     public void insert(String word) {
         Trie node = this;
         for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
-            int index = c - 'a';
-            if (node.childrens[index] == null) {
-                node.childrens[index] = new Trie();
+            if (!node.childrens.containsKey(c)) {
+                node.childrens.put(c, new Trie());
             }
-            node = node.childrens[index];
+            node = node.childrens.get(c);
         }
         node.isEnd = true;
         node.value = word;
