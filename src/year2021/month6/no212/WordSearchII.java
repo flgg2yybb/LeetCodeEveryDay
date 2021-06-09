@@ -1,6 +1,9 @@
 package year2021.month6.no212;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,11 +18,52 @@ public class WordSearchII {
         String[] words3 = {"a"};
         char[][] board4 = {{'a', 'b', 'c'}, {'a', 'e', 'd'}, {'a', 'f', 'g'}};
         String[] words4 = {"abcdefg", "gfedcbaaa", "eaabcdgfa", "befa", "dgc", "ade"};
-        System.out.println(findWords(board1, words1));
-        System.out.println(findWords(board2, words2));
-        System.out.println(findWords(board3, words3));
-        System.out.println(findWords(board4, words4));
+        System.out.println(findWords1(board1, words1));
+        System.out.println(findWords1(board2, words2));
+        System.out.println(findWords1(board3, words3));
+        System.out.println(findWords1(board4, words4));
     }
+
+    private static List<String> findWords1(char[][] board, String[] words) {
+        Trie root = new Trie();
+        for (String word : words) {
+            root.insert(word);
+        }
+        Set<String> ans = new HashSet<>();
+        int row = board.length;
+        int col = board[0].length;
+        boolean[][] visited = new boolean[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (root.containsChild(board[i][j])) {
+                    visited[i][j] = true;
+                    dfs(board, visited, ans, i, j, root.getChild(board[i][j]));
+                    visited[i][j] = false;
+                }
+            }
+        }
+        return new ArrayList<>(ans);
+    }
+
+    private static void dfs(char[][] board, boolean[][] visited, Set<String> ans, int x, int y, Trie trie) {
+        if (trie.isEnd) {
+            ans.add(trie.value);
+        }
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        for (int[] direction : directions) {
+            int nextX = x + direction[0];
+            int nextY = y + direction[1];
+            if (isLegalAccess(board, nextX, nextY) && !visited[nextX][nextY]) {
+                char nextChar = board[nextX][nextY];
+                if (trie.containsChild(nextChar)) {
+                    visited[nextX][nextY] = true;
+                    dfs(board, visited, ans, nextX, nextY, trie.getChild(nextChar));
+                    visited[nextX][nextY] = false;
+                }
+            }
+        }
+    }
+
 
     public static List<String> findWords(char[][] board, String[] words) {
         return Stream.of(words).filter(word -> canFind(board, word)).collect(Collectors.toList());
@@ -67,6 +111,41 @@ public class WordSearchII {
         return x >= 0 && x < board.length && y >= 0 && y < board[0].length;
     }
 
+}
+
+class Trie {
+
+    final Trie[] childrens;     // size is 26, the index represent the lowercase letter, a, b, ..., z
+    boolean isEnd;  // is end of word
+    String value;   // present only if isEnd = true
+
+    public Trie() {
+        this.childrens = new Trie[26];
+        this.isEnd = false;
+    }
+
+    public boolean containsChild(char c) {
+        return getChild(c) != null;
+    }
+
+    public Trie getChild(char c) {
+        int index = c - 'a';
+        return childrens[index];
+    }
+
+    public void insert(String word) {
+        Trie node = this;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            int index = c - 'a';
+            if (node.childrens[index] == null) {
+                node.childrens[index] = new Trie();
+            }
+            node = node.childrens[index];
+        }
+        node.isEnd = true;
+        node.value = word;
+    }
 }
 
 /*
