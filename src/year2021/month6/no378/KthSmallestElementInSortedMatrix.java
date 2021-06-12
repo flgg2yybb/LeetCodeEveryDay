@@ -14,8 +14,56 @@ public class KthSmallestElementInSortedMatrix {
         int k1 = 8;
         int[][] matrix2 = {{-5}};
         int k2 = 1;
-        System.out.println(kthSmallest(matrix1, k1));
-        System.out.println(kthSmallest(matrix2, k2));
+        System.out.println(kthSmallest1(matrix1, k1));
+        System.out.println(kthSmallest1(matrix2, k2));
+    }
+
+    private static int kthSmallest1(int[][] matrix, int k) {
+        /*
+         * 二分查找
+         * 由于矩阵每行每列单调不减，故左上角的元素 matrix[0][0] 为最小元素，记为 left
+         * 右下角的元素 matrix[n - 1][n - 1] 为最大元素，记为 right
+         * 而对于左下角的元素，满足
+         * 大于上方的元素，小于右方的元素，
+         * 对于矩阵中以每一个元素为左下角所形成的子矩阵均有次性质，故可利用其进行二分
+         * 对于上下界 [left, right]，取平均数 mid
+         * 可通过从左下角向右上方遍历将矩阵分为两半（左上方矩阵，右下方矩阵）
+         * 定义， <= mid 的元素在左上方，> mid 的元素在右下方
+         * 则可用左上方的元素的数量 与 k 的关系进行二分
+         *
+         * */
+        int n = matrix.length;
+        int left = matrix[0][0];
+        int right = matrix[n - 1][n - 1];
+        while (left < right) {
+            int mid = left + ((right - left) >> 1); // mid 为虚拟数，不一定在矩阵中
+            int count = calLeftTopCount(matrix, mid);
+            if (count < k) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        // 为什么最后返回的 left 一定在矩阵中？
+        // 由于每次二分我们都确保第 k 小的数在 [left, right] 范围中，若最终循环结束时 left == right
+        // 则第 k 小的数就只能为 left
+        return left;
+    }
+
+    private static int calLeftTopCount(int[][] matrix, int key) {
+        int count = 0;
+        int x = matrix.length - 1;
+        int y = 0;
+        while (x >= 0 && y < matrix[0].length) {
+            int curr = matrix[x][y];
+            if (curr <= key) {
+                count += x + 1;
+                y++;
+            } else {
+                x--;
+            }
+        }
+        return count;
     }
 
     public static int kthSmallest(int[][] matrix, int k) {
