@@ -1,5 +1,6 @@
 package year2021.month6.no341;
 
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,11 +34,31 @@ class NestedIterator implements Iterator<Integer> {
 
     public NestedIterator(List<NestedInteger> nestedList) {
         flattenList = new LinkedList<>();
-        flattenNestedList(nestedList);
+        flattenNestedList1(nestedList);
         it = flattenList.iterator();
     }
 
+    private void flattenNestedList1(List<NestedInteger> nestedList) {
+        //Stack
+        Deque<Iterator<NestedInteger>> stack = new LinkedList<>();
+        stack.push(nestedList.iterator());
+        while (!stack.isEmpty()) {
+            Iterator<NestedInteger> top = stack.peek();
+            if (!top.hasNext()) {
+                stack.pop();
+                continue;
+            }
+            NestedInteger next = top.next();
+            if (next.isInteger()) {
+                flattenList.add(next.getInteger());
+            } else {
+                stack.push(next.getList().iterator());
+            }
+        }
+    }
+
     private void flattenNestedList(List<NestedInteger> nestedList) {
+        //Recursion
         for (NestedInteger cur : nestedList) {
             if (cur.isInteger()) {
                 flattenList.add(cur.getInteger());
