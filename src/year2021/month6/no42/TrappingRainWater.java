@@ -1,12 +1,50 @@
 package year2021.month6.no42;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class TrappingRainWater {
 
     public static void main(String[] args) {
         int[] height1 = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
         int[] height2 = {4, 2, 0, 3, 2, 5};
-        System.out.println(trap1(height1));
-        System.out.println(trap1(height2));
+        System.out.println(trap2(height1));
+        System.out.println(trap2(height2));
+    }
+
+    private static int trap2(int[] height) {
+        /*
+         * 单调递减栈
+         * 遍历 height，并以此判断元素是否压入单调递减栈
+         * 若当前元素小于等于栈顶元素
+         *   则将当前元素下标压入栈
+         * 若当前元素大于栈顶元素，则
+         *   栈顶元素出栈，其可能为一个凹槽
+         *   若此时栈内无元素，
+         *       则代表当前凹槽无左边界，退出循环
+         *   否则，
+         *       获取栈顶元素高度，其为左边界
+         *       求出当前凹槽的宽度，及左右边界较小的高度
+         *       宽度乘高度即是当前凹槽的装水量
+         * */
+        Deque<Integer> stack = new LinkedList<>();
+        int count = 0;
+        for (int i = 0; i < height.length; i++) {
+            while (!stack.isEmpty() && height[i] > height[stack.peekLast()]) {
+                Integer bottom = stack.pollLast();
+                if (stack.isEmpty()) {
+                    // no left bound
+                    break;
+                }
+                Integer leftIndex = stack.peekLast();
+                int leftHeight = height[leftIndex];
+                int currWidth = i - leftIndex - 1;
+                int currHeight = Math.min(leftHeight, height[i]) - height[bottom];
+                count += currWidth * currHeight;
+            }
+            stack.offerLast(i);
+        }
+        return count;
     }
 
     private static int trap1(int[] height) {
