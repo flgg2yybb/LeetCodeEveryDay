@@ -5,8 +5,36 @@ public class TrappingRainWater {
     public static void main(String[] args) {
         int[] height1 = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
         int[] height2 = {4, 2, 0, 3, 2, 5};
-        System.out.println(trap(height1));
-        System.out.println(trap(height2));
+        System.out.println(trap1(height1));
+        System.out.println(trap1(height2));
+    }
+
+    private static int trap1(int[] height) {
+        /*
+         * 双指针, time is O(n), space is O(1)
+         * 分别用 left、right 指针指向头尾，向中间夹逼
+         * 每次移动较小的指针，同时根据 left、right 指针
+         * 求出当前较小的边界高度 minBound
+         * 若当前位置小于 minBound，意味着当前为凹槽
+         * 则将当前位置的装水量累加
+         * 循环往复，直至指针相遇
+         * */
+        int left = 0;
+        int right = height.length - 1;
+        int count = 0;
+        int minBound = 0;
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                minBound = Math.max(minBound, height[left]);
+                count += minBound - height[left];
+                left++;
+            } else {
+                minBound = Math.max(minBound, height[right]);
+                count += minBound - height[right];
+                right--;
+            }
+        }
+        return count;
     }
 
     public static int trap(int[] height) {
