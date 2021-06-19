@@ -1,5 +1,8 @@
 package year2021.month6.no84;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class LargestRectangleInHistogram {
 
     public static void main(String[] args) {
@@ -9,7 +12,43 @@ public class LargestRectangleInHistogram {
         System.out.println(largestRectangleArea(heights2));
     }
 
-    public static int largestRectangleArea(int[] heights) {
+    /*
+     * 单调递增栈
+     * 暴力法中，我们需要找到任意一个柱子的左右边界，其实就是在左右方
+     * 寻找是否存在比当前柱子高度严格要小的柱子，有则为边界
+     * 因此，若我们遍历 heights 时，保持栈内元素高度递增
+     * 如果当前柱子高度比栈顶元素高度大，则将其入栈，
+     *   且可知新栈顶元素的左边界即为原栈顶元素
+     * 若果当前柱子高度比栈顶元素高度小，则连续出栈
+     *   并在每次出栈时更新出栈元素高度所能勾勒出的面积
+     * 栈内元素为索引，以便宽度计算
+     * 同时在数组前后引入两个高度为 0 的哨兵避免重复判断
+     * 每个元素只入栈、出栈各一次，故复杂度为
+     * time is O(n), space is O(n)
+     * */
+    private static int largestRectangleArea(int[] heights) {
+        int[] newHeights = new int[heights.length + 2];
+        // 哨兵
+        newHeights[0] = 0;
+        newHeights[newHeights.length - 1] = 0;
+        System.arraycopy(heights, 0, newHeights, 1, heights.length);
+        Deque<Integer> stack = new LinkedList<>();
+        int maxArea = 0;
+        for (int i = 0; i < newHeights.length; i++) {
+            while (!stack.isEmpty() && newHeights[i] < newHeights[stack.peekLast()]) {
+                int index = stack.pollLast();
+                int currHeight = newHeights[index];
+                assert !stack.isEmpty();    // 由于栈底有高度为 0 的哨兵，且该哨兵不可能出栈，则此处一定有元素
+                int currWidth = i - stack.peekLast() - 1;
+                maxArea = Math.max(maxArea, currWidth * currHeight);
+
+            }
+            stack.offerLast(i);
+        }
+        return maxArea;
+    }
+
+    public static int largestRectangleArea1(int[] heights) {
         // 暴力法（中心扩散），对于每一根柱子，我们以当前柱子高度尽量向两方扩散
         // 扩散到顶时即可计算当前柱子高度所能勾勒成的最大面积
         int max = 0;
