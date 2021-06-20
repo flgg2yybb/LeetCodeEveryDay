@@ -17,15 +17,70 @@ public class WildcardMatching {
         String p5 = "a*c?b";
         String s6 = "";
         String p6 = "*";
+        String s7 = "";
+        String p7 = "";
+        String s8 = "a";
+        String p8 = "";
         System.out.println(isMatch(s1, p1));
         System.out.println(isMatch(s2, p2));
         System.out.println(isMatch(s3, p3));
         System.out.println(isMatch(s4, p4));
         System.out.println(isMatch(s5, p5));
         System.out.println(isMatch(s6, p6));
+        System.out.println(isMatch(s7, p7));
+        System.out.println(isMatch(s8, p8));
     }
 
-    public static boolean isMatch(String s, String p) {
+    private static boolean isMatch(String s, String p) {
+        /*
+         * DP, time is O(nm), space is O(nm)
+         * n == s.length, m == p.length
+         * 状态定义
+         * dp[i][j] 表示 s 串中的 [0,i) 的子串能否与 p 串中的 [0,j) 的子串进行匹配
+         * 初始值
+         * dp[0][0] = true （空串可以和空串匹配）
+         * dp[0][j] = dp[0][j - 1] && p.charAt(j - 1) == '*', j > 0
+         * dp[i][0] = false, i > 0
+         * 状态转移方程
+         * 需要求解状态 dp[i][j], i > 0 && j > 0
+         * 若 p[j] == '?'，由于 '?' 可以匹配单个字符
+         *   则 dp[i][j] = dp[i-1][j-1]
+         * 若 p[j] == '*'，则 '*' 可以匹配 零到多个 字符
+         *   则 dp[i][j] = dp[i-1][j] || dp[i-1][j-1] || dp[i][j-1]
+         *                 匹配多个字符     匹配一个字符      不匹配
+         *   可简化为 dp[i][j] = dp[i-1][j] || dp[i][j-1]
+         *   注：dp[i][j] == dp[i-1][j] 意味着 s[0,i)与 p[0,j) 的匹配结果 等于 s[0,i-1)与 p[0,j) 的匹配结果，即 s[i] 这个字符可以忽略，可体现为被 * 所匹配
+         * 否则, p[j] 为普通字符, 则有,
+         *   dp[i][j] = s[i] == p[j] && dp[i-1][j-1]
+         * 状态转移方向，dp数组从左上到右下
+         * */
+        int n = s.length();
+        int m = p.length();
+        boolean[][] dp = new boolean[n + 1][m + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= m; j++) {
+            dp[0][j] = dp[0][j - 1] && p.charAt(j - 1) == '*';
+        }
+        for (int i = 1; i <= n; i++) {  // 可省略
+            dp[i][0] = false;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                int sIndex = i - 1;
+                int pIndex = j - 1;
+                if (p.charAt(pIndex) == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(pIndex) == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                } else {
+                    dp[i][j] = s.charAt(sIndex) == p.charAt(pIndex) && dp[i - 1][j - 1];
+                }
+            }
+        }
+        return dp[n][m];
+    }
+
+    public static boolean isMatch1(String s, String p) {
         return backtrack(s, 0, p, 0);
     }
 
