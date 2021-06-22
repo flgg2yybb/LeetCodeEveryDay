@@ -5,8 +5,23 @@ public class MaximumProductSubarray {
     public static void main(String[] args) {
         int[] nums1 = {2, 3, -2, 4};
         int[] nums2 = {-2, 0, -1};
-        System.out.println(maxProduct(nums1));
-        System.out.println(maxProduct(nums2));
+        System.out.println(maxProduct1(nums1));
+        System.out.println(maxProduct1(nums2));
+    }
+
+    private static int maxProduct1(int[] nums) {
+        // DP，状态压缩
+        int max = nums[0];
+        int min = nums[0];
+        int ans = max;
+        for (int i = 1; i < nums.length; i++) {
+            int prevMax = max;
+            int prevMin = min;
+            max = Math.max(Math.max(prevMax * nums[i], prevMin * nums[i]), nums[i]);
+            min = Math.min(Math.min(prevMax * nums[i], prevMin * nums[i]), nums[i]);
+            ans = Math.max(ans, max);
+        }
+        return ans;
     }
 
     public static int maxProduct(int[] nums) {
