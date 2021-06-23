@@ -5,8 +5,25 @@ public class BestTimeToBuyAndSellStockWithCooldown {
     public static void main(String[] args) {
         int[] prices1 = {1, 2, 3, 0, 2};
         int[] prices2 = {1, 2, 4};
-        System.out.println(maxProfit(prices1));
-        System.out.println(maxProfit(prices2));
+        System.out.println(maxProfit1(prices1));
+        System.out.println(maxProfit1(prices2));
+    }
+
+    private static int maxProfit1(int[] prices) {
+        // DP, 空间压缩， time is O(n), space is O(1)
+        int len = prices.length;
+        int clear = 0;
+        int clearAndInFrozenPeriod = 0;
+        int hold = -prices[0];
+        for (int i = 1; i < len; i++) {
+            int prevClear = clear;
+            int prevClearAndInFrozenPeriod = clearAndInFrozenPeriod;
+            int prevHold = hold;
+            clear = Math.max(prevClear, prevClearAndInFrozenPeriod);
+            clearAndInFrozenPeriod = prevHold + prices[i];
+            hold = Math.max(prevClear - prices[i], prevHold);
+        }
+        return Math.max(clear, clearAndInFrozenPeriod);
     }
 
     public static int maxProfit(int[] prices) {
