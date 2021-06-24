@@ -9,8 +9,20 @@ public class PerfectSquares {
     public static void main(String[] args) {
         int n1 = 12;
         int n2 = 13;
-        System.out.println(numSquares(n1));
-        System.out.println(numSquares(n2));
+        System.out.println(numSquares1(n1));
+        System.out.println(numSquares1(n2));
+    }
+
+    private static int numSquares1(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            dp[i] = i;  // 至少可以用 i 个 1 拼起来
+            for (int j = 1; i - j * j >= 0; j++) {
+                dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
+            }
+        }
+        return dp[n];
     }
 
     public static int numSquares(int n) {
