@@ -10,6 +10,10 @@ import java.util.Queue;
 
 public class CourseScheduleII {
 
+    private static int[] path = new int[0];
+    private static boolean valid = true;
+    private static int index = 0;
+
     public static void main(String[] args) {
         int numCourses1 = 2;
         int[][] prerequisites1 = {{1, 0}};
@@ -17,10 +21,52 @@ public class CourseScheduleII {
         int[][] prerequisites2 = {{1, 0}, {2, 0}, {3, 1}, {3, 2}};
         int numCourses3 = 3;
         int[][] prerequisites3 = {{1, 0}, {0, 1}, {0, 2}};
-        System.out.println(Arrays.toString(findOrder(numCourses1, prerequisites1)));
-        System.out.println(Arrays.toString(findOrder(numCourses2, prerequisites2)));
-        System.out.println(Arrays.toString(findOrder(numCourses3, prerequisites3)));
+        System.out.println(Arrays.toString(findOrder1(numCourses1, prerequisites1)));
+        System.out.println(Arrays.toString(findOrder1(numCourses2, prerequisites2)));
+        System.out.println(Arrays.toString(findOrder1(numCourses3, prerequisites3)));
+    }
 
+    private static int[] findOrder1(int numCourses, int[][] prerequisites) {
+        Map<Integer, List<Integer>> adjacentMap = new HashMap<>();  // 邻接表
+        for (int i = 0; i < numCourses; i++) {
+            adjacentMap.put(i, new ArrayList<>(numCourses));
+        }
+        for (int[] prerequisite : prerequisites) {
+            int from = prerequisite[1];
+            int to = prerequisite[0];
+            adjacentMap.get(from).add(to);
+        }
+        //dfs, -1 未访问；0 正在访问；1 已访问
+        int[] visited = new int[numCourses];
+        Arrays.fill(visited, -1);
+        path = new int[numCourses];
+        index = numCourses - 1;
+        valid = true;
+        for (int node = 0; node < numCourses && valid; node++) {
+            dfs(adjacentMap, visited, node);
+        }
+        return valid ? path : new int[0];
+    }
+
+    private static void dfs(Map<Integer, List<Integer>> adjacentMap, int[] visited, int node) {
+        if (visited[node] == 1) {   // 已访问
+            return;
+        }
+        if (visited[node] == 0) {   // 正在访问，有环
+            valid = false;
+            return;
+        }
+        visited[node] = 0;
+        List<Integer> nextNodes = adjacentMap.get(node);
+        for (int nextNode : nextNodes) {
+            if (!valid) {
+                return;
+            }
+            dfs(adjacentMap, visited, nextNode);
+        }
+        path[index] = node;
+        index--;
+        visited[node] = 1;
     }
 
     public static int[] findOrder(int numCourses, int[][] prerequisites) {
