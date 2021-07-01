@@ -1,4 +1,4 @@
-package year2021.month6.no210;
+package year2021.month7.no210;
 
 import java.util.ArrayList;
 import java.util.Arrays;
