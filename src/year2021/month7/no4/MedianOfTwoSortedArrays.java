@@ -26,16 +26,46 @@ public class MedianOfTwoSortedArrays {
         int[] nums101 = {3, 4, 5};
         int[] nums102 = {1, 2};
 
-        System.out.println(findMedianSortedArrays(nums11, nums12));
-        System.out.println(findMedianSortedArrays(nums21, nums22));
-        System.out.println(findMedianSortedArrays(nums31, nums32));
-        System.out.println(findMedianSortedArrays(nums41, nums42));
-        System.out.println(findMedianSortedArrays(nums51, nums52));
-        System.out.println(findMedianSortedArrays(nums61, nums62));
-        System.out.println(findMedianSortedArrays(nums71, nums72));
-        System.out.println(findMedianSortedArrays(nums81, nums82));
-        System.out.println(findMedianSortedArrays(nums91, nums92));
-        System.out.println(findMedianSortedArrays(nums101, nums102));
+        System.out.println(findMedianSortedArrays1(nums11, nums12));
+        System.out.println(findMedianSortedArrays1(nums21, nums22));
+        System.out.println(findMedianSortedArrays1(nums31, nums32));
+        System.out.println(findMedianSortedArrays1(nums41, nums42));
+        System.out.println(findMedianSortedArrays1(nums51, nums52));
+        System.out.println(findMedianSortedArrays1(nums61, nums62));
+        System.out.println(findMedianSortedArrays1(nums71, nums72));
+        System.out.println(findMedianSortedArrays1(nums81, nums82));
+        System.out.println(findMedianSortedArrays1(nums91, nums92));
+        System.out.println(findMedianSortedArrays1(nums101, nums102));
+    }
+
+    public static double findMedianSortedArrays1(int[] nums1, int[] nums2) {
+        int m = nums1.length;
+        int n = nums2.length;
+        if (m > n) {
+            return findMedianSortedArrays1(nums2, nums1);
+        }
+        int total = m + n;
+        int leftSize = (total + 1) >> 1;    // leftSize = rightSize ( + 1)
+        int left = 0;
+        int right = m;
+        while (left < right) {
+            int i = left + ((right - left) >> 1); // 向下取整, 故 i 不会取到 m
+            int j = leftSize - i;   // 同时因为 m <= n，故 j 也不会取到 0
+            if (nums2[j - 1] <= nums1[i]) {
+                right = i;
+            } else {
+                left = i + 1;
+            }
+        }
+        int i = left;
+        int j = leftSize - i;
+        int num1Left = i == 0 ? Integer.MIN_VALUE : nums1[i - 1];
+        int num1Right = i == m ? Integer.MAX_VALUE : nums1[i];
+        int num2Left = j == 0 ? Integer.MIN_VALUE : nums2[j - 1];
+        int num2Right = j == n ? Integer.MAX_VALUE : nums2[j];
+        int leftMax = Math.max(num1Left, num2Left);
+        int rightMin = Math.min(num1Right, num2Right);
+        return ((m + n) & 1) == 1 ? leftMax : (leftMax + rightMin) / 2.0;
     }
 
     public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
