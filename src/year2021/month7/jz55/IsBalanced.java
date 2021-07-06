@@ -24,13 +24,30 @@ public class IsBalanced {
         System.out.println(isBalanced(root2));
     }
 
-    public static boolean isBalanced(TreeNode root) {
+    private static boolean isBalanced(TreeNode root) {
+        return getHeight(root) >= 0;
+    }
+
+    private static int getHeight(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = getHeight(root.left);
+        int right = getHeight(root.right);
+        int diff = Math.abs(left - right);
+        if (left == -1 || right == -1 || diff > 1) {
+            return -1;
+        }
+        return Math.max(left, right) + 1;
+    }
+
+    public static boolean isBalanced1(TreeNode root) {
         if (root == null) {
             return true;
         }
         int left = getDepth(root.left);
         int right = getDepth(root.right);
-        return Math.abs(left - right) <= 1 && isBalanced(root.left) && isBalanced(root.right);
+        return Math.abs(left - right) <= 1 && isBalanced1(root.left) && isBalanced1(root.right);
     }
 
     private static int getDepth(TreeNode root) {
