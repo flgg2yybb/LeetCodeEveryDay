@@ -1,5 +1,8 @@
 package year2021.month7.jz28;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class IsSymmetric {
 
     public static void main(String[] args) {
@@ -17,8 +20,29 @@ public class IsSymmetric {
                 new TreeNode(2,
                         null,
                         new TreeNode(3)));
-        System.out.println(isSymmetric(root1));
-        System.out.println(isSymmetric(root2));
+        System.out.println(isSymmetric1(root1));
+        System.out.println(isSymmetric1(root2));
+    }
+
+    private static boolean isSymmetric1(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            TreeNode left = queue.poll();
+            TreeNode right = queue.poll();
+            if (left == null && right == null) {
+                continue;
+            }
+            if (left == null || right == null || left.val != right.val) {
+                return false;
+            }
+            queue.offer(left.left);
+            queue.offer(right.right);
+            queue.offer(left.right);
+            queue.offer(right.left);
+        }
+        return true;
     }
 
     public static boolean isSymmetric(TreeNode root) {
