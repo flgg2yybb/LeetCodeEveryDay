@@ -10,8 +10,55 @@ public class GetLeastNumbers {
         int k1 = 2;
         int[] arr2 = {0, 1, 2, 1};
         int k2 = 1;
-        System.out.println(Arrays.toString(getLeastNumbers(arr1, k1)));
-        System.out.println(Arrays.toString(getLeastNumbers(arr2, k2)));
+        System.out.println(Arrays.toString(getLeastNumbers1(arr1, k1)));
+        System.out.println(Arrays.toString(getLeastNumbers1(arr2, k2)));
+    }
+
+    private static int[] getLeastNumbers1(int[] arr, int k) {
+        // 利用快排思想找到第 k 小的数的位置，则[0,pos]即为最小的 k 个数
+        // Avg time is O(n), worst time is O(n^2), space is O(n)
+        if (k <= 0) {
+            return new int[0];
+        }
+        if (k >= arr.length) {
+            return arr;
+        }
+        partitionForTopKth(arr, k);
+        int[] ans = new int[k];
+        System.arraycopy(arr, 0, ans, 0, k);
+        return ans;
+    }
+
+    private static void partitionForTopKth(int[] arr, int k) {
+        int start = 0;
+        int end = arr.length - 1;
+        while (start < end) {
+            int pivot = partition(arr, start, end);
+            if (pivot == k - 1) {
+                return;
+            }
+            if (pivot < k - 1) {
+                start = pivot + 1;
+            } else {
+                end = pivot - 1;
+            }
+        }
+    }
+
+    private static int partition(int[] arr, int left, int right) {
+        int key = arr[left];
+        while (left < right) {
+            while (left < right && arr[right] >= key) {
+                right--;
+            }
+            arr[left] = arr[right];
+            while (left < right && arr[left] <= key) {
+                left++;
+            }
+            arr[right] = arr[left];
+        }
+        arr[left] = key;
+        return left;
     }
 
     public static int[] getLeastNumbers(int[] arr, int k) {
