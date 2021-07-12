@@ -8,7 +8,19 @@ public class MaxValue {
                 {1, 5, 1},
                 {4, 2, 1}
         };
-        System.out.println(maxValue(grid1));
+        System.out.println(maxValue1(grid1));
+    }
+
+    private static int maxValue1(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[j] = Math.max(dp[j], dp[j - 1]) + grid[i - 1][j - 1];
+            }
+        }
+        return dp[n];
     }
 
     public static int maxValue(int[][] grid) {
