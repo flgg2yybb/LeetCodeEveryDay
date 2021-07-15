@@ -1,6 +1,7 @@
 package year2021.month7.jz45;
 
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class MinNumber {
@@ -8,8 +9,16 @@ public class MinNumber {
     public static void main(String[] args) {
         int[] nums1 = {10, 2};
         int[] nums2 = {3, 30, 34, 5, 9};
-        System.out.println(minNumber(nums1));
-        System.out.println(minNumber(nums2));
+        System.out.println(minNumber1(nums1));
+        System.out.println(minNumber1(nums2));
+    }
+
+    private static String minNumber1(int[] nums) {
+        return IntStream.of(nums)
+                .boxed()
+                .map(String::valueOf)
+                .sorted((s1, s2) -> (s1 + s2).compareTo(s2 + s1))
+                .collect(Collectors.joining());
     }
 
     public static String minNumber(int[] nums) {
