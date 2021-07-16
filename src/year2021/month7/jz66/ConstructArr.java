@@ -7,8 +7,26 @@ public class ConstructArr {
     public static void main(String[] args) {
         int[] a1 = {1, 2, 3, 4, 5};
         int[] a2 = {120, 60, 40, 30, 24};
-        System.out.println(Arrays.toString(constructArr(a1)));
-        System.out.println(Arrays.toString(constructArr(a2)));
+        System.out.println(Arrays.toString(constructArr1(a1)));
+        System.out.println(Arrays.toString(constructArr1(a2)));
+    }
+
+    private static int[] constructArr1(int[] a) {
+        if (a == null || a.length < 2) {
+            return new int[0];
+        }
+        int length = a.length;
+        int[] ans = new int[length];
+        ans[0] = 1;
+        for (int i = 1; i < length; i++) {
+            ans[i] = ans[i - 1] * a[i - 1];
+        }
+        int right = 1;
+        for (int i = length - 2; i >= 0; i--) {
+            right = right * a[i + 1];
+            ans[i] = ans[i] * right;
+        }
+        return ans;
     }
 
     public static int[] constructArr(int[] a) {
