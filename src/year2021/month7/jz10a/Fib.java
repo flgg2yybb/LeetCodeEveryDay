@@ -8,9 +8,37 @@ public class Fib {
         int n1 = 2;
         int n2 = 5;
         int n3 = 100;
-        System.out.println(fib1(n1));
-        System.out.println(fib1(n2));
-        System.out.println(fib1(n3));
+        System.out.println(fib3(n1));
+        System.out.println(fib3(n2));
+        System.out.println(fib3(n3));
+    }
+
+    private static int fib3(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        int first = 0;
+        int second = 1;
+        int ans = -1;
+        for (int i = 2; i <= n; i++) {
+            ans = (first + second) % 1000000007;
+            first = second;
+            second = ans;
+        }
+        return ans;
+    }
+
+    private static int fib2(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            dp[i] = (dp[i - 1] + dp[i - 2]) % 1000000007;
+        }
+        return dp[n];
     }
 
     private static int fib1(int n) {
@@ -26,8 +54,8 @@ public class Fib {
         if (cache[n] != -1) {
             return cache[n];
         }
-        int a = memorySearch(n - 1, cache) % 1000000007;
-        int b = memorySearch(n - 2, cache) % 1000000007;
+        int a = memorySearch(n - 1, cache);
+        int b = memorySearch(n - 2, cache);
         int ans = (a + b) % 1000000007;
         cache[n] = ans;
         return ans;
