@@ -7,7 +7,33 @@ public class FindRepeatNumber {
 
     public static void main(String[] args) {
         int[] nums1 = {2, 3, 1, 0, 2, 5, 3};
-        System.out.println(findRepeatNumber(nums1));
+        int[] nums2 = {1, 2, 3, 4, 5, 0};
+        int[] nums3 = {2, 2, 2, 2, 2};
+        int[] nums4 = {1, 1, 2, 2, 2};
+        System.out.println(findRepeatNumber1(nums1));
+        System.out.println(findRepeatNumber1(nums2));
+        System.out.println(findRepeatNumber1(nums3));
+        System.out.println(findRepeatNumber1(nums4));
+    }
+
+    private static int findRepeatNumber1(int[] nums) {
+        int pos = 0;
+        while (pos < nums.length) {
+            while (nums[pos] != pos) {
+                if (nums[pos] == nums[nums[pos]]) {
+                    return nums[pos];
+                }
+                swap(nums, pos, nums[pos]);
+            }
+            pos++;
+        }
+        return -1;
+    }
+
+    private static void swap(int[] nums, int x, int y) {
+        int temp = nums[x];
+        nums[x] = nums[y];
+        nums[y] = temp;
     }
 
     public static int findRepeatNumber(int[] nums) {
