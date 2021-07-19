@@ -6,9 +6,24 @@ public class NumWays {
         int n1 = 2;
         int n2 = 7;
         int n3 = 0;
-        System.out.println(numWays(n1));
-        System.out.println(numWays(n2));
-        System.out.println(numWays(n3));
+        System.out.println(numWays1(n1));
+        System.out.println(numWays1(n2));
+        System.out.println(numWays1(n3));
+    }
+
+    private static int numWays1(int n) {
+        if (n < 2) {
+            return 1;
+        }
+        int first = 1;
+        int second = 1;
+        int ans = first + second;
+        for (int i = 2; i <= n; i++) {
+            ans = (first + second) % 1000000007;
+            first = second;
+            second = ans;
+        }
+        return ans;
     }
 
     public static int numWays(int n) {
