@@ -13,14 +13,14 @@ public class MovingCount {
     }
 
     public static int movingCount(int m, int n, int k) {
-        // BFS，从坐标 [0,0] 出发，向周围扩散，边界顶点为 [m-1,n-1]
+        // BFS，从坐标 [0,0] 出发，向右上方扩散，边界顶点为 [m-1,n-1]
         int count = 0;
         Queue<Position> queue = new LinkedList<>();
         Position start = new Position(0, 0);
         boolean[][] visited = new boolean[m][n];
         queue.offer(start);
         visited[0][0] = true;
-        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+        int[][] directions = {{0, 1}, {1, 0}};
         while (!queue.isEmpty()) {
             Position pos = queue.poll();
             count++;
