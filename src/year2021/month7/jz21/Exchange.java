@@ -7,8 +7,33 @@ public class Exchange {
     public static void main(String[] args) {
         int[] nums1 = {1, 2, 3, 4};
         int[] nums2 = {2, 4, 7, 3, 56, 9, 5, 2, 5, 8, 5, 2, 5, 7, 3, 5, 2, 5, 2};
-        System.out.println(Arrays.toString(exchange(nums1)));
-        System.out.println(Arrays.toString(exchange(nums2)));
+        System.out.println(Arrays.toString(exchange1(nums1)));
+        System.out.println(Arrays.toString(exchange1(nums2)));
+    }
+
+    private static int[] exchange1(int[] nums) {
+        // slow/fast pointers
+        // [0, slow) -> odd
+        // [slow, fast) -> even
+        if (nums == null || nums.length == 0) {
+            return nums;
+        }
+        int slow = 0;
+        int fast = 0;
+        while (fast < nums.length) {
+            if (nums[fast] % 2 == 1) {
+                swap(nums, fast, slow);
+                slow++;
+            }
+            fast++;
+        }
+        return nums;
+    }
+
+    private static void swap(int[] nums, int x, int y) {
+        int temp = nums[x];
+        nums[x] = nums[y];
+        nums[y] = temp;
     }
 
     public static int[] exchange(int[] nums) {
