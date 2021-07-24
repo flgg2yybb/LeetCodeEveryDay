@@ -1,5 +1,8 @@
 package year2021.month7.jz27;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class MirrorTree {
 
     public static void main(String[] args) {
@@ -18,11 +21,35 @@ public class MirrorTree {
                         new TreeNode(6),
                         null));
         TreeNode root3 = null;
-        dfs(mirrorTree(root1));
+        dfs(mirrorTree1(root1));
         System.out.println();
-        dfs(mirrorTree(root2));
+        dfs(mirrorTree1(root2));
         System.out.println();
-        dfs(mirrorTree(root3));
+        dfs(mirrorTree1(root3));
+    }
+
+    private static TreeNode mirrorTree1(TreeNode root) {
+        if (root == null) {
+            return root;
+        }
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.offerLast(root);
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.pop();
+            if (node == null) {
+                continue;
+            }
+            queue.offerLast(node.left);
+            queue.offerLast(node.right);
+            swapChildrens(node);
+        }
+        return root;
+    }
+
+    private static void swapChildrens(TreeNode node) {
+        TreeNode temp = node.left;
+        node.left = node.right;
+        node.right = temp;
     }
 
     public static TreeNode mirrorTree(TreeNode root) {
