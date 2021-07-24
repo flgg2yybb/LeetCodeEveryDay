@@ -6,9 +6,31 @@ public class HammingWeight {
         int n1 = 11;
         int n2 = 128;
         int n3 = -3;
-        System.out.println(hammingWeight(n1));
-        System.out.println(hammingWeight(n2));
-        System.out.println(hammingWeight(n3));
+        System.out.println(hammingWeight2(n1));
+        System.out.println(hammingWeight2(n2));
+        System.out.println(hammingWeight2(n3));
+    }
+
+    private static int hammingWeight2(int n) {
+        int count = 0;
+        while (n != 0) {
+            if ((n & 1) == 1) {
+                count++;
+            }
+            n = n >>> 1;    //无符号右移
+        }
+        return count;
+    }
+
+    private static int hammingWeight1(int n) {
+        int count = 0;
+        for (int i = 0; i < 32; i++) {
+            if ((n & 1) == 1) {
+                count++;
+            }
+            n = n >>> 1;    //无符号右移
+        }
+        return count;
     }
 
     public static int hammingWeight(int n) {
