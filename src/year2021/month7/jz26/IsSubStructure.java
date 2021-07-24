@@ -22,9 +22,20 @@ public class IsSubStructure {
                 new TreeNode(3));
         System.out.println(isSubStructure(a1, b1));
         System.out.println(isSubStructure(a1, b2));
+        System.out.println(isSubStructure(a1, b3));
     }
 
-    public static boolean isSubStructure(TreeNode A, TreeNode B) {
+    private static boolean isSubStructure(TreeNode A, TreeNode B) {
+        if (A == null || B == null) {
+            return false;
+        }
+        if (isSameStructure(A, B)) {
+            return true;
+        }
+        return isSubStructure(A.left, B) || isSubStructure(A.right, B);
+    }
+
+    public static boolean isSubStructure1(TreeNode A, TreeNode B) {
         if (A == null || B == null) {
             return false;
         }
