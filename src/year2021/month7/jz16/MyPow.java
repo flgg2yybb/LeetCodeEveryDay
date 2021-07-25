@@ -11,10 +11,31 @@ public class MyPow {
         int n3 = -2;
         double x4 = 1.0d;
         int n4 = Integer.MIN_VALUE;
-        System.out.println(myPow(x1, n1));
-        System.out.println(myPow(x2, n2));
-        System.out.println(myPow(x3, n3));
-        System.out.println(myPow(x4, n4));
+        System.out.println(myPow1(x1, n1));
+        System.out.println(myPow1(x2, n2));
+        System.out.println(myPow1(x3, n3));
+        System.out.println(myPow1(x4, n4));
+    }
+
+    private static double myPow1(double x, int n) {
+        if (n < 0) {
+            return 1 / (myPow1(x, -(n + 1)) * x);    // 防止整型负数越界
+        }
+        if (n == 0) {
+            return 1;
+        }
+        if (x == 0 || x == 1) {
+            return x;
+        }
+        double ans = 1d;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                ans *= x;
+            }
+            x *= x;
+            n /= 2;
+        }
+        return ans;
     }
 
     public static double myPow(double x, int n) {
