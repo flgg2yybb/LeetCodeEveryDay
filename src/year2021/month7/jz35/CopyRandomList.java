@@ -39,6 +39,13 @@ public class CopyRandomList {
     }
 
     private static Node copyRandomList(Node head) {
+        /*
+         * 使用哈希表存储<旧节点，新节点>的映射，先遍历原链表
+         * 并将全部新节点存入哈希表中
+         * 再从头遍历新旧头结点，根据旧节点的 next 和 random，
+         * 从哈希表中获取新节点的 next 和 random 从而更改新节点
+         * next 和 random 的引用
+         * */
         if (head == null) {
             return head;
         }
@@ -61,6 +68,10 @@ public class CopyRandomList {
     }
 
     public static Node copyRandomList1(Node head) {
+        /*
+         * 使用哈希表存储<旧节点，新节点>的映射，动态新增哈希表
+         * 遍历链表，分别复制 next 和 random
+         * */
         Map<Node, Node> nodeMap = new HashMap<>();
         return copy(head, nodeMap);
     }
