@@ -38,7 +38,29 @@ public class CopyRandomList {
         System.out.println(copyRandomList(null));
     }
 
-    public static Node copyRandomList(Node head) {
+    private static Node copyRandomList(Node head) {
+        if (head == null) {
+            return head;
+        }
+        Map<Node, Node> nodeMap = new HashMap<>();
+        Node p = head;
+        while (p != null) {
+            nodeMap.put(p, new Node(p.val));
+            p = p.next;
+        }
+        Node newHead = nodeMap.get(head);
+        Node newRear = newHead;
+        p = head;
+        while (p != null) {
+            newRear.next = nodeMap.get(p.next);
+            newRear.random = nodeMap.get(p.random);
+            p = p.next;
+            newRear = newRear.next;
+        }
+        return newHead;
+    }
+
+    public static Node copyRandomList1(Node head) {
         Map<Node, Node> nodeMap = new HashMap<>();
         return copy(head, nodeMap);
     }
