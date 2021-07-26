@@ -8,11 +8,22 @@ public class MaxSubArray {
         int[] nums3 = {0};
         int[] nums4 = {-1};
         int[] nums5 = {-100000};
-        System.out.println(maxSubArray(nums1));
-        System.out.println(maxSubArray(nums2));
-        System.out.println(maxSubArray(nums3));
-        System.out.println(maxSubArray(nums4));
-        System.out.println(maxSubArray(nums5));
+        System.out.println(maxSubArray1(nums1));
+        System.out.println(maxSubArray1(nums2));
+        System.out.println(maxSubArray1(nums3));
+        System.out.println(maxSubArray1(nums4));
+        System.out.println(maxSubArray1(nums5));
+    }
+
+    private static int maxSubArray1(int[] nums) {
+        int n = nums.length;
+        int it = nums[0];
+        int max = it;
+        for (int i = 1; i < n; i++) {
+            it = Math.max(it, 0) + nums[i];
+            max = Math.max(max, it);
+        }
+        return max;
     }
 
     public static int maxSubArray(int[] nums) {
