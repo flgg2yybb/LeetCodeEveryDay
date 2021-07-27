@@ -6,6 +6,9 @@ import java.util.List;
 
 public class TreeToDoublyList {
 
+    private static Node pre = null;
+    private static Node head = null;
+
     public static void main(String[] args) {
         Node tree = new Node(4,
                 new Node(2,
@@ -15,7 +18,34 @@ public class TreeToDoublyList {
         disp(treeToDoublyList(tree));
     }
 
-    public static Node treeToDoublyList(Node root) {
+    private static Node treeToDoublyList(Node root) {
+        if (root == null) {
+            return root;
+        }
+        pre = null;
+        head = null;
+        dfs(root);
+        head.left = pre;
+        pre.right = head;
+        return head;
+    }
+
+    private static void dfs(Node cur) {
+        if (cur == null) {
+            return;
+        }
+        dfs(cur.left);
+        if (pre == null) {
+            head = cur;
+        } else {
+            pre.right = cur;
+        }
+        cur.left = pre;
+        pre = cur;
+        dfs(cur.right);
+    }
+
+    public static Node treeToDoublyList1(Node root) {
         if (root == null) {
             return root;
         }
