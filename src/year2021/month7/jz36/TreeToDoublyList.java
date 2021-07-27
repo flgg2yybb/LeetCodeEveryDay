@@ -15,7 +15,7 @@ public class TreeToDoublyList {
                         new Node(1),
                         new Node(3)),
                 new Node(5));
-        disp(treeToDoublyList(tree));
+        disp(treeToDoublyList1(tree));
     }
 
     private static Node treeToDoublyList(Node root) {
@@ -25,6 +25,34 @@ public class TreeToDoublyList {
         pre = null;
         head = null;
         dfs(root);
+        head.left = pre;
+        pre.right = head;
+        return head;
+    }
+
+    private static Node treeToDoublyList1(Node root) {
+        if (root == null) {
+            return root;
+        }
+        Node pre = null;
+        Node head = null;
+        Deque<Node> stack = new LinkedList<>();
+        Node cur = root;
+        while (cur != null || !stack.isEmpty()) {
+            while (cur != null) {
+                stack.offerLast(cur);
+                cur = cur.left;
+            }
+            cur = stack.pollLast();
+            if (pre == null) {
+                head = cur;
+            } else {
+                pre.right = cur;
+            }
+            cur.left = pre;
+            pre = cur;
+            cur = cur.right;
+        }
         head.left = pre;
         pre.right = head;
         return head;
@@ -45,7 +73,7 @@ public class TreeToDoublyList {
         dfs(cur.right);
     }
 
-    public static Node treeToDoublyList1(Node root) {
+    public static Node treeToDoublyList2(Node root) {
         if (root == null) {
             return root;
         }
