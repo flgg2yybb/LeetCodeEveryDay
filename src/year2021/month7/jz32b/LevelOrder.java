@@ -18,7 +18,24 @@ public class LevelOrder {
         System.out.println(levelOrder(root2));
     }
 
-    public static List<List<Integer>> levelOrder(TreeNode root) {
+    private static List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> ans = new ArrayList<>();
+        dfs(root, ans, 0);
+        return ans;
+    }
+
+    private static void dfs(TreeNode root, List<List<Integer>> ans, int level) {
+        if (root != null) {
+            if (level == ans.size()) {
+                ans.add(new ArrayList<>());
+            }
+            ans.get(level).add(root.val);
+            dfs(root.left, ans, level + 1);
+            dfs(root.right, ans, level + 1);
+        }
+    }
+
+    public static List<List<Integer>> levelOrder1(TreeNode root) {
         List<List<Integer>> ans = new ArrayList<>();
         if (root == null) {
             return ans;
@@ -26,7 +43,7 @@ public class LevelOrder {
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         while (!queue.isEmpty()) {
-            int size = queue.size();
+            int size = queue.size();    // 需提前保存队列当前遍历层元素，否则在队列出队后，队列的大小则发生了改变
             List<Integer> curlevel = new LinkedList<>();
             for (int i = 0; i < size; i++) {
                 TreeNode node = queue.poll();
