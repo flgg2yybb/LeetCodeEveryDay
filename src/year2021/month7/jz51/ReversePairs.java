@@ -5,8 +5,45 @@ public class ReversePairs {
     public static void main(String[] args) {
         int[] nums1 = {7, 5, 6, 4};
         int[] nums2 = {};
-        System.out.println(reversePairs(nums1));
-        System.out.println(reversePairs(nums2));
+        System.out.println(reversePairs1(nums1));
+        System.out.println(reversePairs1(nums2));
+    }
+
+    private static int reversePairs1(int[] nums) {
+        return mergeSort(nums, 0, nums.length - 1);
+    }
+
+    private static int mergeSort(int[] nums, int start, int end) {
+        if (start >= end) {
+            return 0;
+        }
+        int mid = start + (end - start) / 2;
+        int ans = mergeSort(nums, start, mid) + mergeSort(nums, mid + 1, end);
+        int left = start;
+        int right = mid + 1;
+        int[] temp = new int[end - start + 1];
+        int pos = 0;
+        while (left <= mid && right <= end) {
+            if (nums[left] <= nums[right]) {
+                temp[pos] = nums[left];
+                left++;
+            } else {
+                // 存在逆序对
+                temp[pos] = nums[right];
+                right++;
+                // 当前 nums[right] 可与 [left, mid] 的元素组成逆序对
+                ans += mid - left + 1;
+            }
+            pos++;
+        }
+        while (left <= mid) {
+            temp[pos++] = nums[left++];
+        }
+        while (right <= end) {
+            temp[pos++] = nums[right++];
+        }
+        System.arraycopy(temp, 0, nums, start, temp.length);
+        return ans;
     }
 
     public static int reversePairs(int[] nums) {
