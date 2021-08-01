@@ -1,4 +1,4 @@
-package year2021.month7.jz51;
+package year2021.month8.jz51;
 
 public class ReversePairs {
 
