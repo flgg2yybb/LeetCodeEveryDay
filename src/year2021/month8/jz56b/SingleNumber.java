@@ -26,13 +26,11 @@ public class SingleNumber {
                 mask <<= 1;
             }
         }
-        for (int i = 0; i < bits.length; i++) {
-            bits[i] %= 3;
-        }
         int ans = 0;
         int mask = 1;
-        for (int bit : bits) {
-            if (bit == 1) {
+        for (int i = 0; i < bits.length; i++) {
+            bits[i] %= 3;
+            if (bits[i] == 1) {
                 ans |= mask;
             }
             mask <<= 1;
