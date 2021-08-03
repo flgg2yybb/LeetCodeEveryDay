@@ -3,6 +3,7 @@ package year2021.month8.jz57b;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -13,9 +14,30 @@ public class FindContinuousSequence {
         int target1 = 9;
         int target2 = 15;
         int target3 = 100000;
-        System.out.println(Arrays.deepToString(findContinuousSequence(target1)));
-        System.out.println(Arrays.deepToString(findContinuousSequence(target2)));
-        System.out.println(Arrays.deepToString(findContinuousSequence(target3)));
+        System.out.println(Arrays.deepToString(findContinuousSequence1(target1)));
+        System.out.println(Arrays.deepToString(findContinuousSequence1(target2)));
+        System.out.println(Arrays.deepToString(findContinuousSequence1(target3)));
+    }
+
+    private static int[][] findContinuousSequence1(int target) {
+        // Sliding Window
+        int left = 1;
+        int right = 2;
+        int sum = 3;
+        List<int[]> lists = new LinkedList<>();
+        while (left <= target / 2) {
+            if (sum == target) {
+                lists.add(IntStream.rangeClosed(left, right).toArray());
+            }
+            if (sum >= target) {
+                sum -= left;
+                left++;
+            } else {
+                right++;
+                sum += right;
+            }
+        }
+        return lists.toArray(new int[0][]);
     }
 
     public static int[][] findContinuousSequence(int target) {
