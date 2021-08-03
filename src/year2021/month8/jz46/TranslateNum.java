@@ -6,9 +6,29 @@ public class TranslateNum {
         int num1 = 12258;
         int num2 = 0;
         int num3 = Integer.MAX_VALUE;
-        System.out.println(translateNum(num1));
-        System.out.println(translateNum(num2));
-        System.out.println(translateNum(num3));
+        System.out.println(translateNum1(num1));
+        System.out.println(translateNum1(num2));
+        System.out.println(translateNum1(num3));
+    }
+
+    private static int translateNum1(int num) {
+        String numStr = String.valueOf(num);
+        int len = numStr.length();
+        int first = 1;
+        int second = 1;
+        int third = 1;
+        for (int i = 2; i <= len; i++) {
+            int pos = i - 1;
+            third = second;
+            int pre = numStr.charAt(pos - 1) - '0';
+            int cur = numStr.charAt(pos) - '0';
+            if (pre == 1 || pre == 2 && cur <= 5) {
+                third += first;
+            }
+            first = second;
+            second = third;
+        }
+        return third;
     }
 
     public static int translateNum(int num) {
