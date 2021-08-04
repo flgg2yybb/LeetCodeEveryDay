@@ -11,9 +11,28 @@ public class GetIntersectionNode {
         ListNode headB2 = new ListNode(3, meet2);
         ListNode headA3 = new ListNode(2, new ListNode(6, new ListNode(4)));
         ListNode headB3 = new ListNode(1, new ListNode(4));
-        System.out.println(getIntersectionNode(headA1, headB1));
-        System.out.println(getIntersectionNode(headA2, headB2));
-        System.out.println(getIntersectionNode(headA3, headB3));
+        System.out.println(getIntersectionNode1(headA1, headB1));
+        System.out.println(getIntersectionNode1(headA2, headB2));
+        System.out.println(getIntersectionNode1(headA3, headB3));
+    }
+
+    private static ListNode getIntersectionNode1(ListNode headA, ListNode headB) {
+        /*
+         * 链表若有交点，则以下方法显然可以成功找出交点
+         * 若无交点，设 headA 长度为 A，headB 长度为 B，则
+         * 若 A == B，则第一次遍历各自链表尾部时，p、q 就同时变为 null，此时返回 null
+         * 若 A != B，则遍历完两个链表时，p、q 也会同时变为 null，此时返回 null
+         * */
+        if (headA == null || headB == null) {
+            return null;
+        }
+        ListNode p = headA;
+        ListNode q = headB;
+        while (p != q) {
+            p = p == null ? headB : p.next;
+            q = q == null ? headA : q.next;
+        }
+        return p;
     }
 
     public static ListNode getIntersectionNode(ListNode headA, ListNode headB) {
