@@ -1,4 +1,4 @@
-package year2021.month8.jz58;
+package year2021.month8.jz58a;
 
 public class ReverseWords {
 
