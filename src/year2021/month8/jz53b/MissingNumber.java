@@ -15,7 +15,7 @@ public class MissingNumber {
 
     public static int missingNumber(int[] nums) {
         int left = 0;
-        int right = nums.length - 1;
+        int right = nums.length;
         while (left < right) {
             int mid = left + (right - left) / 2;
             if (nums[mid] == mid) {
@@ -24,7 +24,7 @@ public class MissingNumber {
                 right = mid;
             }
         }
-        return left != nums[left] ? left : left + 1;
+        return left;
     }
 
 }
