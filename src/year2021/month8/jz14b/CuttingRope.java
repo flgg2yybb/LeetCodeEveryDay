@@ -29,12 +29,25 @@ public class CuttingRope {
         int a = n / 3;
         int b = n % 3;
         if (b == 0) {
-            return (int) powerMod(3, a, MOD);
+            return (int) quickPowerMod(3, a, MOD);
         }
         if (b == 2) {
-            return (int) (powerMod(3, a, MOD) * 2 % MOD);
+            return (int) (quickPowerMod(3, a, MOD) * 2 % MOD);
         }
-        return (int) (powerMod(3, a - 1, MOD) * 4 % MOD);
+        return (int) (quickPowerMod(3, a - 1, MOD) * 4 % MOD);
+    }
+
+    private static long quickPowerMod(long x, int a, int p) {
+        // 快速幂求余 => 求 (x^a) % p，其中 x < p
+        long ans = 1;
+        while (a > 0) {
+            if ((a & 1) == 1) {
+                ans = (ans * x) % p;
+            }
+            x = (x * x) % p;
+            a >>>= 1;
+        }
+        return ans;
     }
 
     private static long powerMod(int x, int a, int p) {
