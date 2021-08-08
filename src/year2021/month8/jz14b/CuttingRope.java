@@ -9,9 +9,41 @@ public class CuttingRope {
         int n1 = 2;
         int n2 = 10;
         int n3 = 1000;
-        System.out.println(cuttingRope(n1));
-        System.out.println(cuttingRope(n2));
-        System.out.println(cuttingRope(n3));
+        System.out.println(cuttingRope1(n1));
+        System.out.println(cuttingRope1(n2));
+        System.out.println(cuttingRope1(n3));
+    }
+
+    private static int cuttingRope1(int n) {
+        /*
+         * 切分规则：
+         * 最优： 3 。把绳子尽可能切为多个长度为 3 的片段，留下的最后一段绳子的长度可能为 0,1,2 三种情况。
+         * 次优： 2 。若最后一段绳子长度为 2 ；则保留，不再拆为 1+1 。
+         * 最差： 1 。若最后一段绳子长度为 1 ；则应把一份 3 + 1 替换为 2 + 2，因为 2 ×2 > 3 × 1。
+         * */
+        if (n <= 3) {
+            return n - 1;
+        }
+        final int MOD = 1000000007;
+        // n = 3a + b，
+        int a = n / 3;
+        int b = n % 3;
+        if (b == 0) {
+            return (int) powerMod(3, a, MOD);
+        }
+        if (b == 2) {
+            return (int) (powerMod(3, a, MOD) * 2 % MOD);
+        }
+        return (int) (powerMod(3, a - 1, MOD) * 4 % MOD);
+    }
+
+    private static long powerMod(int x, int a, int p) {
+        long ans = 1;
+        while (a > 0) {
+            ans = (ans * x) % p;
+            a--;
+        }
+        return ans;
     }
 
     public static int cuttingRope(int n) {
