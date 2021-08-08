@@ -1,7 +1,10 @@
 package year2021.month8.jz37;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 public class MyCodec {
 
@@ -40,8 +43,43 @@ public class MyCodec {
 
 class Codec {
 
-    // Encodes a tree to a single string.
+    //DFS
     public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        dfsSerialize(root, sb);
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    private void dfsSerialize(TreeNode root, StringBuilder sb) {
+        if (root == null) {
+            sb.append("NULL,");
+        } else {
+            sb.append(root.val).append(",");
+            dfsSerialize(root.left, sb);
+            dfsSerialize(root.right, sb);
+        }
+    }
+
+    public TreeNode deserialize(String data) {
+        List<String> nodes = Arrays.stream(data.split(",")).collect(Collectors.toList());
+        return dfsDeserialize(nodes);
+    }
+
+    private TreeNode dfsDeserialize(List<String> nodes) {
+        if ("NULL".equals(nodes.get(0))) {
+            nodes.remove(0);
+            return null;
+        }
+        TreeNode node = new TreeNode(Integer.parseInt(nodes.get(0)));
+        nodes.remove(0);
+        node.left = dfsDeserialize(nodes);
+        node.right = dfsDeserialize(nodes);
+        return node;
+    }
+
+    // BFS
+    public String serialize1(TreeNode root) {
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         StringBuilder sb = new StringBuilder();
@@ -62,8 +100,7 @@ class Codec {
         return sb.toString();
     }
 
-    // Decodes your encoded data to tree.
-    public TreeNode deserialize(String data) {
+    public TreeNode deserialize1(String data) {
         if ("NULL".equals(data)) {
             return null;
         }
