@@ -48,6 +48,9 @@ public class IsStraight {
     }
 
     public static boolean isStraight(int[] nums) {
+        /*
+         * 排序，模拟顺子，遇到非顺子的牌，用 0 补齐
+         * */
         Arrays.sort(nums);
         int i = 0;
         int zeroCount = 0;
