@@ -10,12 +10,41 @@ public class IsStraight {
         int[] nums3 = {1, 2, 4, 5, 0};
         int[] nums4 = {1, 2, 6, 5, 0};
         int[] nums5 = {0, 0, 2, 2, 5};
-        System.out.println(isStraight(nums1));
-        System.out.println(isStraight(nums2));
-        System.out.println(isStraight(nums3));
-        System.out.println(isStraight(nums4));
-        System.out.println(isStraight(nums5));
+        System.out.println(isStraight1(nums1));
+        System.out.println(isStraight1(nums2));
+        System.out.println(isStraight1(nums3));
+        System.out.println(isStraight1(nums4));
+        System.out.println(isStraight1(nums5));
 
+    }
+
+    private static boolean isStraight1(int[] nums) {
+        /*
+         * 用 Set 遍历 nums 中非 0 元素，存在重复元素则说明不存在顺子
+         * 同时记录最大 max 、最小 min 元素，遍历完成之后，
+         * 说明不存在重复元素，若此时满足 max - min < 5，说明是顺子
+         * 前提：不存在重复元素，且满足 max - min < 5，举例：
+         * 0 个 0 元素，牌为 1 2 3 4 5
+         * 1 个 0 元素，牌为 1 0 3 4 5
+         * 2 个 0 元素，牌为 1 0 0 4 5
+         * 3 个 0 元素，牌为 1 0 0 0 5
+         * ...
+         * */
+        int[] set = new int[14];
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        for (int num : nums) {
+            if (num == 0) {
+                continue;
+            }
+            if (set[num] == 1) {
+                return false;
+            }
+            set[num] = 1;
+            max = Math.max(max, num);
+            min = Math.min(min, num);
+        }
+        return max - min < 5;
     }
 
     public static boolean isStraight(int[] nums) {
