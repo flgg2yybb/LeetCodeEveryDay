@@ -45,8 +45,72 @@ public class StrToInt {
 
 }
 
-
 class Automate {
+
+    private static final Map<String, List<String>> statusMap;
+
+    /*
+     *           SPACE       SIGN        NUMBER      CHAR
+     * SPACE     SPACE       SIGN        NUMBER      END
+     * SIGN       END        END         NUMBER      END
+     * NUMBER     END        END         NUMBER      END
+     * END        END        END           END       END
+     * */
+    static {
+        statusMap = new HashMap<>();
+        statusMap.put("SPACE", Arrays.asList("SPACE", "SIGN", "NUMBER", "END"));
+        statusMap.put("SIGN", Arrays.asList("END", "END", "NUMBER", "END"));
+        statusMap.put("NUMBER", Arrays.asList("END", "END", "NUMBER", "END"));
+        statusMap.put("END", Arrays.asList("END", "END", "END", "END"));
+    }
+
+    private long number;
+    private String status;
+    private boolean positive;
+
+    public Automate() {
+        this.status = "SPACE";
+        this.positive = true;
+        this.number = 0;
+    }
+
+    public void add(char c) {
+        this.status = statusMap.get(this.status).get(getCol(c));
+        if ("SIGN".equals(status)) {
+            positive = c == '+';
+        }
+        if ("NUMBER".equals(status)) {
+            number = number * 10 + (c - '0');
+            if (positive && number >= Integer.MAX_VALUE) {
+                number = Integer.MAX_VALUE;
+                status = "END";
+            }
+            if (!positive && number - 1 >= Integer.MAX_VALUE) {
+                number = 1L + Integer.MAX_VALUE;
+                status = "END";
+            }
+        }
+    }
+
+    public int getResult() {
+        return (int) (positive ? number : -1 * number);
+    }
+
+    private int getCol(char c) {
+        if (c == ' ') {
+            return 0;
+        }
+        if (c == '+' || c == '-') {
+            return 1;
+        }
+        if (Character.isDigit(c)) {
+            return 2;
+        }
+        return 3;
+    }
+}
+
+class StringAutomate {
 
     private static final Map<String, List<String>> statusMap;
 
@@ -69,7 +133,7 @@ class Automate {
     private String status;
     private boolean positive;
 
-    public Automate() {
+    public StringAutomate() {
         this.status = "SPACE";
         this.positive = true;
         this.number = new StringBuilder();
