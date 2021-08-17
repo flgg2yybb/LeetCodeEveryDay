@@ -37,10 +37,44 @@ public class PrintOrderly {
 
 class Foo {
 
+    private volatile int done = 0;
+
+    public Foo() {
+    }
+
+    public void first(Runnable printFirst) throws InterruptedException {
+
+        // printFirst.run() outputs "first". Do not change or remove this line.
+        printFirst.run();
+        done++;
+    }
+
+    public void second(Runnable printSecond) throws InterruptedException {
+
+        while (done < 1) {
+
+        }
+        // printSecond.run() outputs "second". Do not change or remove this line.
+        printSecond.run();
+        done++;
+    }
+
+    public void third(Runnable printThird) throws InterruptedException {
+
+        while (done < 2) {
+
+        }
+        // printThird.run() outputs "third". Do not change or remove this line.
+        printThird.run();
+    }
+}
+
+class Foo2 {
+
     private final AtomicInteger firstJobDone;
     private final AtomicInteger secondJobDone;
 
-    public Foo() {
+    public Foo2() {
         firstJobDone = new AtomicInteger(0);
         secondJobDone = new AtomicInteger(0);
     }
