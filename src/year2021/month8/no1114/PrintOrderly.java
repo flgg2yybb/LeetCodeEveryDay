@@ -1,5 +1,6 @@
 package year2021.month8.no1114;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,10 +39,38 @@ public class PrintOrderly {
 
 class Foo {
 
+    private final CountDownLatch secondCountDownLatch = new CountDownLatch(1);
+    private final CountDownLatch thirdCountDownLatch = new CountDownLatch(1);
+
+    public Foo() {
+    }
+
+    public void first(Runnable printFirst) throws InterruptedException {
+        // printFirst.run() outputs "first". Do not change or remove this line.
+        printFirst.run();
+        secondCountDownLatch.countDown();
+    }
+
+    public void second(Runnable printSecond) throws InterruptedException {
+        secondCountDownLatch.await();
+        // printSecond.run() outputs "second". Do not change or remove this line.
+        printSecond.run();
+        thirdCountDownLatch.countDown();
+    }
+
+    public void third(Runnable printThird) throws InterruptedException {
+        thirdCountDownLatch.await();
+        // printThird.run() outputs "third". Do not change or remove this line.
+        printThird.run();
+    }
+}
+
+class Foo5 {
+
     private final Semaphore secondSemaphore = new Semaphore(0);
     private final Semaphore thirdSemaphore = new Semaphore(0);
 
-    public Foo() {
+    public Foo5() {
     }
 
     public void first(Runnable printFirst) throws InterruptedException {
