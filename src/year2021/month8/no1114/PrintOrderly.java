@@ -1,7 +1,9 @@
 package year2021.month8.no1114;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PrintOrderly {
@@ -39,10 +41,38 @@ public class PrintOrderly {
 
 class Foo {
 
+    private final BlockingQueue<Integer> blockSecond = new SynchronousQueue<>();
+    private final BlockingQueue<Integer> blockThird = new SynchronousQueue<>();
+
+    public Foo() {
+    }
+
+    public void first(Runnable printFirst) throws InterruptedException {
+        // printFirst.run() outputs "first". Do not change or remove this line.
+        printFirst.run();
+        blockSecond.put(1);
+    }
+
+    public void second(Runnable printSecond) throws InterruptedException {
+        blockSecond.take();
+        // printSecond.run() outputs "second". Do not change or remove this line.
+        printSecond.run();
+        blockThird.put(1);
+    }
+
+    public void third(Runnable printThird) throws InterruptedException {
+        blockThird.take();
+        // printThird.run() outputs "third". Do not change or remove this line.
+        printThird.run();
+    }
+}
+
+class Foo6 {
+
     private final CountDownLatch secondCountDownLatch = new CountDownLatch(1);
     private final CountDownLatch thirdCountDownLatch = new CountDownLatch(1);
 
-    public Foo() {
+    public Foo6() {
     }
 
     public void first(Runnable printFirst) throws InterruptedException {
