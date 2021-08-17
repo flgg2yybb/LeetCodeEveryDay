@@ -5,6 +5,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class PrintOrderly {
 
@@ -41,10 +44,58 @@ public class PrintOrderly {
 
 class Foo {
 
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition1 = lock.newCondition();
+    private final Condition condition2 = lock.newCondition();
+    private final Condition condition3 = lock.newCondition();
+    private volatile int job = 1;
+
+    public Foo() {
+    }
+
+    public void first(Runnable printFirst) throws InterruptedException {
+        lock.lock();
+        while (job != 1) {
+            condition1.await();
+        }
+        // printFirst.run() outputs "first". Do not change or remove this line.
+        printFirst.run();
+        job = 2;
+        condition2.signal();
+        lock.unlock();
+    }
+
+    public void second(Runnable printSecond) throws InterruptedException {
+        lock.lock();
+        while (job != 2) {
+            condition2.await();
+        }
+        // printSecond.run() outputs "second". Do not change or remove this line.
+        printSecond.run();
+        job = 3;
+        condition3.signal();
+        lock.unlock();
+    }
+
+    public void third(Runnable printThird) throws InterruptedException {
+        lock.lock();
+        while (job != 3) {
+            condition3.await();
+        }
+        // printThird.run() outputs "third". Do not change or remove this line.
+        printThird.run();
+        job = 1;
+        condition1.signal();
+        lock.unlock();
+    }
+}
+
+class Foo7 {
+
     private final BlockingQueue<Integer> blockSecond = new SynchronousQueue<>();
     private final BlockingQueue<Integer> blockThird = new SynchronousQueue<>();
 
-    public Foo() {
+    public Foo7() {
     }
 
     public void first(Runnable printFirst) throws InterruptedException {
