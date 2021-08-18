@@ -1,5 +1,7 @@
 package year2021.month8.no1115;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
@@ -38,10 +40,42 @@ public class FooBarRepeatedly {
 class FooBar {
 
     private final int n;
+    private final BlockingQueue<Integer> blockFirst = new LinkedBlockingQueue<>() {{
+        add(1);
+    }};
+    private final BlockingQueue<Integer> blockSecond = new LinkedBlockingQueue<>();
+
+    public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            blockFirst.take();
+            // printFoo.run() outputs "foo". Do not change or remove this line.
+            printFoo.run();
+            blockSecond.put(1);
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            blockSecond.take();
+            // printBar.run() outputs "bar". Do not change or remove this line.
+            printBar.run();
+            blockFirst.put(1);
+        }
+    }
+
+}
+
+class FooBar5 {
+
+    private final int n;
     private final Semaphore firstSemaphore = new Semaphore(1);
     private final Semaphore secondSemaphore = new Semaphore(0);
 
-    public FooBar(int n) {
+    public FooBar5(int n) {
         this.n = n;
     }
 
