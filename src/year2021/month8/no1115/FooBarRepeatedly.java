@@ -1,5 +1,6 @@
 package year2021.month8.no1115;
 
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -37,12 +38,42 @@ public class FooBarRepeatedly {
 class FooBar {
 
     private final int n;
+    private final Semaphore firstSemaphore = new Semaphore(1);
+    private final Semaphore secondSemaphore = new Semaphore(0);
+
+    public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            firstSemaphore.acquire();
+            // printFoo.run() outputs "foo". Do not change or remove this line.
+            printFoo.run();
+            secondSemaphore.release();
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            secondSemaphore.acquire();
+            // printBar.run() outputs "bar". Do not change or remove this line.
+            printBar.run();
+            firstSemaphore.release();
+        }
+    }
+
+}
+
+class FooBar4 {
+
+    private final int n;
     private final Lock lock = new ReentrantLock();
     private final Condition condition1 = lock.newCondition();
     private final Condition condition2 = lock.newCondition();
     private int count = 1;  // 在 ReentrantLock 作用域中可以保证内存可见性
 
-    public FooBar(int n) {
+    public FooBar4(int n) {
         this.n = n;
     }
 
