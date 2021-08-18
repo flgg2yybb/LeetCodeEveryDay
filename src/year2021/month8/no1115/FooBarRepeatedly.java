@@ -1,6 +1,9 @@
 package year2021.month8.no1115;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
 public class FooBarRepeatedly {
@@ -34,10 +37,53 @@ public class FooBarRepeatedly {
 class FooBar {
 
     private final int n;
-    private final Object lock = new Object();
-    private int count = 1;
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition1 = lock.newCondition();
+    private final Condition condition2 = lock.newCondition();
+    private int count = 1;  // 在 ReentrantLock 作用域中可以保证内存可见性
 
     public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            lock.lock();
+            while (count % 2 == 0) {
+                condition1.await();
+            }
+            // printFoo.run() outputs "foo". Do not change or remove this line.
+            printFoo.run();
+            count++;
+            condition2.signal();
+            lock.unlock();
+
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+
+        for (int i = 0; i < n; i++) {
+            lock.lock();
+            while (count % 2 == 1) {
+                condition2.await();
+            }
+            // printBar.run() outputs "bar". Do not change or remove this line.
+            printBar.run();
+            count++;
+            condition1.signal();
+            lock.unlock();
+        }
+    }
+}
+
+class FooBar3 {
+
+    private final int n;
+    private final Object lock = new Object();
+    private int count = 1;      // 在 synchronized 作用域中相当于加了 volatile 修饰
+
+    public FooBar3(int n) {
         this.n = n;
     }
 
