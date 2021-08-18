@@ -40,12 +40,45 @@ public class FooBarRepeatedly {
 class FooBar {
 
     private final int n;
+    private final AtomicInteger ai = new AtomicInteger(1);
+
+    public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            while (ai.get() % 2 != 1) {
+                Thread.yield();
+            }
+            // printFoo.run() outputs "foo". Do not change or remove this line.
+            printFoo.run();
+            ai.incrementAndGet();
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            while (ai.get() % 2 != 0) {
+                Thread.yield();
+            }
+            // printBar.run() outputs "bar". Do not change or remove this line.
+            printBar.run();
+            ai.incrementAndGet();
+        }
+    }
+
+}
+
+class FooBar6 {
+
+    private final int n;
     private final BlockingQueue<Integer> blockFirst = new LinkedBlockingQueue<>() {{
         add(1);
     }};
     private final BlockingQueue<Integer> blockSecond = new LinkedBlockingQueue<>();
 
-    public FooBar(int n) {
+    public FooBar6(int n) {
         this.n = n;
     }
 
