@@ -34,9 +34,49 @@ public class FooBarRepeatedly {
 class FooBar {
 
     private final int n;
-    private volatile int count = 1;
+    private final Object lock = new Object();
+    private int count = 1;
 
     public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            synchronized (lock) {
+                while (count % 2 == 0) {
+                    lock.wait();
+                }
+                // printFoo.run() outputs "foo". Do not change or remove this line.
+                printFoo.run();
+                count++;
+                lock.notifyAll();
+            }
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+
+        for (int i = 0; i < n; i++) {
+            synchronized (lock) {
+                while (count % 2 == 1) {
+                    lock.wait();
+                }
+                // printBar.run() outputs "bar". Do not change or remove this line.
+                printBar.run();
+                count++;
+                lock.notifyAll();
+            }
+        }
+    }
+}
+
+class FooBar2 {
+
+    private final int n;
+    private volatile int count = 1;
+
+    public FooBar2(int n) {
         this.n = n;
     }
 
