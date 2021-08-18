@@ -34,9 +34,42 @@ public class FooBarRepeatedly {
 class FooBar {
 
     private final int n;
-    private final AtomicInteger ai = new AtomicInteger(1);
+    private volatile int count = 1;
 
     public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            while (count % 2 == 0) {
+
+            }
+            // printFoo.run() outputs "foo". Do not change or remove this line.
+            printFoo.run();
+            count++;
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+
+        for (int i = 0; i < n; i++) {
+            while (count % 2 == 1) {
+
+            }
+            // printBar.run() outputs "bar". Do not change or remove this line.
+            printBar.run();
+            count++;
+        }
+    }
+}
+
+class FooBar1 {
+
+    private final int n;
+    private final AtomicInteger ai = new AtomicInteger(1);
+
+    public FooBar1(int n) {
         this.n = n;
     }
 
