@@ -11,7 +11,7 @@ public class PrintZeroEvenOdd {
     public static void main(String[] args) {
         int n1 = 2;
         int n2 = 5;
-        ZeroEvenOdd zeroEvenOdd = new ZeroEvenOdd(n1);
+        ZeroEvenOdd zeroEvenOdd = new ZeroEvenOdd(n2);
         IntConsumer print = System.out::println;
         Thread zeroThread = new Thread(() -> {
             try {
@@ -44,13 +44,64 @@ public class PrintZeroEvenOdd {
 class ZeroEvenOdd {
 
     private final int n;
+    private final Object lock = new Object();
+    private volatile int count = 1;
+
+    public ZeroEvenOdd(int n) {
+        this.n = n;
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void zero(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            synchronized (lock) {
+                while (count % 2 == 0) {
+                    lock.wait();
+                }
+                printNumber.accept(0);
+                count++;
+                lock.notifyAll();
+            }
+        }
+    }
+
+    public void even(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 2; i <= n; i += 2) {
+            synchronized (lock) {
+                while (count % 2 == 1 || (count / 2) % 2 == 1) {
+                    lock.wait();
+                }
+                printNumber.accept(i);
+                count++;
+                lock.notifyAll();
+            }
+        }
+    }
+
+    public void odd(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i += 2) {
+            synchronized (lock) {
+                while (count % 2 == 1 || (count / 2) % 2 == 0) {
+                    lock.wait();
+                }
+                printNumber.accept(i);
+                count++;
+                lock.notifyAll();
+            }
+        }
+    }
+}
+
+class ZeroEvenOdd2 {
+
+    private final int n;
     private final Lock lock = new ReentrantLock();
     private final Condition conditionZero = lock.newCondition();
     private final Condition conditionOdd = lock.newCondition();
     private final Condition conditionEven = lock.newCondition();
     private volatile int count = 1;
 
-    public ZeroEvenOdd(int n) {
+    public ZeroEvenOdd2(int n) {
         this.n = n;
     }
 
