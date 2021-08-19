@@ -1,5 +1,6 @@
 package year2021.month8.no1116;
 
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -44,10 +45,56 @@ public class PrintZeroEvenOdd {
 class ZeroEvenOdd {
 
     private final int n;
+    private final Semaphore zeroSemaphore = new Semaphore(1);
+    private final Semaphore evenSemaphore = new Semaphore(0);
+    private final Semaphore oddSemaphore = new Semaphore(0);
+    private volatile int count = 0;
+
+    public ZeroEvenOdd(int n) {
+        this.n = n;
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void zero(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            zeroSemaphore.acquire();
+            printNumber.accept(0);
+            count++;
+            if (count % 2 == 0) {
+                evenSemaphore.release();
+            } else {
+                oddSemaphore.release();
+            }
+        }
+    }
+
+    public void even(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 2; i <= n; i += 2) {
+            evenSemaphore.acquire();
+            printNumber.accept(i);
+            zeroSemaphore.release();
+
+        }
+    }
+
+    public void odd(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i += 2) {
+            oddSemaphore.acquire();
+            printNumber.accept(i);
+            zeroSemaphore.release();
+        }
+    }
+
+}
+
+
+class ZeroEvenOdd3 {
+
+    private final int n;
     private final Object lock = new Object();
     private volatile int count = 1;
 
-    public ZeroEvenOdd(int n) {
+    public ZeroEvenOdd3(int n) {
         this.n = n;
     }
 
