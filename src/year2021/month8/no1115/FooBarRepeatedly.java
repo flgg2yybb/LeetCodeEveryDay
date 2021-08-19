@@ -1,6 +1,8 @@
 package year2021.month8.no1115;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,9 +42,50 @@ public class FooBarRepeatedly {
 class FooBar {
 
     private final int n;
-    private final AtomicInteger ai = new AtomicInteger(1);
+    private final CyclicBarrier cb = new CyclicBarrier(2);
+    private boolean isFooPrint = true;
 
     public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            while (!isFooPrint) {
+                Thread.yield();
+            }
+            // printFoo.run() outputs "foo". Do not change or remove this line.
+            printFoo.run();
+            isFooPrint = false;
+            try {
+                cb.await();
+            } catch (BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            try {
+                cb.await();
+            } catch (BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+            // printBar.run() outputs "bar". Do not change or remove this line.
+            printBar.run();
+            isFooPrint = true;
+        }
+    }
+
+}
+
+class FooBar7 {
+
+    private final int n;
+    private final AtomicInteger ai = new AtomicInteger(1);
+
+    public FooBar7(int n) {
         this.n = n;
     }
 
