@@ -1,6 +1,9 @@
 package year2021.month8.no1116;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntConsumer;
 
 public class PrintZeroEvenOdd {
@@ -41,9 +44,67 @@ public class PrintZeroEvenOdd {
 class ZeroEvenOdd {
 
     private final int n;
-    private final AtomicInteger ai = new AtomicInteger(1);
+    private final Lock lock = new ReentrantLock();
+    private final Condition conditionZero = lock.newCondition();
+    private final Condition conditionOdd = lock.newCondition();
+    private final Condition conditionEven = lock.newCondition();
+    private volatile int count = 1;
 
     public ZeroEvenOdd(int n) {
+        this.n = n;
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void zero(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            lock.lock();
+            if (count % 2 == 0) {
+                conditionZero.await();
+            }
+            printNumber.accept(0);
+            count++;
+            if ((count / 2) % 2 == 0) {
+                conditionEven.signal();
+            } else {
+                conditionOdd.signal();
+            }
+            lock.unlock();
+        }
+    }
+
+    public void even(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 2; i <= n; i += 2) {
+            lock.lock();
+            if (count % 2 == 1 || (count / 2) % 2 == 1) {
+                conditionEven.await();
+            }
+            printNumber.accept(i);
+            count++;
+            conditionZero.signal();
+            lock.unlock();
+        }
+    }
+
+    public void odd(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i += 2) {
+            lock.lock();
+            if (count % 2 == 1 || (count / 2) % 2 == 0) {
+                conditionOdd.await();
+            }
+            printNumber.accept(i);
+            count++;
+            conditionZero.signal();
+            lock.unlock();
+        }
+    }
+}
+
+class ZeroEvenOdd1 {
+
+    private final int n;
+    private final AtomicInteger ai = new AtomicInteger(1);
+
+    public ZeroEvenOdd1(int n) {
         this.n = n;
     }
 
