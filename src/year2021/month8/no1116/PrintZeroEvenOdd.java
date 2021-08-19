@@ -48,7 +48,6 @@ class ZeroEvenOdd {
     private final Semaphore zeroSemaphore = new Semaphore(1);
     private final Semaphore evenSemaphore = new Semaphore(0);
     private final Semaphore oddSemaphore = new Semaphore(0);
-    private volatile int count = 0;
 
     public ZeroEvenOdd(int n) {
         this.n = n;
@@ -59,8 +58,7 @@ class ZeroEvenOdd {
         for (int i = 0; i < n; i++) {
             zeroSemaphore.acquire();
             printNumber.accept(0);
-            count++;
-            if (count % 2 == 0) {
+            if (i % 2 == 1) {
                 evenSemaphore.release();
             } else {
                 oddSemaphore.release();
