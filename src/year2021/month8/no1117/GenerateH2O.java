@@ -17,26 +17,26 @@ public class GenerateH2O {
         H2O h2O = new H2O();
         int n = 5;
         Thread thread1 = new Thread(() -> {
-                for (int i = 0; i < 2 * n; i++) {
-                    new Thread(() -> {
-                        try {
-                            h2O.hydrogen(releaseHydrogen);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }).start();
-                }
+            for (int i = 0; i < 2 * n; i++) {
+                new Thread(() -> {
+                    try {
+                        h2O.hydrogen(releaseHydrogen);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
         });
         Thread thread2 = new Thread(() -> {
-                for (int i = 0; i < n; i++) {
-                    new Thread(() -> {
-                        try {
-                            h2O.oxygen(releaseOxygen);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }).start();
-                }
+            for (int i = 0; i < n; i++) {
+                new Thread(() -> {
+                    try {
+                        h2O.oxygen(releaseOxygen);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
 
         });
         thread2.start();
