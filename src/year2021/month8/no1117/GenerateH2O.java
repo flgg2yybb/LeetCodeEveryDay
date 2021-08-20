@@ -1,7 +1,9 @@
 package year2021.month8.no1117;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -47,11 +49,52 @@ public class GenerateH2O {
 
 class H2O {
 
+    private final BlockingQueue<Integer> hQueue = new LinkedBlockingQueue<>() {{
+        add(1);
+        add(1);
+    }};
+    private final BlockingQueue<Integer> oQueue = new LinkedBlockingQueue<>() {{
+        add(1);
+    }};
+    private final CyclicBarrier cb = new CyclicBarrier(3);
+
+    public H2O() {
+
+    }
+
+    public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
+        hQueue.take();
+        try {
+            cb.await();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+        // releaseHydrogen.run() outputs "H". Do not change or remove this line.
+        releaseHydrogen.run();
+        hQueue.put(1);
+    }
+
+    public void oxygen(Runnable releaseOxygen) throws InterruptedException {
+        oQueue.take();
+        try {
+            cb.await();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+        // releaseOxygen.run() outputs "O". Do not change or remove this line.
+        releaseOxygen.run();
+        oQueue.put(1);
+    }
+
+}
+
+class H2O5 {
+
     private final Semaphore hSemaphore = new Semaphore(2);
     private final Semaphore oSemaphore = new Semaphore(1);
     private final CyclicBarrier cb = new CyclicBarrier(3);
 
-    public H2O() {
+    public H2O5() {
 
     }
 
