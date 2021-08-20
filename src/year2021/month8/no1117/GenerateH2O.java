@@ -1,5 +1,7 @@
 package year2021.month8.no1117;
 
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -15,22 +17,27 @@ public class GenerateH2O {
         H2O h2O = new H2O();
         int n = 5;
         Thread thread1 = new Thread(() -> {
-            try {
                 for (int i = 0; i < 2 * n; i++) {
-                    h2O.hydrogen(releaseHydrogen);
+                    new Thread(() -> {
+                        try {
+                            h2O.hydrogen(releaseHydrogen);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         });
         Thread thread2 = new Thread(() -> {
-            try {
                 for (int i = 0; i < n; i++) {
-                    h2O.oxygen(releaseOxygen);
+                    new Thread(() -> {
+                        try {
+                            h2O.oxygen(releaseOxygen);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
         });
         thread2.start();
         thread1.start();
@@ -41,9 +48,45 @@ public class GenerateH2O {
 class H2O {
 
     private final Semaphore hSemaphore = new Semaphore(2);
-    private final Semaphore oSemaphore = new Semaphore(0);
+    private final Semaphore oSemaphore = new Semaphore(1);
+    private final CyclicBarrier cb = new CyclicBarrier(3);
 
     public H2O() {
+
+    }
+
+    public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
+        hSemaphore.acquire();
+        try {
+            cb.await();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+        // releaseHydrogen.run() outputs "H". Do not change or remove this line.
+        releaseHydrogen.run();
+        hSemaphore.release();
+    }
+
+    public void oxygen(Runnable releaseOxygen) throws InterruptedException {
+        oSemaphore.acquire();
+        try {
+            cb.await();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+        // releaseOxygen.run() outputs "O". Do not change or remove this line.
+        releaseOxygen.run();
+        oSemaphore.release();
+    }
+
+}
+
+class H2O4 {
+
+    private final Semaphore hSemaphore = new Semaphore(2);
+    private final Semaphore oSemaphore = new Semaphore(0);
+
+    public H2O4() {
 
     }
 
