@@ -29,18 +29,62 @@ public class GenerateH2O {
                 e.printStackTrace();
             }
         });
-        thread1.start();
         thread2.start();
+        thread1.start();
     }
 
 }
 
 class H2O {
 
+    private final Object lock = new Object();
+    private int hCount = 0;
+    private int oCount = 0;
+
+    public H2O() {
+
+    }
+
+    public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
+        synchronized (lock) {
+            while (hCount == 2) {
+                lock.wait();
+            }
+            // releaseHydrogen.run() outputs "H". Do not change or remove this line.
+            releaseHydrogen.run();
+            hCount++;
+            if (oCount == 1 && hCount == 2) {
+                oCount = 0;
+                hCount = 0;
+            }
+            lock.notifyAll();
+        }
+    }
+
+    public void oxygen(Runnable releaseOxygen) throws InterruptedException {
+        synchronized (lock) {
+            while (oCount == 1) {
+                lock.wait();
+            }
+            // releaseOxygen.run() outputs "O". Do not change or remove this line.
+            releaseOxygen.run();
+            oCount++;
+            if (oCount == 1 && hCount == 2) {
+                oCount = 0;
+                hCount = 0;
+            }
+            lock.notifyAll();
+        }
+    }
+
+}
+
+class H2O1 {
+
     private final Semaphore hSemaphore = new Semaphore(2);
     private final Semaphore oSemaphore = new Semaphore(0);
 
-    public H2O() {
+    public H2O1() {
 
     }
 
