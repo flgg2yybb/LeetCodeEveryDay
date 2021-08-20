@@ -1,6 +1,9 @@
 package year2021.month8.no1117;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 public class GenerateH2O {
@@ -10,7 +13,7 @@ public class GenerateH2O {
         Runnable releaseHydrogen = () -> print.accept("H");
         Runnable releaseOxygen = () -> print.accept("O");
         H2O h2O = new H2O();
-        int n = 2;
+        int n = 5;
         Thread thread1 = new Thread(() -> {
             try {
                 for (int i = 0; i < 2 * n; i++) {
@@ -37,11 +40,56 @@ public class GenerateH2O {
 
 class H2O {
 
-    private final Object lock = new Object();
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
     private int hCount = 0;
     private int oCount = 0;
 
     public H2O() {
+
+    }
+
+    public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
+        lock.lock();
+        while (hCount == 2) {
+            condition.await();
+        }
+        // releaseHydrogen.run() outputs "H". Do not change or remove this line.
+        releaseHydrogen.run();
+        hCount++;
+        if (oCount == 1 && hCount == 2) {
+            oCount = 0;
+            hCount = 0;
+        }
+        condition.signalAll();
+        lock.unlock();
+    }
+
+    public void oxygen(Runnable releaseOxygen) throws InterruptedException {
+        lock.lock();
+        while (oCount == 1) {
+            condition.await();
+        }
+        // releaseOxygen.run() outputs "O". Do not change or remove this line.
+        releaseOxygen.run();
+        oCount++;
+        if (oCount == 1 && hCount == 2) {
+            oCount = 0;
+            hCount = 0;
+        }
+        condition.signalAll();
+        lock.unlock();
+    }
+
+}
+
+class H2O2 {
+
+    private final Object lock = new Object();
+    private int hCount = 0;
+    private int oCount = 0;
+
+    public H2O2() {
 
     }
 
