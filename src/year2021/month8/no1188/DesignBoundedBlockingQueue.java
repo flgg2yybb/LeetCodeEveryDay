@@ -3,6 +3,7 @@ package year2021.month8.no1188;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 // 有限阻塞队列
@@ -51,10 +52,42 @@ public class DesignBoundedBlockingQueue {
 class BoundedBlockingQueue {
 
     private final Queue<Integer> queue;
+    private final Semaphore writeSemaphore;
+    private final Semaphore readSemaphore;
+
+    public BoundedBlockingQueue(int capacity) {
+        queue = new LinkedList<>();
+        writeSemaphore = new Semaphore(capacity);
+        readSemaphore = new Semaphore(0);
+    }
+
+    public void enqueue(int element) throws InterruptedException {
+        writeSemaphore.acquire();
+        queue.offer(element);
+        readSemaphore.release();
+    }
+
+    public int dequeue() throws InterruptedException {
+        readSemaphore.acquire();
+        int poll = queue.poll();
+        writeSemaphore.release();
+        return poll;
+    }
+
+    public int size() {
+        // 不了解此处为什么不加锁也能 AC
+        return queue.size();
+    }
+
+}
+
+class BoundedBlockingQueue1 {
+
+    private final Queue<Integer> queue;
     private final int maxSize;
     private final Object lock = new Object();
 
-    public BoundedBlockingQueue(int capacity) {
+    public BoundedBlockingQueue1(int capacity) {
         queue = new LinkedList<>();
         maxSize = capacity;
     }
