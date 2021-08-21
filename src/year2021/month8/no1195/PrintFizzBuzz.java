@@ -48,13 +48,92 @@ public class PrintFizzBuzz {
     }
 }
 
-
 class FizzBuzz {
 
     private final int n;
     private final AtomicInteger ai = new AtomicInteger(1);
+    private final Object lock = new Object();
 
     public FizzBuzz(int n) {
+        this.n = n;
+    }
+
+    // printFizz.run() outputs "fizz".
+    public void fizz(Runnable printFizz) throws InterruptedException {
+        while (ai.get() <= n) {
+            synchronized (lock) {
+                while (ai.get() <= n && (ai.get() % 3 != 0 || ai.get() % 5 == 0)) {
+                    lock.wait();
+                }
+                if (ai.get() > n) {
+                    break;
+                }
+                printFizz.run();
+                ai.incrementAndGet();
+                lock.notifyAll();
+            }
+        }
+    }
+
+    // printBuzz.run() outputs "buzz".
+    public void buzz(Runnable printBuzz) throws InterruptedException {
+        while (ai.get() <= n) {
+            synchronized (lock) {
+                while (ai.get() <= n && (ai.get() % 5 != 0 || ai.get() % 3 == 0)) {
+                    lock.wait();
+                }
+                if (ai.get() > n) {
+                    break;
+                }
+                printBuzz.run();
+                ai.incrementAndGet();
+                lock.notifyAll();
+            }
+        }
+    }
+
+    // printFizzBuzz.run() outputs "fizzbuzz".
+    public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
+        while (ai.get() <= n) {
+            synchronized (lock) {
+                while (ai.get() <= n && (ai.get() % 3 != 0 || ai.get() % 5 != 0)) {
+                    lock.wait();
+                }
+                if (ai.get() > n) {
+                    break;
+                }
+                printFizzBuzz.run();
+                ai.incrementAndGet();
+                lock.notifyAll();
+            }
+        }
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void number(IntConsumer printNumber) throws InterruptedException {
+        while (ai.get() <= n) {
+            synchronized (lock) {
+                while (ai.get() <= n && (ai.get() % 3 == 0 || ai.get() % 5 == 0)) {
+                    lock.wait();
+                }
+                if (ai.get() > n) {
+                    break;
+                }
+                printNumber.accept(ai.intValue());
+                ai.incrementAndGet();
+                lock.notifyAll();
+            }
+        }
+    }
+
+}
+
+class FizzBuzz1 {
+
+    private final int n;
+    private final AtomicInteger ai = new AtomicInteger(1);
+
+    public FizzBuzz1(int n) {
         this.n = n;
     }
 
