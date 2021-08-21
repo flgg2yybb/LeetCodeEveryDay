@@ -46,11 +46,77 @@ class BoundedBlockingQueue {
 
     private final Queue<Integer> queue;
     private final int capacity;
+    private final Lock putLock = new ReentrantLock();
+    private final Condition putCondition = putLock.newCondition();
+    private final Lock takeLock = new ReentrantLock();
+    private final Condition takeCondition = takeLock.newCondition();
+
+    public BoundedBlockingQueue(int capacity) {
+        queue = new LinkedList<>();
+        this.capacity = capacity;
+    }
+
+    public void enqueue(int element) throws InterruptedException {
+        putLock.lock();
+        try {
+            while (queue.size() >= capacity) {
+                putCondition.await();
+            }
+            queue.offer(element);
+        } finally {
+            putLock.unlock();
+            // 需要先释放 putLock，再尝试获取 takeLock，否则会有死锁问题
+            signalTakeLock(); // 已经入队了一个元素，因此可以唤醒一个出队线程去出队
+        }
+    }
+
+    private void signalTakeLock() {
+        takeLock.lock();
+        try {
+            takeCondition.signal();
+        } finally {
+            takeLock.unlock();
+        }
+    }
+
+    public int dequeue() throws InterruptedException {
+        takeLock.lock();
+        try {
+            while (queue.isEmpty()) {
+                takeCondition.await();
+            }
+            return queue.poll();
+        } finally {
+            takeLock.unlock();
+            // 需要先释放 takeLock，再尝试获取 putLock，否则会有死锁问题
+            signalPutLock();// 已经出队了一个元素，因此可以唤醒一个入队线程去出队
+        }
+    }
+
+    private void signalPutLock() {
+        putLock.lock();
+        try {
+            putCondition.signal();
+        } finally {
+            putLock.unlock();
+        }
+    }
+
+    public int size() {
+        return queue.size();
+    }
+
+}
+
+class BoundedBlockingQueue3 {
+
+    private final Queue<Integer> queue;
+    private final int capacity;
     private final Lock lock = new ReentrantLock();
     private final Condition writeCondition = lock.newCondition();
     private final Condition readCondition = lock.newCondition();
 
-    public BoundedBlockingQueue(int capacity) {
+    public BoundedBlockingQueue3(int capacity) {
         queue = new LinkedList<>();
         this.capacity = capacity;
     }
