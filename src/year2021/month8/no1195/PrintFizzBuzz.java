@@ -59,11 +59,88 @@ class FizzBuzz {
     private static final int BUZZ = 5;
     private static final int FIZZBUSS = 15;
     private final int n;
-    private final Object lock = new Object();
     private volatile int curr = NUMBER;   // 0 打印数字，3 打印 fizz，5 打印 buzz，15 打印 fizzbuzz
 
 
     public FizzBuzz(int n) {
+        this.n = n;
+    }
+
+    // printFizz.run() outputs "fizz".
+    public void fizz(Runnable printFizz) throws InterruptedException {
+        for (int i = 3; i <= n; i += 3) {
+            if (i % 5 == 0) {
+                continue;
+            }
+            while (curr != FIZZ) {
+                Thread.yield();
+            }
+            printFizz.run();
+            curr = NUMBER;
+        }
+    }
+
+    // printBuzz.run() outputs "buzz".
+    public void buzz(Runnable printBuzz) throws InterruptedException {
+        for (int i = 5; i <= n; i += 5) {
+            if (i % 3 == 0) {
+                continue;
+            }
+            while (curr != BUZZ) {
+                Thread.yield();
+            }
+            printBuzz.run();
+            curr = NUMBER;
+        }
+    }
+
+    // printFizzBuzz.run() outputs "fizzbuzz".
+    public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
+        for (int i = 1; i <= n; i++) {
+            if (i % 3 != 0 || i % 5 != 0) {
+                continue;
+            }
+            while (curr != FIZZBUSS) {
+                Thread.yield();
+            }
+            printFizzBuzz.run();
+            curr = NUMBER;
+        }
+
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void number(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i++) {
+            while (curr != NUMBER) {
+                Thread.yield();
+            }
+            if (i % 3 == 0 && i % 5 == 0) {
+                curr = FIZZBUSS;
+            } else if (i % 3 == 0) {
+                curr = FIZZ;
+            } else if (i % 5 == 0) {
+                curr = BUZZ;
+            } else {
+                printNumber.accept(i);
+            }
+        }
+    }
+
+}
+
+class FizzBuzz5 {
+
+    private static final int NUMBER = 0;
+    private static final int FIZZ = 3;
+    private static final int BUZZ = 5;
+    private static final int FIZZBUSS = 15;
+    private final int n;
+    private final Object lock = new Object();
+    private volatile int curr = NUMBER;   // 0 打印数字，3 打印 fizz，5 打印 buzz，15 打印 fizzbuzz
+
+
+    public FizzBuzz5(int n) {
         this.n = n;
     }
 
