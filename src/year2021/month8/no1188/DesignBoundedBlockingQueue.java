@@ -2,16 +2,16 @@ package year2021.month8.no1188;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 // 有限阻塞队列
 public class DesignBoundedBlockingQueue {
     public static void main(String[] args) {
         BoundedBlockingQueue blockingQueue = new BoundedBlockingQueue(3);
         int n = 5;
-        CountDownLatch countDownLatch = new CountDownLatch(2);
         Thread dequeueThread = new Thread(() -> {
             for (int i = 0; i < n; i++) {
                 new Thread(() -> {
@@ -23,7 +23,6 @@ public class DesignBoundedBlockingQueue {
                     }
                 }).start();
             }
-            countDownLatch.countDown();
         });
         Thread enqueueThread = new Thread(() -> {
             for (int i = 0; i < n; i++) {
@@ -37,25 +36,66 @@ public class DesignBoundedBlockingQueue {
                     }
                 }).start();
             }
-            countDownLatch.countDown();
         });
         enqueueThread.start();
         dequeueThread.start();
-        try {
-            countDownLatch.await(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
 
 class BoundedBlockingQueue {
 
     private final Queue<Integer> queue;
+    private final int capacity;
+    private final Lock lock = new ReentrantLock();
+    private final Condition writeCondition = lock.newCondition();
+    private final Condition readCondition = lock.newCondition();
+
+    public BoundedBlockingQueue(int capacity) {
+        queue = new LinkedList<>();
+        this.capacity = capacity;
+    }
+
+    public void enqueue(int element) throws InterruptedException {
+        lock.lock();
+        try {
+            while (queue.size() >= capacity) {
+                writeCondition.await();
+            }
+            queue.offer(element);
+            readCondition.signal(); // 由于只插入了一个元素，因此只随机唤醒一个出队线程
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public int dequeue() throws InterruptedException {
+        lock.lock();
+        try {
+            while (queue.isEmpty()) {
+                readCondition.await();
+            }
+            int poll = queue.poll();
+            writeCondition.signal(); // 由于只出队了一个元素，因此只随机唤醒一个入队线程
+            return poll;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public int size() {
+        // 不了解此处为什么不加锁也能 AC
+        return queue.size();
+    }
+
+}
+
+class BoundedBlockingQueue2 {
+
+    private final Queue<Integer> queue;
     private final Semaphore writeSemaphore;
     private final Semaphore readSemaphore;
 
-    public BoundedBlockingQueue(int capacity) {
+    public BoundedBlockingQueue2(int capacity) {
         queue = new LinkedList<>();
         writeSemaphore = new Semaphore(capacity);
         readSemaphore = new Semaphore(0);
