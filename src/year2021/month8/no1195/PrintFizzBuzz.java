@@ -2,6 +2,9 @@ package year2021.month8.no1195;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
@@ -51,13 +54,103 @@ public class PrintFizzBuzz {
 
 class FizzBuzz {
 
+    private static final int NUMBER = 0;
+    private static final int FIZZ = 3;
+    private static final int BUZZ = 5;
+    private static final int FIZZBUSS = 15;
+    private final int n;
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
+    private volatile int curr = NUMBER;   // 0 打印数字，3 打印 fizz，5 打印 buzz，15 打印 fizzbuzz
+
+
+    public FizzBuzz(int n) {
+        this.n = n;
+    }
+
+    // printFizz.run() outputs "fizz".
+    public void fizz(Runnable printFizz) throws InterruptedException {
+        for (int i = 3; i <= n; i += 3) {
+            if (i % 5 == 0) {
+                continue;
+            }
+            lock.lock();
+            while (curr != FIZZ) {
+                condition.await();
+            }
+            printFizz.run();
+            curr = NUMBER;
+            condition.signalAll();
+            lock.unlock();
+        }
+    }
+
+    // printBuzz.run() outputs "buzz".
+    public void buzz(Runnable printBuzz) throws InterruptedException {
+        for (int i = 5; i <= n; i += 5) {
+            if (i % 3 == 0) {
+                continue;
+            }
+            lock.lock();
+            while (curr != BUZZ) {
+                condition.await();
+            }
+            printBuzz.run();
+            curr = NUMBER;
+            condition.signalAll();
+            lock.unlock();
+        }
+    }
+
+    // printFizzBuzz.run() outputs "fizzbuzz".
+    public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
+        for (int i = 1; i <= n; i++) {
+            if (i % 3 != 0 || i % 5 != 0) {
+                continue;
+            }
+            lock.lock();
+            while (curr != FIZZBUSS) {
+                condition.await();
+            }
+            printFizzBuzz.run();
+            curr = NUMBER;
+            condition.signalAll();
+            lock.unlock();
+        }
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void number(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i++) {
+            lock.lock();
+            while (curr != NUMBER) {
+                condition.await();
+            }
+            if (i % 3 == 0 && i % 5 == 0) {
+                curr = FIZZBUSS;
+            } else if (i % 3 == 0) {
+                curr = FIZZ;
+            } else if (i % 5 == 0) {
+                curr = BUZZ;
+            } else {
+                printNumber.accept(i);
+            }
+            condition.signalAll();
+            lock.unlock();
+        }
+    }
+
+}
+
+class FizzBuzz3 {
+
     private final int n;
     private final Semaphore numSemaphore = new Semaphore(1);
     private final Semaphore fizzSemaphore = new Semaphore(0);
     private final Semaphore buzzSemaphore = new Semaphore(0);
     private final Semaphore fizzBuzzSemaphore = new Semaphore(0);
 
-    public FizzBuzz(int n) {
+    public FizzBuzz3(int n) {
         this.n = n;
     }
 
