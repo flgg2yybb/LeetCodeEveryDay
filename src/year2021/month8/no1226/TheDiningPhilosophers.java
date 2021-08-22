@@ -16,7 +16,8 @@ class DiningPhilosophers {
             new Semaphore(1),
             new Semaphore(1),
             new Semaphore(1)};
-    private final Semaphore limitEater = new Semaphore(4);
+    private final Object lock = new Object();
+
 
     public DiningPhilosophers() {
 
@@ -30,8 +31,53 @@ class DiningPhilosophers {
                            Runnable putLeftFork,
                            Runnable putRightFork) throws InterruptedException {
         /*
+         * 在同一时刻，只能有一个哲学家获取叉子，
+         * 则能保证不会出现死锁
+         * 只是串行获取叉子，对于后续操作不限制
+         * 有一定概率出现两位哲学家并行吃面
+         * */
+        Semaphore leftFork = forks[(philosopher + 4) % 5];
+        Semaphore rightFork = forks[(philosopher) % 5];
+        synchronized (lock) {
+            leftFork.acquire();
+            rightFork.acquire();
+        }
+        pickLeftFork.run();
+        pickRightFork.run();
+        eat.run();
+        putLeftFork.run();
+        putRightFork.run();
+        rightFork.release();
+        leftFork.release();
+    }
+
+}
+
+class DiningPhilosophers1 {
+
+    private final Semaphore[] forks = {
+            new Semaphore(1),
+            new Semaphore(1),
+            new Semaphore(1),
+            new Semaphore(1),
+            new Semaphore(1)};
+    private final Semaphore limitEater = new Semaphore(3);
+
+    public DiningPhilosophers1() {
+
+    }
+
+    // call the run() method of any runnable to execute its code
+    public void wantsToEat(int philosopher,
+                           Runnable pickLeftFork,
+                           Runnable pickRightFork,
+                           Runnable eat,
+                           Runnable putLeftFork,
+                           Runnable putRightFork) throws InterruptedException {
+        /*
          * 易知：只有当五位哲学家同时拿起一个叉子时会死锁
          * 因此只需要：限制获取叉子的哲学家数量为 4
+         * （将数量改为 3 更合理，因为最多只有两个哲学家可以同时拿到两把叉子）
          * 则一定有一个哲学家能同时拿到两边的叉子吃到面
          * */
         limitEater.acquire();
