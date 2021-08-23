@@ -1,10 +1,6 @@
 package year2021.month8.no1115;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -116,7 +112,7 @@ class FooBar7 {
 class FooBar6 {
 
     private final int n;
-    private final BlockingQueue<Integer> blockFirst = new LinkedBlockingQueue<>() {{
+    private final BlockingQueue<Integer> blockFirst = new LinkedBlockingQueue() {{
         add(1);
     }};
     private final BlockingQueue<Integer> blockSecond = new LinkedBlockingQueue<>();

@@ -1,10 +1,6 @@
 package year2021.month8.no1117;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -49,11 +45,11 @@ public class GenerateH2O {
 
 class H2O {
 
-    private final BlockingQueue<Integer> hQueue = new LinkedBlockingQueue<>() {{
+    private final BlockingQueue<Integer> hQueue = new LinkedBlockingQueue() {{
         add(1);
         add(1);
     }};
-    private final BlockingQueue<Integer> oQueue = new LinkedBlockingQueue<>() {{
+    private final BlockingQueue<Integer> oQueue = new LinkedBlockingQueue() {{
         add(1);
     }};
     private final CyclicBarrier cb = new CyclicBarrier(3);
