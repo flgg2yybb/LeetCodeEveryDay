@@ -9,10 +9,30 @@ public class RemoveElement {
         int val1 = 3;
         int[] nums2 = {0, 1, 2, 2, 3, 0, 4, 2};
         int val2 = 2;
-        System.out.println(removeElement1(nums1, val1));
+        System.out.println(removeElement2(nums1, val1));
         System.out.println(Arrays.toString(nums1));
-        System.out.println(removeElement1(nums2, val2));
+        System.out.println(removeElement2(nums2, val2));
         System.out.println(Arrays.toString(nums2));
+    }
+
+    private static int removeElement2(int[] nums, int val) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            if (nums[left] != val) {
+                left++;
+                continue;
+            }
+            swap(nums, left, right);
+            right--;
+        }
+        return left;
+    }
+
+    private static void swap(int[] nums, int x, int y) {
+        int temp = nums[x];
+        nums[x] = nums[y];
+        nums[y] = temp;
     }
 
     private static int removeElement1(int[] nums, int val) {
