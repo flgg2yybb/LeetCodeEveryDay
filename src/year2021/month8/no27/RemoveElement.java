@@ -9,10 +9,23 @@ public class RemoveElement {
         int val1 = 3;
         int[] nums2 = {0, 1, 2, 2, 3, 0, 4, 2};
         int val2 = 2;
-        System.out.println(removeElement(nums1, val1));
+        System.out.println(removeElement1(nums1, val1));
         System.out.println(Arrays.toString(nums1));
-        System.out.println(removeElement(nums2, val2));
+        System.out.println(removeElement1(nums2, val2));
         System.out.println(Arrays.toString(nums2));
+    }
+
+    private static int removeElement1(int[] nums, int val) {
+        // [0, left) != val
+        // [left, right) == val
+        int left = 0;
+        for (int right = 0; right < nums.length; right++) {
+            if (nums[right] != val) {
+                nums[left] = nums[right];
+                left++;
+            }
+        }
+        return left;
     }
 
     public static int removeElement(int[] nums, int val) {
