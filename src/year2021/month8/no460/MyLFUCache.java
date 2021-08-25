@@ -33,7 +33,8 @@ class LFUCache {
     // 需要根据 freq 找到对应的一个或多个 key
     // 在新增元素且容量已满时，需要移除 freq 最小的 key，若存在多个 key 的 freq 最小，移除最先加入的那个
     // 在某个 key 访问 get 时，需要将其 freq 增加，故**需要从原来的 freq 对应的 key 集合中删除**，且新增到 freq + 1 对应的 key 集合
-    // 能同时以 O(1) 复杂度满足以上三点的，只有 LinkedHashSet，双向链表只能满足前两点，不满足在集合中 O(1) 时间复杂度随机删除 key
+    // 能同时以 O(1) 复杂度满足以上三点的，只有 LinkedHashSet，双向链表只能满足前两点，不满足在集合中 O(1) 时间复杂度删除指定 key
+    // 可以通过首先双向链表以做到满足以上三点，包括在链表中删除给定 key
     private final Map<Integer, LinkedHashSet<Integer>> freqKeysMap;
     private final int capacity;
     // LFU 并不需要实时获取最小的 freq，而移除最小 freq 的 key 只会发生在 put 中，故只需在 put 方法删除最小 freq 的 key 之前，记住过之前最小的 freq 即可
