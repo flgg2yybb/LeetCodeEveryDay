@@ -28,6 +28,139 @@ public class MyLFUCache {
 
 class LFUCache {
 
+    private final Map<Integer, Node> keyNodeMap;
+    private final Map<Integer, DoubleLinkedList> freqNodesMap;
+    private final int MAX_SIZE;
+    private int minFreq;
+
+    public LFUCache(int capacity) {
+        keyNodeMap = new HashMap<>();
+        freqNodesMap = new HashMap<>();
+        MAX_SIZE = capacity;
+    }
+
+    public int get(int key) {
+        Node node = keyNodeMap.get(key);
+        if (node == null) {
+            return -1;
+        }
+        incrFreq(node);
+        return node.value;
+    }
+
+    private void incrFreq(Node node) {
+        int prevFreq = node.freq;
+        DoubleLinkedList originDoubleLinkedList = freqNodesMap.get(prevFreq);
+        originDoubleLinkedList.remove(node);
+        node.freq++;
+        freqNodesMap.putIfAbsent(node.freq, new DoubleLinkedList());
+        freqNodesMap.get(node.freq).offerLast(node);
+        if (originDoubleLinkedList.isEmpty()) {
+            freqNodesMap.remove(prevFreq);
+            if (minFreq == prevFreq) {
+                minFreq++;
+            }
+        }
+    }
+
+    public void put(int key, int value) {
+        if (MAX_SIZE <= 0) {
+            return;
+        }
+        if (keyNodeMap.containsKey(key)) {
+            Node node = keyNodeMap.get(key);
+            node.value = value;
+            incrFreq(node);
+            return;
+        }
+        if (keyNodeMap.size() == MAX_SIZE) {
+            removeMinFreqNode();
+        }
+        putNewNode(key, value);
+    }
+
+    private void removeMinFreqNode() {
+        DoubleLinkedList doubleLinkedList = freqNodesMap.get(minFreq);
+        Node node = doubleLinkedList.pollFirst();
+        keyNodeMap.remove(node.key);
+        if (doubleLinkedList.isEmpty()) {
+            freqNodesMap.remove(minFreq);
+        }
+    }
+
+    private void putNewNode(int key, int value) {
+        Node node = new Node(key, value, 1);
+        keyNodeMap.put(key, node);
+        freqNodesMap.putIfAbsent(1, new DoubleLinkedList());
+        freqNodesMap.get(1).offerLast(node);
+        minFreq = 1;
+    }
+
+}
+
+class DoubleLinkedList {
+
+    private final Node head;
+    private final Node rear;
+
+    public DoubleLinkedList() {
+        head = new Node(-1, -1, -1);
+        rear = new Node(-1, -1, -1);
+        head.next = rear;
+        head.prev = rear;
+        rear.next = head;
+        rear.prev = head;
+    }
+
+    public void offerLast(Node node) {
+        Node prev = rear.prev;
+        prev.next = node;
+        node.prev = prev;
+        node.next = rear;
+        rear.prev = node;
+    }
+
+    public Node pollFirst() {
+        Node poll = head.next;
+        remove(poll);
+        return poll;
+    }
+
+    public void remove(Node node) {
+        if (node == head || node == rear) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node prev = node.prev;
+        Node next = node.next;
+        prev.next = next;
+        next.prev = prev;
+    }
+
+    public boolean isEmpty() {
+        return head.next == rear;
+    }
+
+}
+
+class Node {
+
+    int key;
+    int value;
+    int freq;
+    Node next;
+    Node prev;
+
+    public Node(int key, int value, int freq) {
+        this.key = key;
+        this.value = value;
+        this.freq = freq;
+    }
+
+}
+
+
+class LFUCache1 {
+
     private final Map<Integer, Integer> keyValueMap;
     private final Map<Integer, Integer> keyFreqMap;
     // 需要根据 freq 找到对应的一个或多个 key
@@ -41,7 +174,7 @@ class LFUCache {
     // 而对于移除掉最小 freq 的 key 的情况，必定代表 put 了一个新 key，则此时 minFreq 被初始化为 1
     private int minFreq;
 
-    public LFUCache(int capacity) {
+    public LFUCache1(int capacity) {
         this.keyValueMap = new HashMap<>();
         this.keyFreqMap = new HashMap<>();
         this.freqKeysMap = new HashMap<>();
