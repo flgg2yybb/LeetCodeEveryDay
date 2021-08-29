@@ -1,6 +1,8 @@
 package year2021.month8.no94;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BinaryTreeInorderTraversal {
@@ -19,7 +21,24 @@ public class BinaryTreeInorderTraversal {
         System.out.println(inorderTraversal(root));
     }
 
-    public static List<Integer> inorderTraversal(TreeNode root) {
+    private static List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode p = root;
+        while (p != null || !stack.isEmpty()) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            TreeNode node = stack.poll();
+            assert node != null;
+            res.add(node.val);
+            p = node.right;
+        }
+        return res;
+    }
+
+    public static List<Integer> inorderTraversal1(TreeNode root) {
         List<Integer> res = new ArrayList<>();
         dfs(root, res);
         return res;
