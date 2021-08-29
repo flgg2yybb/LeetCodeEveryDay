@@ -1,6 +1,8 @@
 package year2021.month8.no145;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BinaryTreePostorderTraversal {
@@ -14,6 +16,30 @@ public class BinaryTreePostorderTraversal {
     }
 
     public static List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        TreeNode p = root;
+        TreeNode pre = null;
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (p != null || !stack.isEmpty()) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            TreeNode node = stack.peek();
+            assert node != null;
+            if (node.right != null && pre != node.right) {
+                p = node.right;
+            } else {
+                stack.poll();
+                res.add(node.val);
+                pre = node;
+                p = null;
+            }
+        }
+        return res;
+    }
+
+    public static List<Integer> postorderTraversal1(TreeNode root) {
         List<Integer> res = new ArrayList<>();
         dfs(root, res);
         return res;
