@@ -17,7 +17,27 @@ public class PopulatingNextRightPointersInEachNode {
         disp(root);
     }
 
-    public static Node connect(Node root) {
+    private static Node connect(Node root) {
+        // DFS, depthNode 向左下遍历，levelNode向右遍历
+        Node depthNode = root;
+        while (depthNode != null) {
+            Node levelNode = depthNode;
+            while (levelNode != null) {
+                if (levelNode.left == null) {
+                    break;
+                }
+                levelNode.left.next = levelNode.right;
+                if (levelNode.next != null) {
+                    levelNode.right.next = levelNode.next.left;
+                }
+                levelNode = levelNode.next;
+            }
+            depthNode = depthNode.left;
+        }
+        return root;
+    }
+
+    public static Node connect1(Node root) {
         // BFS
         if (root == null) {
             return root;
