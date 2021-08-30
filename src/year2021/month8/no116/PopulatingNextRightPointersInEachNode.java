@@ -18,6 +18,22 @@ public class PopulatingNextRightPointersInEachNode {
     }
 
     private static Node connect(Node root) {
+        if (root == null || root.left == null) {
+            return root;
+        }
+        Node levelNode = root;
+        while (levelNode != null) {
+            levelNode.left.next = levelNode.right;
+            if (levelNode.next != null) {
+                levelNode.right.next = levelNode.next.left;
+            }
+            levelNode = levelNode.next;
+        }
+        connect(root.left);
+        return root;
+    }
+
+    private static Node connect2(Node root) {
         // DFS, depthNode 向左下遍历，levelNode向右遍历
         Node depthNode = root;
         while (depthNode != null) {
