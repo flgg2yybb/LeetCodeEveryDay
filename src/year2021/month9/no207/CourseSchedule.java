@@ -17,7 +17,45 @@ public class CourseSchedule {
         System.out.println(canFinish(numCourses2, prerequisites2));
     }
 
-    public static boolean canFinish(int numCourses, int[][] prerequisites) {
+    private static boolean canFinish(int numCourses, int[][] prerequisites) {
+        // DFS，如果一个有向图能生成拓扑排序，则等价于有向图无环
+        // 对每个节点进行 DFS，若所有节点都不在环内，则可以生成拓扑排序
+        boolean[][] adjacentMatrix = new boolean[numCourses][numCourses]; // 邻接矩阵
+        for (int[] prerequisite : prerequisites) {
+            int from = prerequisite[1];
+            int to = prerequisite[0];
+            adjacentMatrix[from][to] = true;
+        }
+        int[] visited = new int[numCourses]; // -1: 已访问，0:未访问，1:正在访问
+        for (int i = 0; i < numCourses; i++) {
+            if (dfs(adjacentMatrix, visited, i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean dfs(boolean[][] adjacentMatrix, int[] visited, int pos) {
+        if (visited[pos] == -1) {
+            return false;
+        }
+        if (visited[pos] == 1) {
+            return true;
+        }
+        visited[pos] = 1;
+        for (int j = 0; j < adjacentMatrix[pos].length; j++) {
+            if (adjacentMatrix[pos][j]) {
+                if (dfs(adjacentMatrix, visited, j)) {
+                    return true;
+                }
+            }
+        }
+        visited[pos] = -1;
+        return false;
+    }
+
+
+    public static boolean canFinish1(int numCourses, int[][] prerequisites) {
         Map<Integer, List<Integer>> adjacencyTable = new HashMap<>(numCourses); // 邻接表
         for (int i = 0; i < numCourses; i++) {
             adjacencyTable.put(i, new LinkedList<>());
