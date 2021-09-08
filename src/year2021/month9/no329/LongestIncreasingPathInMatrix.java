@@ -20,7 +20,42 @@ public class LongestIncreasingPathInMatrix {
         System.out.println(longestIncreasingPath(matrix3));
     }
 
-    public static int longestIncreasingPath(int[][] matrix) {
+    private static int longestIncreasingPath(int[][] matrix) {
+        // DFS + 记忆化搜索, time is O(mn), space is O(mn)
+        // dfs方向为从较小的元素走向较大的元素
+        int longest = 0;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] cache = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                int length = dfs(matrix, cache, i, j);
+                longest = Math.max(longest, length);
+            }
+        }
+        return longest;
+    }
+
+    private static int dfs(int[][] matrix, int[][] cache, int x, int y) {
+        if (cache[x][y] != 0) {
+            return cache[x][y];
+        }
+        int currentStep = 1;
+        int nextStep = 0;
+        int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+        for (int[] direction : directions) {
+            int nextX = x + direction[0];
+            int nextY = y + direction[1];
+            if (isLegalAccess(matrix.length, matrix[0].length, nextX, nextY) && matrix[nextX][nextY] > matrix[x][y]) {
+                nextStep = Math.max(nextStep, dfs(matrix, cache, nextX, nextY));
+            }
+        }
+        int totalStep = currentStep + nextStep;
+        cache[x][y] = totalStep;
+        return totalStep;
+    }
+
+    public static int longestIncreasingPath1(int[][] matrix) {
         /*
         * DP, time is O(mn * logmn), space is O(mn)
         * 状态定义：
