@@ -1,6 +1,8 @@
 package year2021.month9.no329;
 
+import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class LongestIncreasingPathInMatrix {
     public static void main(String[] args) {
@@ -21,6 +23,55 @@ public class LongestIncreasingPathInMatrix {
     }
 
     private static int longestIncreasingPath(int[][] matrix) {
+        // BFS + 出度表, time is O(mn), space is O(mn)
+        int m = matrix.length;
+        int n = matrix[0].length;
+        // 初始化出度表
+        int[][] outDegreeTable = new int[m][n];
+        int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int[] direction : directions) {
+                    int nextX = i + direction[0];
+                    int nextY = j + direction[1];
+                    if (isLegalAccess(m, n, nextX, nextY) && matrix[nextX][nextY] > matrix[i][j]) {
+                        outDegreeTable[i][j]++;
+                    }
+                }
+            }
+        }
+        // 出度为 0 的节点入队
+        Queue<Element> queue = new LinkedList<>();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (outDegreeTable[i][j] == 0) {
+                    queue.offer(new Element(i, j, matrix[i][j]));
+                }
+            }
+        }
+        // BFS
+        int longest = 0;
+        while (!queue.isEmpty()) {
+            longest++;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Element node = queue.poll();
+                for (int[] direction : directions) {
+                    int nextX = node.x + direction[0];
+                    int nextY = node.y + direction[1];
+                    if (isLegalAccess(m, n, nextX, nextY) && matrix[nextX][nextY] < matrix[node.x][node.y]) {
+                        outDegreeTable[nextX][nextY]--;
+                        if (outDegreeTable[nextX][nextY] == 0) {
+                            queue.offer(new Element(nextX, nextY, matrix[nextX][nextY]));
+                        }
+                    }
+                }
+            }
+        }
+        return longest;
+    }
+
+    private static int longestIncreasingPath2(int[][] matrix) {
         // DFS + 记忆化搜索, time is O(mn), space is O(mn)
         // dfs方向为从较小的元素走向较大的元素
         int longest = 0;
