@@ -10,7 +10,37 @@ public class PartitionEqualSubsetSum {
         System.out.println(canPartition(nums3));
     }
 
-    public static boolean canPartition(int[] nums) {
+    private static boolean canPartition(int[] nums) {
+        // 空间压缩
+        int sum = 0;
+        int maxElement = 0;
+        for (int num : nums) {
+            sum += num;
+            maxElement = Math.max(maxElement, num);
+        }
+        if (sum % 2 == 1) {
+            return false;
+        }
+        int target = sum / 2;
+        if (maxElement > target) {
+            return false;
+        }
+        boolean[] dp = new boolean[target + 1];
+        dp[0] = true;
+        dp[nums[0]] = true;
+        for (int i = 1; i < nums.length; i++) {
+            int num = nums[i];
+            // 转移方程为 dp[j] |= dp[j - nums[i]];
+            // 第二层循环需要从大到小遍历，
+            // 否则，在更新 dp[j] 时，dp[j - nums[i]] 已经被更新过，不再是上一行的值
+            for (int j = target; j >= num; j--) {
+                dp[j] |= dp[j - num];
+            }
+        }
+        return dp[target];
+    }
+
+    public static boolean canPartition1(int[] nums) {
         /*
          * 思路：一个数组若能分割成两个等和子集，则说明原数组和必须为偶数
          * 且若从数组中能取出若干元素，使其等于元原数组和的一半，则说明可以分割
@@ -44,12 +74,16 @@ public class PartitionEqualSubsetSum {
         for (int i = 0; i < nums.length; i++) {
             dp[i][0] = true;
         }
+        // 遍历每个元素
         for (int i = 1; i < nums.length; i++) {
+            // 遍历每个和
             for (int j = 1; j <= target; j++) {
+                // 不选
                 if (dp[i - 1][j]) {
                     dp[i][j] = true;
                     continue;
                 }
+                // 选
                 if (nums[i] <= j) {
                     dp[i][j] = dp[i - 1][j - nums[i]];
                 }
