@@ -1,9 +1,6 @@
 package year2021.month9.no47;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -15,19 +12,45 @@ public class PermutationsII {
     }
 
     public static List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        backtrack(nums, used, 0, new ArrayList<>(), ans);
+        return ans;
+    }
+
+    private static void backtrack(int[] nums, boolean[] used, int pos, List<Integer> list, List<List<Integer>> ans) {
+        if (pos == nums.length) {
+            ans.add(new ArrayList<>(list));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i] || i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            list.add(nums[i]);
+            used[i] = true;
+            backtrack(nums, used, pos + 1, list, ans);
+            used[i] = false;
+            list.remove(list.size() - 1);
+        }
+    }
+
+    public static List<List<Integer>> permuteUnique1(int[] nums) {
         Set<List<Integer>> ans = new HashSet<>();
-        backtrack(nums, 0, ans);
+        backtrack1(nums, 0, ans);
         return new ArrayList<>(ans);
     }
 
-    private static void backtrack(int[] nums, int pos, Set<List<Integer>> ans) {
+    private static void backtrack1(int[] nums, int pos, Set<List<Integer>> ans) {
         if (pos == nums.length) {
             ans.add(IntStream.of(nums).boxed().collect(Collectors.toList()));
+
             return;
         }
         for (int i = pos; i < nums.length; i++) {
             sawp(nums, i, pos);
-            backtrack(nums, pos + 1, ans);
+            backtrack1(nums, pos + 1, ans);
             sawp(nums, i, pos);
         }
     }
