@@ -1,5 +1,7 @@
 package year2021.month10.no698;
 
+import java.util.Arrays;
+
 public class PartitionToKEqualSumSubsets {
     public static void main(String[] args) {
         int[] nums1 = {4, 3, 2, 3, 5, 2, 1};
@@ -17,12 +19,22 @@ public class PartitionToKEqualSumSubsets {
             maxElement = Math.max(maxElement, num);
             sum += num;
         }
+        // 无法整除 k，必无法切分
         if (sum % k != 0) {
             return false;
         }
         int target = sum / k;
+        // 存在一个元素大于划分的和，无法切分
         if (maxElement > target) {
             return false;
+        }
+        // 逆序排序，大的元素先放入桶内，剪枝
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length / 2; i++) {
+            int j = nums.length - i - 1;
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
         }
         boolean[] visited = new boolean[nums.length];
         return backtrack(nums, visited, k, 0, target);
