@@ -8,29 +8,59 @@ public class ReverseLinkedListII {
         int left1 = 2, right1 = 4;
         ListNode head2 = new ListNode(1);
         int left2 = 1, right2 = 1;
-        System.out.println(reverseBetween(head1, left1, right1));
-        System.out.println(reverseBetween(head2, left2, right2));
+        System.out.println(reverseBetween1(head1, left1, right1));
+        System.out.println(reverseBetween1(head2, left2, right2));
+    }
+
+    private static ListNode reverseBetween1(ListNode head, int left, int right) {
+        ListNode root = new ListNode(-1, head);
+        ListNode pre = root;
+        while (left > 1) {
+            pre = pre.next;
+            left--;
+            right--;
+        }
+        pre.next = iterationReverseN(pre.next, right - left + 1);
+        return root.next;
+    }
+
+    private static ListNode iterationReverseN(ListNode head, int n) {
+        if (head == null || n == 1) {
+            return head;
+        }
+        ListNode newHead = null;
+        ListNode p = head;
+        ListNode next = head.next;
+        while (n > 0) {
+            next = p.next;
+            p.next = newHead;
+            newHead = p;
+            p = next;
+            n--;
+        }
+        head.next = next;
+        return newHead;
     }
 
     public static ListNode reverseBetween(ListNode head, int left, int right) {
         successor = null;
-        return reverse(head, left, right);
+        return recursionReverse(head, left, right);
     }
 
-    private static ListNode reverse(ListNode head, int left, int right) {
+    private static ListNode recursionReverse(ListNode head, int left, int right) {
         if (left == 1) {
-            return reverseN(head, right - left + 1);
+            return recursionReverseN(head, right - left + 1);
         }
-        head.next = reverse(head.next, left - 1, right - 1);
+        head.next = recursionReverse(head.next, left - 1, right - 1);
         return head;
     }
 
-    public static ListNode reverseN(ListNode head, int n) {
+    public static ListNode recursionReverseN(ListNode head, int n) {
         if (n == 1) {
             successor = head.next;
             return head;
         }
-        ListNode newHead = reverseN(head.next, n - 1);
+        ListNode newHead = recursionReverseN(head.next, n - 1);
         head.next.next = head;
         // 对于每个节点都会指向相同的后继，但只要他不是最后一个节点，
         // 就会在下一个节点执行 head.next.next = head; 时覆盖掉
