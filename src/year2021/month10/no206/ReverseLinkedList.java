@@ -8,7 +8,18 @@ public class ReverseLinkedList {
         System.out.println(reverseList(head2));
     }
 
-    public static ListNode reverseList(ListNode head) {
+    private static ListNode reverseList(ListNode head) {
+        // recursion
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode newHead = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return newHead;
+    }
+
+    public static ListNode reverseList1(ListNode head) {
         // iteration
         ListNode newHead = null;
         ListNode p = head;
