@@ -16,10 +16,32 @@ public class LongestSubstringWithoutRepeatingCharacters {
         System.out.println(lengthOfLongestSubstring(s4));
     }
 
-    public static int lengthOfLongestSubstring(String s) {
+    private static int lengthOfLongestSubstring(String s) {
+        // 优化版
+        int longest = 0;
+        int left = -1;
+        int right = 0;
+        // key 元素， value 索引
+        Map<Character, Integer> window = new HashMap<>();
+        // window: (left, right]
+        while (right < s.length()) {
+            char c = s.charAt(right);
+            if (window.containsKey(c)) {
+                // 用 max 来防止 left 后退（被窗口外的元素影响）
+                left = Math.max(left, window.get(c));
+            }
+            window.put(c, right);
+            longest = Math.max(longest, right - left);
+            right++;
+        }
+        return longest;
+    }
+
+    public static int lengthOfLongestSubstring1(String s) {
         int longest = 0;
         int left = 0;
         int right = 0;
+        // key 元素， value 出现次数
         Map<Character, Integer> window = new HashMap<>();
         // window: [left, right]
         while (right < s.length()) {
