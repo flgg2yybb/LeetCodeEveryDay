@@ -11,6 +11,24 @@ public class MoveZeroes {
     }
 
     public static void moveZeroes(int[] nums) {
+        int left = 0;
+        int right = 0;
+        while (right < nums.length) {
+            if (nums[right] != 0) {
+                swap(nums, left, right);
+                left++;
+            }
+            right++;
+        }
+    }
+
+    private static void swap(int[] nums, int x, int y) {
+        int temp = nums[x];
+        nums[x] = nums[y];
+        nums[y] = temp;
+    }
+
+    public static void moveZeroes1(int[] nums) {
         int slow = 0;
         int fast = 0;
         // [0, slow) => 非 0
