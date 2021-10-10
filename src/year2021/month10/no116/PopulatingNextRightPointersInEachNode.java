@@ -13,7 +13,26 @@ public class PopulatingNextRightPointersInEachNode {
         disp(connect(root));
     }
 
-    public static Node connect(Node root) {
+    private static Node connect(Node root) {
+        Node depthNode = root;
+        while (depthNode != null) {
+            Node levelNode = depthNode;
+            while (levelNode != null) {
+                if (levelNode.left == null) {
+                    break;
+                }
+                levelNode.left.next = levelNode.right;
+                if (levelNode.next != null) {
+                    levelNode.right.next = levelNode.next.left;
+                }
+                levelNode = levelNode.next;
+            }
+            depthNode = depthNode.left;
+        }
+        return root;
+    }
+
+    public static Node connect1(Node root) {
         if (root == null) {
             return root;
         }
