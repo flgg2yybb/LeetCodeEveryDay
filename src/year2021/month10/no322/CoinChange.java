@@ -1,6 +1,8 @@
 package year2021.month10.no322;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CoinChange {
 
@@ -22,7 +24,35 @@ public class CoinChange {
         System.out.println(coinChange(coins5, amount5));
     }
 
-    public static int coinChange(int[] coins, int amount) {
+    private static int coinChange(int[] coins, int amount) {
+        Map<Integer, Integer> cache = new HashMap<>();
+        return count(amount, coins, cache);
+    }
+
+    private static int count(int amount, int[] coins, Map<Integer, Integer> cache) {
+        if (amount < 0) {
+            return -1;
+        }
+        if (amount == 0) {
+            return 0;
+        }
+        if (cache.containsKey(amount)) {
+            return cache.get(amount);
+        }
+        int min = amount + 1;
+        for (int coin : coins) {
+            int diff = amount - coin;
+            int count = count(diff, coins, cache);
+            if (count >= 0) {
+                min = Math.min(min, count + 1);
+            }
+        }
+        int ans = min == amount + 1 ? -1 : min;
+        cache.put(amount, ans);
+        return ans;
+    }
+
+    public static int coinChange1(int[] coins, int amount) {
         int[] dp = new int[amount + 1];
         final int MAX = amount + 1;
         Arrays.fill(dp, MAX);
