@@ -29,7 +29,7 @@ public class FindDuplicateSubtrees {
 
     /*
      * Tips:
-     * 带有空节点的【前序遍历】和【中序遍历】可以唯一确定一棵树
+     * 带有空节点的【前序遍历】和【后序遍历】可以唯一确定一棵树
      * */
     private static String find(TreeNode root, Map<String, Integer> subTreeMap, List<TreeNode> ans) {
         if (root == null) {
