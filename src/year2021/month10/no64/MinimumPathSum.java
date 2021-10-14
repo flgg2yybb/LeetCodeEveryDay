@@ -1,5 +1,7 @@
 package year2021.month10.no64;
 
+import java.util.Arrays;
+
 public class MinimumPathSum {
 
     public static void main(String[] args) {
@@ -16,7 +18,31 @@ public class MinimumPathSum {
         System.out.println(minPathSum(grid2));
     }
 
-    public static int minPathSum(int[][] grid) {
+    private static int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] cache = new int[m][n];
+        for (int[] arr : cache) {
+            Arrays.fill(arr, -1);
+        }
+        return dfs(grid, cache, m - 1, n - 1);
+    }
+
+    private static int dfs(int[][] grid, int[][] cache, int x, int y) {
+        if (x == 0 && y == 0) {
+            return grid[0][0];
+        }
+        if (cache[x][y] != -1) {
+            return cache[x][y];
+        }
+        int cur = grid[x][y];
+        int top = x == 0 ? Integer.MAX_VALUE : dfs(grid, cache, x - 1, y);
+        int left = y == 0 ? Integer.MAX_VALUE : dfs(grid, cache, x, y - 1);
+        cache[x][y] = Math.min(top, left) + cur;
+        return cache[x][y];
+    }
+
+    public static int minPathSum1(int[][] grid) {
         int m = grid.length;
         int n = grid[0].length;
         int[][] dp = new int[m][n];
