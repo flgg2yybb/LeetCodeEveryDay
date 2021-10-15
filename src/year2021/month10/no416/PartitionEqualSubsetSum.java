@@ -9,7 +9,34 @@ public class PartitionEqualSubsetSum {
         System.out.println(canPartition(nums2));
     }
 
-    public static boolean canPartition(int[] nums) {
+    private static boolean canPartition(int[] nums) {
+        int sum = 0;
+        int max = Integer.MIN_VALUE;
+        for (int num : nums) {
+            max = Math.max(max, num);
+            sum += num;
+        }
+        if (sum % 2 != 0) {
+            return false;
+        }
+        int half = sum / 2;
+        if (max > half) {
+            return false;
+        }
+        boolean[] dp = new boolean[half + 1];
+        dp[0] = true;
+        dp[nums[0]] = true;
+        for (int i = 1; i < nums.length; i++) {
+            int num = nums[i];
+            // 需要从大到小遍历，否则：dp[j-num] 不为上一行的值，而是已经更新过的
+            for (int j = half; j - num >= 0; j--) {
+                dp[j] |= dp[j - num];
+            }
+        }
+        return dp[half];
+    }
+
+    public static boolean canPartition1(int[] nums) {
         int sum = 0;
         int max = Integer.MIN_VALUE;
         for (int num : nums) {
