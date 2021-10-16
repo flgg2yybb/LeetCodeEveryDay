@@ -13,7 +13,30 @@ public class OnesAndZeroes {
         System.out.println(findMaxForm(strs2, m2, n2));
     }
 
-    public static int findMaxForm(String[] strs, int m, int n) {
+    private static int findMaxForm(String[] strs, int m, int n) {
+        /*
+         * 空间优化，由于 dp[i][j][k] 只和 dp[i-1][...][...] 有关，故可使用滚动数组
+         * 需要注意状态转移方向：
+         * 由于 dp[j][k] 与上一层的 dp[j][k] 以及 dp[j-x][k-y] 有关
+         * 为了保证 dp[j-x][k-y] 为上一层的数值，故需要从大往小遍历
+         * */
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= strs.length; i++) {
+            int[] counts = countCurStrOneAneZero(strs[i - 1]);
+            int x = counts[0];
+            int y = counts[1];
+            for (int j = m; j >= 0; j--) {
+                for (int k = n; k >= 0; k--) {
+                    if (j >= x && k >= y) {
+                        dp[j][k] = Math.max(dp[j][k], 1 + dp[j - x][k - y]);
+                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    public static int findMaxForm1(String[] strs, int m, int n) {
         /*
          * DP,【0-1背包】
          * 状态定义：
