@@ -21,10 +21,10 @@ public class LongestPalindromicSubsequence {
          *   dp[i][j] = dp[i+1][j-1] + 2
          * else
          *   dp[i][j] = max{dp[i][j-1], dp[i+1][j]}
+         *                  删除 j         删除 i
          * 转移方向为：左下 => 右上，故需要行逆序遍历
          * 初始值：
          * dp[i][i] = 1
-         * dp[i][i+1] = s[i] == s[i+1] ? 2 : 0
          * */
         int n = s.length();
         int[][] dp = new int[n][n];
