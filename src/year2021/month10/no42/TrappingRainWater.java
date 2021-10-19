@@ -10,19 +10,21 @@ public class TrappingRainWater {
     }
 
     private static int trap(int[] height) {
+        // 使用双指针代替数组，动态计算指针左右两边的最大元素
         int len = height.length;
         int ans = 0;
         int left = 0;
         int right = len - 1;
-        int minBound = 0;
+        int leftMax = 0;
+        int rightMax = 0;
         while (left < right) {
+            leftMax = Math.max(leftMax, height[left]);
+            rightMax = Math.max(rightMax, height[right]);
             if (height[left] <= height[right]) {
-                minBound = Math.max(minBound, height[left]);
-                ans += minBound - height[left];
+                ans += leftMax - height[left];
                 left++;
             } else {
-                minBound = Math.max(minBound, height[right]);
-                ans += minBound - height[right];
+                ans += rightMax - height[right];
                 right--;
             }
         }
@@ -30,6 +32,8 @@ public class TrappingRainWater {
     }
 
     public static int trap1(int[] height) {
+        // 分别计算每个元素（包含自己）在左右两边的最大元素
+        // 则若当前元素值同时小于两边的最大元素值，则有凹槽
         int len = height.length;
         int[] leftMax = new int[len];
         int[] rightMax = new int[len];
