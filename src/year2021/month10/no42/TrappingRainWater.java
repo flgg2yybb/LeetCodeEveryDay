@@ -9,7 +9,27 @@ public class TrappingRainWater {
         System.out.println(trap(height2));
     }
 
-    public static int trap(int[] height) {
+    private static int trap(int[] height) {
+        int len = height.length;
+        int ans = 0;
+        int left = 0;
+        int right = len - 1;
+        int minBound = 0;
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                minBound = Math.max(minBound, height[left]);
+                ans += minBound - height[left];
+                left++;
+            } else {
+                minBound = Math.max(minBound, height[right]);
+                ans += minBound - height[right];
+                right--;
+            }
+        }
+        return ans;
+    }
+
+    public static int trap1(int[] height) {
         int len = height.length;
         int[] leftMax = new int[len];
         int[] rightMax = new int[len];
