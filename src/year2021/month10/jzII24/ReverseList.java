@@ -11,7 +11,17 @@ public class ReverseList {
         System.out.println(reverseList(head3));
     }
 
-    public static ListNode reverseList(ListNode head) {
+    private static ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode newHead = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return newHead;
+    }
+
+    public static ListNode reverseList1(ListNode head) {
         ListNode p = head;
         ListNode newHead = null;
         while (p != null) {
