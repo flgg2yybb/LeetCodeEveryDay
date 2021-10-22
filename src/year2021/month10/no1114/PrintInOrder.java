@@ -1,6 +1,8 @@
 package year2021.month10.no1114;
 
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
@@ -40,12 +42,42 @@ public class PrintInOrder {
 
 class Foo {
 
+    private final BlockingQueue<Integer> blockingQueue2 = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<Integer> blockingQueue3 = new ArrayBlockingQueue<>(1);
+
+    public Foo() {
+
+    }
+
+    public void first(Runnable printFirst) throws InterruptedException {
+        // printFirst.run() outputs "first". Do not change or remove this line.
+        printFirst.run();
+        blockingQueue2.put(1);
+    }
+
+    public void second(Runnable printSecond) throws InterruptedException {
+        blockingQueue2.take();
+        // printSecond.run() outputs "second". Do not change or remove this line.
+        printSecond.run();
+        blockingQueue3.put(1);
+    }
+
+    public void third(Runnable printThird) throws InterruptedException {
+        blockingQueue3.take();
+        // printThird.run() outputs "third". Do not change or remove this line.
+        printThird.run();
+    }
+}
+
+
+class Foo4 {
+
     private final Lock lock = new ReentrantLock();
     private final Condition condition2 = lock.newCondition();
     private final Condition condition3 = lock.newCondition();
     private int job = 1;
 
-    public Foo() {
+    public Foo4() {
 
     }
 
