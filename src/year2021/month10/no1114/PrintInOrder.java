@@ -3,6 +3,9 @@ package year2021.month10.no1114;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class PrintInOrder {
     public static void main(String[] args) {
@@ -37,9 +40,62 @@ public class PrintInOrder {
 
 class Foo {
 
-    private final AtomicInteger ai = new AtomicInteger(1);
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition2 = lock.newCondition();
+    private final Condition condition3 = lock.newCondition();
+    private int job = 1;
 
     public Foo() {
+
+    }
+
+    public void first(Runnable printFirst) throws InterruptedException {
+        lock.lock();
+        try {
+            // printFirst.run() outputs "first". Do not change or remove this line.
+            printFirst.run();
+            job++;
+            condition2.signal();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void second(Runnable printSecond) throws InterruptedException {
+        lock.lock();
+        try {
+            if (job != 2) {
+                condition2.await();
+            }
+            // printSecond.run() outputs "second". Do not change or remove this line.
+            printSecond.run();
+            job++;
+            condition3.signal();
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    public void third(Runnable printThird) throws InterruptedException {
+        lock.lock();
+        try {
+            if (job != 3) {
+                condition3.await();
+            }
+            // printThird.run() outputs "third". Do not change or remove this line.
+            printThird.run();
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+
+class Foo3 {
+
+    private final AtomicInteger ai = new AtomicInteger(1);
+
+    public Foo3() {
 
     }
 
