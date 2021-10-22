@@ -35,11 +35,52 @@ public class PrintInOrder {
 
 class Foo {
 
+    private final Object lock = new Object();
+    private int job = 1;
+
+    public Foo() {
+
+    }
+
+    public void first(Runnable printFirst) throws InterruptedException {
+        synchronized (lock) {
+            // printFirst.run() outputs "first". Do not change or remove this line.
+            printFirst.run();
+            job++;
+            lock.notifyAll();
+        }
+    }
+
+    public void second(Runnable printSecond) throws InterruptedException {
+        synchronized (lock) {
+            while (job != 2) {
+                lock.wait();
+            }
+            // printSecond.run() outputs "second". Do not change or remove this line.
+            printSecond.run();
+            job++;
+            lock.notifyAll();
+        }
+    }
+
+    public void third(Runnable printThird) throws InterruptedException {
+        synchronized (lock) {
+            while (job != 3) {
+                lock.wait();
+            }
+            // printThird.run() outputs "third". Do not change or remove this line.
+            printThird.run();
+        }
+    }
+}
+
+class Foo1 {
+
     private final Semaphore semaphore1 = new Semaphore(1);
     private final Semaphore semaphore2 = new Semaphore(0);
     private final Semaphore semaphore3 = new Semaphore(0);
 
-    public Foo() {
+    public Foo1() {
 
     }
 
