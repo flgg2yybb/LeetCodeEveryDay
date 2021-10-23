@@ -29,10 +29,50 @@ public class PrintFooBarAlternately {
 
 class FooBar {
 
+    private final Object lock = new Object();
+    private final int n;
+    private int job = 1;
+
+    public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            synchronized (lock) {
+                while (job != 1) {
+                    lock.wait();
+                }
+                // printFoo.run() outputs "foo". Do not change or remove this line.
+                printFoo.run();
+                job = 2;
+                lock.notify();
+            }
+
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            synchronized (lock) {
+                while (job != 2) {
+                    lock.wait();
+                }
+                // printBar.run() outputs "bar". Do not change or remove this line.
+                printBar.run();
+                job = 1;
+                lock.notify();
+            }
+        }
+    }
+}
+
+class FooBar2 {
+
     private final AtomicInteger ai = new AtomicInteger(1);
     private final int n;
 
-    public FooBar(int n) {
+    public FooBar2(int n) {
         this.n = n;
     }
 
