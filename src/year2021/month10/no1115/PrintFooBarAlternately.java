@@ -2,6 +2,9 @@ package year2021.month10.no1115;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class PrintFooBarAlternately {
 
@@ -29,11 +32,58 @@ public class PrintFooBarAlternately {
 
 class FooBar {
 
-    private final Object lock = new Object();
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition1 = lock.newCondition();
+    private final Condition condition2 = lock.newCondition();
     private final int n;
     private int job = 1;
 
     public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            lock.lock();
+            try {
+                if (job != 1) {
+                    condition1.await();
+                }
+                // printFoo.run() outputs "foo". Do not change or remove this line.
+                printFoo.run();
+                job = 2;
+                condition2.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            lock.lock();
+            try {
+                if (job != 2) {
+                    condition2.await();
+                }
+                // printBar.run() outputs "bar". Do not change or remove this line.
+                printBar.run();
+                job = 1;
+                condition1.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+}
+
+class FooBar3 {
+
+    private final Object lock = new Object();
+    private final int n;
+    private int job = 1;
+
+    public FooBar3(int n) {
         this.n = n;
     }
 
