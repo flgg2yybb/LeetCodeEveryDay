@@ -1,6 +1,7 @@
 package year2021.month10.no1115;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PrintFooBarAlternately {
 
@@ -28,11 +29,45 @@ public class PrintFooBarAlternately {
 
 class FooBar {
 
+    private final AtomicInteger ai = new AtomicInteger(1);
+    private final int n;
+
+    public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+
+        for (int i = 0; i < n; i++) {
+            while ((ai.get() & 1) == 0) {
+                Thread.yield();
+            }
+            // printFoo.run() outputs "foo". Do not change or remove this line.
+            printFoo.run();
+            ai.incrementAndGet();
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+
+        for (int i = 0; i < n; i++) {
+            while ((ai.get() & 1) == 1) {
+                Thread.yield();
+            }
+            // printBar.run() outputs "bar". Do not change or remove this line.
+            printBar.run();
+            ai.incrementAndGet();
+        }
+    }
+}
+
+class FooBar1 {
+
     private final Semaphore fooSem = new Semaphore(1);
     private final Semaphore barSem = new Semaphore(0);
     private final int n;
 
-    public FooBar(int n) {
+    public FooBar1(int n) {
         this.n = n;
     }
 
