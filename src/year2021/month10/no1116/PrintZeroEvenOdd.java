@@ -1,6 +1,9 @@
 package year2021.month10.no1116;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntConsumer;
 
 public class PrintZeroEvenOdd {
@@ -35,11 +38,79 @@ public class PrintZeroEvenOdd {
 
 class ZeroEvenOdd {
 
-    private final Object lock = new Object();
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition0 = lock.newCondition();
+    private final Condition condition1 = lock.newCondition();
+    private final Condition condition2 = lock.newCondition();
     private final int n;
     private int job = 0;
 
     public ZeroEvenOdd(int n) {
+        this.n = n;
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void zero(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            lock.lock();
+            try {
+                if (job != 0) {
+                    condition0.await();
+                }
+                printNumber.accept(0);
+                if ((i & 1) == 0) {
+                    job = 1;
+                    condition1.signal();
+                } else {
+                    job = 2;
+                    condition2.signal();
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    public void even(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 2; i <= n; i += 2) {
+            lock.lock();
+            try {
+                if (job != 2) {
+                    condition2.await();
+                }
+                printNumber.accept(i);
+                job = 0;
+                condition0.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    public void odd(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i += 2) {
+            lock.lock();
+            try {
+                if (job != 1) {
+                    condition1.await();
+                }
+                printNumber.accept(i);
+                job = 0;
+                condition0.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+}
+
+class ZeroEvenOdd2 {
+
+    private final Object lock = new Object();
+    private final int n;
+    private int job = 0;
+
+    public ZeroEvenOdd2(int n) {
         this.n = n;
     }
 
