@@ -35,12 +35,68 @@ public class PrintZeroEvenOdd {
 
 class ZeroEvenOdd {
 
+    private final Object lock = new Object();
+    private final int n;
+    private int job = 0;
+
+    public ZeroEvenOdd(int n) {
+        this.n = n;
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void zero(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            synchronized (lock) {
+                while (job != 0) {
+                    lock.wait();
+                }
+                printNumber.accept(0);
+                if ((i & 1) == 0) {
+                    job = 1;
+                } else {
+                    job = 2;
+                }
+                lock.notifyAll();
+            }
+        }
+    }
+
+    public void even(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 2; i <= n; i += 2) {
+            synchronized (lock) {
+                while (job != 2) {
+                    lock.wait();
+                }
+                printNumber.accept(i);
+                job = 0;
+                lock.notifyAll();
+            }
+
+        }
+    }
+
+    public void odd(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i += 2) {
+            synchronized (lock) {
+                while (job != 1) {
+                    lock.wait();
+                }
+                printNumber.accept(i);
+                job = 0;
+                lock.notifyAll();
+            }
+        }
+    }
+}
+
+class ZeroEvenOdd1 {
+
     private final Semaphore zeroSema = new Semaphore(1);
     private final Semaphore oddSema = new Semaphore(0);
     private final Semaphore evenSema = new Semaphore(0);
     private final int n;
 
-    public ZeroEvenOdd(int n) {
+    public ZeroEvenOdd1(int n) {
         this.n = n;
     }
 
