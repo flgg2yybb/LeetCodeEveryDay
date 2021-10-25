@@ -33,10 +33,53 @@ public class BuildingH2O {
 
 class H2O {
 
+    private final Object lock = new Object();
+    private int hNum = 2;
+    private int oNum = 1;
+
+    public H2O() {
+
+    }
+
+    public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
+        synchronized (lock) {
+            while (hNum == 0) {
+                lock.wait();
+            }
+            // releaseHydrogen.run() outputs "H". Do not change or remove this line.
+            releaseHydrogen.run();
+            hNum--;
+            if (hNum == 0 && oNum == 0) {
+                hNum = 2;
+                oNum = 1;
+            }
+            lock.notifyAll();
+        }
+    }
+
+    public void oxygen(Runnable releaseOxygen) throws InterruptedException {
+        synchronized (lock) {
+            while (oNum == 0) {
+                lock.wait();
+            }
+            // releaseOxygen.run() outputs "O". Do not change or remove this line.
+            releaseOxygen.run();
+            oNum--;
+            if (hNum == 0 && oNum == 0) {
+                hNum = 2;
+                oNum = 1;
+            }
+            lock.notifyAll();
+        }
+    }
+}
+
+class H2O1 {
+
     private final Semaphore hSemaphore = new Semaphore(2);
     private final Semaphore oSemaphore = new Semaphore(0);
 
-    public H2O() {
+    public H2O1() {
 
     }
 
