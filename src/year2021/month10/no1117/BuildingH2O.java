@@ -1,6 +1,9 @@
 package year2021.month10.no1117;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BuildingH2O {
 
@@ -33,11 +36,61 @@ public class BuildingH2O {
 
 class H2O {
 
-    private final Object lock = new Object();
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
     private int hNum = 2;
     private int oNum = 1;
 
     public H2O() {
+
+    }
+
+    public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
+        lock.lock();
+        try {
+            while (hNum == 0) {
+                condition.await();
+            }
+            // releaseHydrogen.run() outputs "H". Do not change or remove this line.
+            releaseHydrogen.run();
+            hNum--;
+            processResetIfGeneratedH2O();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void oxygen(Runnable releaseOxygen) throws InterruptedException {
+        lock.lock();
+        try {
+            while (oNum == 0) {
+                condition.await();
+            }
+            // releaseOxygen.run() outputs "O". Do not change or remove this line.
+            releaseOxygen.run();
+            oNum--;
+            processResetIfGeneratedH2O();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void processResetIfGeneratedH2O() {
+        if (hNum == 0 && oNum == 0) {
+            hNum = 2;
+            oNum = 1;
+        }
+        condition.signalAll();
+    }
+}
+
+class H2O2 {
+
+    private final Object lock = new Object();
+    private int hNum = 2;
+    private int oNum = 1;
+
+    public H2O2() {
 
     }
 
