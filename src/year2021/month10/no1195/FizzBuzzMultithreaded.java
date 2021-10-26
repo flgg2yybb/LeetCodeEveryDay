@@ -1,6 +1,9 @@
 package year2021.month10.no1195;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntConsumer;
 
 public class FizzBuzzMultithreaded {
@@ -50,10 +53,110 @@ class FizzBuzz {
     public static final String BUZZ = "BUZZ";
     public static final String FIZZBUZZ = "FIZZBUZZ";
     private final int n;
-    private final Object lock = new Object();
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
     private volatile String current = NUMBER;
 
     public FizzBuzz(int n) {
+        this.n = n;
+    }
+
+    // printFizz.run() outputs "fizz".
+    public void fizz(Runnable printFizz) throws InterruptedException {
+        for (int i = 3; i <= n; i += 3) {
+            if (i % 5 == 0) {
+                continue;
+            }
+            lock.lock();
+            try {
+                while (!FIZZ.equals(current)) {
+                    condition.await();
+                }
+                printFizz.run();
+                current = NUMBER;
+                condition.signalAll();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    // printBuzz.run() outputs "buzz".
+    public void buzz(Runnable printBuzz) throws InterruptedException {
+        for (int i = 5; i <= n; i += 5) {
+            if (i % 3 == 0) {
+                continue;
+            }
+            lock.lock();
+            try {
+                while (!BUZZ.equals(current)) {
+                    condition.await();
+                }
+                printBuzz.run();
+                current = NUMBER;
+                condition.signalAll();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    // printFizzBuzz.run() outputs "fizzbuzz".
+    public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
+        for (int i = 5; i <= n; i += 5) {
+            if (i % 3 != 0) {
+                continue;
+            }
+            lock.lock();
+            try {
+                while (!FIZZBUZZ.equals(current)) {
+                    condition.await();
+                }
+                printFizzBuzz.run();
+                current = NUMBER;
+                condition.signalAll();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void number(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i++) {
+            lock.lock();
+            try {
+                while (!NUMBER.equals(current)) {
+                    condition.await();
+                }
+                if (i % 3 == 0 && i % 5 == 0) {
+                    current = FIZZBUZZ;
+                } else if (i % 3 == 0) {
+                    current = FIZZ;
+                } else if (i % 5 == 0) {
+                    current = BUZZ;
+                } else {
+                    printNumber.accept(i);
+                }
+                condition.signalAll();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+}
+
+class FizzBuzz2 {
+
+    public static final String NUMBER = "NUMBER";
+    public static final String FIZZ = "FIZZ";
+    public static final String BUZZ = "BUZZ";
+    public static final String FIZZBUZZ = "FIZZBUZZ";
+    private final int n;
+    private final Object lock = new Object();
+    private volatile String current = NUMBER;
+
+    public FizzBuzz2(int n) {
         this.n = n;
     }
 
