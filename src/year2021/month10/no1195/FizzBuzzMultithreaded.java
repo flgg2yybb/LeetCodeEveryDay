@@ -45,13 +45,100 @@ public class FizzBuzzMultithreaded {
 
 class FizzBuzz {
 
+    public static final String NUMBER = "NUMBER";
+    public static final String FIZZ = "FIZZ";
+    public static final String BUZZ = "BUZZ";
+    public static final String FIZZBUZZ = "FIZZBUZZ";
+    private final int n;
+    private final Object lock = new Object();
+    private volatile String current = NUMBER;
+
+    public FizzBuzz(int n) {
+        this.n = n;
+    }
+
+    // printFizz.run() outputs "fizz".
+    public void fizz(Runnable printFizz) throws InterruptedException {
+        for (int i = 3; i <= n; i += 3) {
+            if (i % 5 == 0) {
+                continue;
+            }
+            synchronized (lock) {
+                while (!FIZZ.equals(current)) {
+                    lock.wait();
+                }
+                printFizz.run();
+                current = NUMBER;
+                lock.notifyAll();
+            }
+        }
+    }
+
+    // printBuzz.run() outputs "buzz".
+    public void buzz(Runnable printBuzz) throws InterruptedException {
+        for (int i = 5; i <= n; i += 5) {
+            if (i % 3 == 0) {
+                continue;
+            }
+            synchronized (lock) {
+                while (!BUZZ.equals(current)) {
+                    lock.wait();
+                }
+                printBuzz.run();
+                current = NUMBER;
+                lock.notifyAll();
+            }
+        }
+    }
+
+    // printFizzBuzz.run() outputs "fizzbuzz".
+    public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
+        for (int i = 5; i <= n; i += 5) {
+            if (i % 3 != 0) {
+                continue;
+            }
+            synchronized (lock) {
+                while (!FIZZBUZZ.equals(current)) {
+                    lock.wait();
+                }
+                printFizzBuzz.run();
+                current = NUMBER;
+                lock.notifyAll();
+            }
+        }
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void number(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i++) {
+            synchronized (lock) {
+                while (!NUMBER.equals(current)) {
+                    lock.wait();
+                }
+                if (i % 3 == 0 && i % 5 == 0) {
+                    current = FIZZBUZZ;
+                } else if (i % 3 == 0) {
+                    current = FIZZ;
+                } else if (i % 5 == 0) {
+                    current = BUZZ;
+                } else {
+                    printNumber.accept(i);
+                }
+                lock.notifyAll();
+            }
+        }
+    }
+}
+
+class FizzBuzz1 {
+
     private final int n;
     private final Semaphore numSema = new Semaphore(1);
     private final Semaphore fizzSema = new Semaphore(0);
     private final Semaphore buzzSema = new Semaphore(0);
     private final Semaphore fizzBuzzSema = new Semaphore(0);
 
-    public FizzBuzz(int n) {
+    public FizzBuzz1(int n) {
         this.n = n;
     }
 
