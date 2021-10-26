@@ -54,10 +54,115 @@ class FizzBuzz {
     public static final String FIZZBUZZ = "FIZZBUZZ";
     private final int n;
     private final Lock lock = new ReentrantLock();
-    private final Condition condition = lock.newCondition();
+    private final Condition numCondition = lock.newCondition();
+    private final Condition fizzCondition = lock.newCondition();
+    private final Condition buzzCondition = lock.newCondition();
+    private final Condition fizzBuzzCondition = lock.newCondition();
     private volatile String current = NUMBER;
 
     public FizzBuzz(int n) {
+        this.n = n;
+    }
+
+    // printFizz.run() outputs "fizz".
+    public void fizz(Runnable printFizz) throws InterruptedException {
+        for (int i = 3; i <= n; i += 3) {
+            if (i % 5 == 0) {
+                continue;
+            }
+            lock.lock();
+            try {
+                if (!FIZZ.equals(current)) {
+                    fizzCondition.await();
+                }
+                printFizz.run();
+                current = NUMBER;
+                numCondition.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    // printBuzz.run() outputs "buzz".
+    public void buzz(Runnable printBuzz) throws InterruptedException {
+        for (int i = 5; i <= n; i += 5) {
+            if (i % 3 == 0) {
+                continue;
+            }
+            lock.lock();
+            try {
+                if (!BUZZ.equals(current)) {
+                    buzzCondition.await();
+                }
+                printBuzz.run();
+                current = NUMBER;
+                numCondition.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    // printFizzBuzz.run() outputs "fizzbuzz".
+    public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
+        for (int i = 5; i <= n; i += 5) {
+            if (i % 3 != 0) {
+                continue;
+            }
+            lock.lock();
+            try {
+                if (!FIZZBUZZ.equals(current)) {
+                    fizzBuzzCondition.await();
+                }
+                printFizzBuzz.run();
+                current = NUMBER;
+                numCondition.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void number(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i++) {
+            lock.lock();
+            try {
+                if (!NUMBER.equals(current)) {
+                    numCondition.await();
+                }
+                if (i % 3 == 0 && i % 5 == 0) {
+                    current = FIZZBUZZ;
+                    fizzBuzzCondition.signal();
+                } else if (i % 3 == 0) {
+                    current = FIZZ;
+                    fizzCondition.signal();
+                } else if (i % 5 == 0) {
+                    current = BUZZ;
+                    buzzCondition.signal();
+                } else {
+                    printNumber.accept(i);
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+}
+
+class FizzBuzz3 {
+
+    public static final String NUMBER = "NUMBER";
+    public static final String FIZZ = "FIZZ";
+    public static final String BUZZ = "BUZZ";
+    public static final String FIZZBUZZ = "FIZZBUZZ";
+    private final int n;
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
+    private volatile String current = NUMBER;
+
+    public FizzBuzz3(int n) {
         this.n = n;
     }
 
