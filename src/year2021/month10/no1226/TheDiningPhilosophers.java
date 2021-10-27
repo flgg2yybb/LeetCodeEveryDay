@@ -1,5 +1,7 @@
 package year2021.month10.no1226;
 
+import java.util.concurrent.Semaphore;
+
 public class TheDiningPhilosophers {
 
     public static void main(String[] args) {
@@ -10,7 +12,14 @@ public class TheDiningPhilosophers {
 
 class DiningPhilosophers {
 
-    private final Object lock = new Object();
+    private final Semaphore[] forks = {
+            new Semaphore(1),
+            new Semaphore(1),
+            new Semaphore(1),
+            new Semaphore(1),
+            new Semaphore(1)
+    };
+    private final Semaphore limitedEater = new Semaphore(3);
 
     public DiningPhilosophers() {
 
@@ -23,6 +32,48 @@ class DiningPhilosophers {
             Runnable eat,
             Runnable putLeftFork,
             Runnable putRightFork) throws InterruptedException {
+        /*
+         * 由于 5 把叉子，5 个人，只有当 5 个人都各自拿起一把叉子相互循环等待时会有死锁
+         * 若限制为只有 4 个人，则一定有一个人能拿到两把叉子开始吃面，从而不会死锁，但一次只有一个人吃面
+         * 若把人数限制为 3 个人，有一定概率出现两个人获取了两把叉子在吃面
+         * */
+        limitedEater.acquire();
+        Semaphore leftFork = forks[philosopher];
+        Semaphore rightFork = forks[(philosopher + 1) % 5];
+        leftFork.acquire();
+        rightFork.acquire();
+        pickLeftFork.run();
+        pickRightFork.run();
+        eat.run();
+        putRightFork.run();
+        putLeftFork.run();
+        rightFork.release();
+        leftFork.release();
+        limitedEater.release();
+    }
+
+}
+
+class DiningPhilosophers1 {
+
+    private final Object lock = new Object();
+
+    public DiningPhilosophers1() {
+
+    }
+
+    // call the run() method of any runnable to execute its code
+    public void wantsToEat(int philosopher,
+            Runnable pickLeftFork,
+            Runnable pickRightFork,
+            Runnable eat,
+            Runnable putLeftFork,
+            Runnable putRightFork) throws InterruptedException {
+        /*
+         * 一把大锁，
+         * 锁住拿叉子、吃面、放叉子
+         * 由于整个流程只有一个人能做，故不会出现死锁
+         * */
         synchronized (lock) {
             pickLeftFork.run();
             pickRightFork.run();
