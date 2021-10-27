@@ -10,7 +10,52 @@ public class TheDiningPhilosophers {
 
 }
 
+
 class DiningPhilosophers {
+
+    private final Semaphore[] forks = {
+            new Semaphore(1),
+            new Semaphore(1),
+            new Semaphore(1),
+            new Semaphore(1),
+            new Semaphore(1)
+    };
+
+    public DiningPhilosophers() {
+
+    }
+
+    // call the run() method of any runnable to execute its code
+    public void wantsToEat(int philosopher,
+            Runnable pickLeftFork,
+            Runnable pickRightFork,
+            Runnable eat,
+            Runnable putLeftFork,
+            Runnable putRightFork) throws InterruptedException {
+        /*
+         * 奇数号哲学家先获取左叉子，偶数号哲学家先获取右叉子，也不会出现死锁
+         * */
+        Semaphore leftFork = forks[philosopher];
+        Semaphore rightFork = forks[(philosopher + 1) % 5];
+        if ((philosopher & 1) == 1) {
+            leftFork.acquire();
+            rightFork.acquire();
+        } else {
+            rightFork.acquire();
+            leftFork.acquire();
+        }
+        pickLeftFork.run();
+        pickRightFork.run();
+        eat.run();
+        putRightFork.run();
+        putLeftFork.run();
+        rightFork.release();
+        leftFork.release();
+    }
+
+}
+
+class DiningPhilosophers2 {
 
     private final Semaphore[] forks = {
             new Semaphore(1),
@@ -21,7 +66,7 @@ class DiningPhilosophers {
     };
     private final Semaphore limitedEater = new Semaphore(3);
 
-    public DiningPhilosophers() {
+    public DiningPhilosophers2() {
 
     }
 
