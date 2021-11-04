@@ -1,7 +1,9 @@
 package year2021.month11.no139;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class WordBreak {
 
@@ -12,10 +14,31 @@ public class WordBreak {
         List<String> wordDict2 = Arrays.asList("apple", "pen");
         String s3 = "catsandog";
         List<String> wordDict3 = Arrays.asList("cats", "dog", "sand", "and", "cat");
-        System.out.println(wordBreak(s1, wordDict1));
-        System.out.println(wordBreak(s2, wordDict2));
-        System.out.println(wordBreak(s3, wordDict3));
+        System.out.println(wordBreak1(s1, wordDict1));
+        System.out.println(wordBreak1(s2, wordDict2));
+        System.out.println(wordBreak1(s3, wordDict3));
 
+    }
+
+    private static boolean wordBreak1(String s, List<String> wordDict) {
+        // DP, refactor, time is O(nc), space is O(n)
+        int length = s.length();
+        boolean[] dp = new boolean[length + 1];
+        dp[0] = true;
+        Set<String> wordSet = new HashSet<>(wordDict);
+        for (int i = 1; i <= length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (!dp[j]) {
+                    continue;
+                }
+                String cur = s.substring(j, i);
+                if (wordSet.contains(cur)) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[length];
     }
 
     public static boolean wordBreak(String s, List<String> wordDict) {
