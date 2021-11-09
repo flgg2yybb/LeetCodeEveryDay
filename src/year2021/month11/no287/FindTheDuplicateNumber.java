@@ -7,10 +7,32 @@ public class FindTheDuplicateNumber {
         int[] nums2 = {3, 1, 3, 4, 2};
         int[] nums3 = {1, 1};
         int[] nums4 = {1, 1, 2};
-        System.out.println(findDuplicate(nums1));
-        System.out.println(findDuplicate(nums2));
-        System.out.println(findDuplicate(nums3));
-        System.out.println(findDuplicate(nums4));
+        System.out.println(findDuplicate1(nums1));
+        System.out.println(findDuplicate1(nums2));
+        System.out.println(findDuplicate1(nums3));
+        System.out.println(findDuplicate1(nums4));
+    }
+
+    private static int findDuplicate1(int[] nums) {
+        /*
+         * Fast Slow Pointers
+         * 数字都在[1,n]中，且仅有一个元素重复
+         * 建立索引 <->元素的映射，i <-> i+1
+         * 若无重复元素，则该路径无环，因为每个索引 i 只会被唯一的入口 i+1 所访问
+         * 若存在重复元素，则入环口即为重复元素，说明该索引 i 存在两个以上的入口 i+1
+         * */
+        int slow = 0;
+        int fast = 0;
+        do {
+            fast = nums[nums[fast]];
+            slow = nums[slow];
+        } while (fast != slow);
+        slow = 0;
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
     }
 
     public static int findDuplicate(int[] nums) {
