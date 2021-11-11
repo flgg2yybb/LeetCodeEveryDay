@@ -8,9 +8,31 @@ public class LongestIncreasingSubsequence {
         int[] nums1 = {10, 9, 2, 5, 3, 7, 101, 18};
         int[] nums2 = {0, 1, 0, 3, 2, 3};
         int[] nums3 = {7, 7, 7, 7, 7, 7, 7};
-        System.out.println(lengthOfLIS(nums1));
-        System.out.println(lengthOfLIS(nums2));
-        System.out.println(lengthOfLIS(nums3));
+        System.out.println(lengthOfLIS1(nums1));
+        System.out.println(lengthOfLIS1(nums2));
+        System.out.println(lengthOfLIS1(nums3));
+    }
+
+    private static int lengthOfLIS1(int[] nums) {
+        // 单调严格递增队列 + 二分法
+        int length = nums.length;
+        int[] queue = new int[length];
+        int ans = 0;
+        for (int num : nums) {
+            int left = 0;
+            int right = ans;
+            while (left < right) {
+                int mid = left + ((right - left) >> 1);
+                if (queue[mid] < num) {
+                    left = mid + 1;
+                } else {
+                    right = mid;
+                }
+            }
+            queue[left] = num;
+            ans = Math.max(ans, left + 1);
+        }
+        return ans;
     }
 
     public static int lengthOfLIS(int[] nums) {
