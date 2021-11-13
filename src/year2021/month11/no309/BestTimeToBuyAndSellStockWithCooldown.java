@@ -3,7 +3,24 @@ package year2021.month11.no309;
 public class BestTimeToBuyAndSellStockWithCooldown {
     public static void main(String[] args) {
         int[] prices1 = {1, 2, 3, 0, 2};
-        System.out.println(maxProfit(prices1));
+        System.out.println(maxProfit1(prices1));
+    }
+
+    private static int maxProfit1(int[] prices) {
+        // 状态压缩
+        int len = prices.length;
+        int noStockInForzen = 0;
+        int noStock = 0;
+        int holdStock = -prices[0];
+        for (int i = 1; i < len; i++) {
+            int prevNoStockInForzen = noStockInForzen;
+            int prevNoStock = noStock;
+            int prevHoldStock = holdStock;
+            noStockInForzen = prevHoldStock + prices[i];
+            noStock = Math.max(prevNoStockInForzen, prevNoStock);
+            holdStock = Math.max(prevNoStock - prices[i], prevHoldStock);
+        }
+        return Math.max(noStockInForzen, noStock);
     }
 
     public static int maxProfit(int[] prices) {
