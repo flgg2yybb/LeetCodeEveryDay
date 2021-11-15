@@ -10,6 +10,35 @@ public class PartitionEqualSubsetSum {
     }
 
     public static boolean canPartition(int[] nums) {
+//        状态压缩
+        int sum = 0;
+        int maxElement = Integer.MIN_VALUE;
+        for (int num : nums) {
+            sum += num;
+            maxElement = Math.max(maxElement, num);
+        }
+        if ((sum & 1) == 1) {   // 为奇数
+            return false;
+        }
+        int target = sum / 2;
+        if (maxElement > target) {
+            return false;
+        }
+        boolean[] dp = new boolean[target + 1];
+        dp[0] = true;
+        dp[nums[0]] = true;
+        for (int i = 1; i < nums.length; i++) {
+            int num = nums[i];
+            for (int j = target; j >= num; j--) {
+                if (dp[j - num]) {
+                    dp[j] = true;
+                }
+            }
+        }
+        return dp[target];
+    }
+
+    public static boolean canPartition1(int[] nums) {
         /*
          * 问题可转化为在 nums 中是否存在某些元素，使其和为 nums 所有元素和的一半，假设和为 target
          * DP, 【0-1背包】
