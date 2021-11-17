@@ -8,7 +8,7 @@ public class FindAllNumbersDisappearedInAnArray {
     public static void main(String[] args) {
         int[] nums1 = {4, 3, 2, 7, 8, 2, 3, 1};
         int[] nums2 = {1, 1};
-        int[] nums3 = {1, 2};
+        int[] nums3 = {2, 2};
         System.out.println(findDisappearedNumbers(nums1));
         System.out.println(findDisappearedNumbers(nums2));
         System.out.println(findDisappearedNumbers(nums3));
@@ -18,7 +18,7 @@ public class FindAllNumbersDisappearedInAnArray {
         // 原地哈希
         List<Integer> ans = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
-            while (nums[nums[i] - 1] != nums[i]) {
+            while (nums[nums[i] - 1] != nums[i]) {  // nums[i] 所属的位置 nums[i]-1 上是否已经放置了 nums[i]，若无则交换
                 int temp = nums[nums[i] - 1];
                 nums[nums[i] - 1] = nums[i];
                 nums[i] = temp;
