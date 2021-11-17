@@ -1,6 +1,7 @@
 package year2021.month11.no448;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FindAllNumbersDisappearedInAnArray {
@@ -9,9 +10,35 @@ public class FindAllNumbersDisappearedInAnArray {
         int[] nums1 = {4, 3, 2, 7, 8, 2, 3, 1};
         int[] nums2 = {1, 1};
         int[] nums3 = {2, 2};
-        System.out.println(findDisappearedNumbers(nums1));
-        System.out.println(findDisappearedNumbers(nums2));
-        System.out.println(findDisappearedNumbers(nums3));
+        System.out.println(findDisappearedNumbers1(nums1));
+        System.out.println(Arrays.toString(nums1));
+        System.out.println(findDisappearedNumbers1(nums2));
+        System.out.println(Arrays.toString(nums2));
+        System.out.println(findDisappearedNumbers1(nums3));
+        System.out.println(Arrays.toString(nums3));
+    }
+
+    private static List<Integer> findDisappearedNumbers1(int[] nums) {
+        // 将元素值 v 映射至索引 v-1 上，若出现过某元素 v，则在其索引值上 + nums.length
+        // 则最后索引值大于 nums.length 的即为出现过的元素，故可找出未出现的元素
+        // 同时最后可将所有大于 nums.length 的元素值 % nums.length，即可恢复数组
+        int len = nums.length;
+        for (int num : nums) {
+            nums[(num - 1) % len] += len;
+        }
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] <= len) {
+                ans.add(i + 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) { // 恢复数组
+            nums[i] %= len;
+            if (nums[i] == 0) {
+                nums[i] = len;
+            }
+        }
+        return ans;
     }
 
     public static List<Integer> findDisappearedNumbers(int[] nums) {
