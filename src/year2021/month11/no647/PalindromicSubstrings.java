@@ -4,8 +4,23 @@ public class PalindromicSubstrings {
     public static void main(String[] args) {
         String s1 = "abc";
         String s2 = "aaa";
-        System.out.println(countSubstrings(s1));
-        System.out.println(countSubstrings(s2));
+        System.out.println(countSubstrings1(s1));
+        System.out.println(countSubstrings1(s2));
+    }
+
+    private static int countSubstrings1(String s) {
+        // Refactor, dp[i][j] = s[i] == s[j] && dp[i+1][j-1]
+        int count = 0;
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        for (int i = s.length() - 1; i >= 0; i--) {
+            for (int j = i; j < s.length(); j++) {
+                if (s.charAt(i) == s.charAt(j) && (j - i < 2 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     public static int countSubstrings(String s) {
