@@ -1,12 +1,34 @@
 package year2021.month11.no42;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class TrappingRainWater {
 
     public static void main(String[] args) {
         int[] height1 = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
         int[] height2 = {4, 2, 0, 3, 2, 5};
-        System.out.println(trap(height1));
-        System.out.println(trap(height2));
+        System.out.println(trap1(height1));
+        System.out.println(trap1(height2));
+    }
+
+    private static int trap1(int[] height) {
+        // 单调递减栈
+        Deque<Integer> stack = new LinkedList<>();
+        int sum = 0;
+        for (int i = 0; i < height.length; i++) {
+            while (!stack.isEmpty() && height[stack.peek()] < height[i]) {
+                Integer index = stack.pop();    // 找出当前凹槽
+                if (!stack.isEmpty()) {         // 存在左边界
+                    Integer rightIndex = stack.peek();
+                    int high = Math.min(height[rightIndex], height[i]) - height[index];
+                    int width = i - rightIndex - 1;
+                    sum += high * width;
+                }
+            }
+            stack.push(i);
+        }
+        return sum;
     }
 
     public static int trap(int[] height) {
