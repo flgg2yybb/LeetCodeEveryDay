@@ -34,6 +34,8 @@ public class CombinationSumII {
             return;
         }
         backtrack(candidates, target, pos + 1, used, sum, ans, temps);
+        // 对于重复元素如 {1,1,1}，target = 2 这种情况，如果要选重复元素，就必须从重复元素的开头一直往后选，
+        // 但凡出现前面元素没有选择，后续的重复元素都不可选择，以免重复
         if (pos > 0 && candidates[pos - 1] == candidates[pos] && !used[pos - 1]) {
             return;
         }
