@@ -18,13 +18,14 @@ public class CombinationSumII {
     }
 
     public static List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        Set<List<Integer>> ans = new HashSet<>();
+        List<List<Integer>> ans = new ArrayList<>();
         Arrays.sort(candidates);
-        backtrack(candidates, target, 0, 0, ans, new ArrayList<>());
+        boolean[] used = new boolean[candidates.length];
+        backtrack(candidates, target, 0, used, 0, ans, new ArrayList<>());
         return new ArrayList<>(ans);
     }
 
-    private static void backtrack(int[] candidates, int target, int pos, int sum, Set<List<Integer>> ans, List<Integer> temps) {
+    private static void backtrack(int[] candidates, int target, int pos, boolean[] used, int sum, List<List<Integer>> ans, List<Integer> temps) {
         if (sum == target) {
             ans.add(new ArrayList<>(temps));
             return;
@@ -32,10 +33,37 @@ public class CombinationSumII {
         if (sum > target || pos == candidates.length) {
             return;
         }
-        backtrack(candidates, target, pos + 1, sum, ans, temps);
+        backtrack(candidates, target, pos + 1, used, sum, ans, temps);
+        if (pos > 0 && candidates[pos - 1] == candidates[pos] && !used[pos - 1]) {
+            return;
+        }
         int num = candidates[pos];
         temps.add(num);
-        backtrack(candidates, target, pos + 1, sum + num, ans, temps);
+        used[pos] = true;
+        backtrack(candidates, target, pos + 1, used, sum + num, ans, temps);
+        used[pos] = false;
+        temps.remove(temps.size() - 1);
+    }
+
+    public static List<List<Integer>> combinationSum1(int[] candidates, int target) {
+        Set<List<Integer>> ans = new HashSet<>();
+        Arrays.sort(candidates);
+        backtrack1(candidates, target, 0, 0, ans, new ArrayList<>());
+        return new ArrayList<>(ans);
+    }
+
+    private static void backtrack1(int[] candidates, int target, int pos, int sum, Set<List<Integer>> ans, List<Integer> temps) {
+        if (sum == target) {
+            ans.add(new ArrayList<>(temps));
+            return;
+        }
+        if (sum > target || pos == candidates.length) {
+            return;
+        }
+        backtrack1(candidates, target, pos + 1, sum, ans, temps);
+        int num = candidates[pos];
+        temps.add(num);
+        backtrack1(candidates, target, pos + 1, sum + num, ans, temps);
         temps.remove(temps.size() - 1);
     }
 
