@@ -12,6 +12,27 @@ public class JumpGameII {
     }
 
     public static int jump(int[] nums) {
+        // 贪心
+        int cur = 0;
+        int step = 0;
+        while (cur < nums.length - 1) {
+            int canJump = nums[cur];
+            step++;
+            if (cur + canJump >= nums.length - 1) {
+                return step;
+            }
+            int nextJump = cur;
+            for (int i = cur + 1; i <= cur + canJump; i++) {
+                if (i + nums[i] > nextJump + nums[nextJump]) {
+                    nextJump = i;
+                }
+            }
+            cur = nextJump;
+        }
+        return step;
+    }
+
+    public static int jump1(int[] nums) {
         /*
          * DP, time is O(n^2), space is O(n)
          * dp[i] 表示跳跃到位置 i 的最小跳跃数
