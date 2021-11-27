@@ -11,7 +11,22 @@ public class JumpGameII {
         System.out.println(jump(nums3));    //3
     }
 
-    public static int jump(int[] nums) {
+    private static int jump(int[] nums) {
+        // curMaxJump 为上一次可以跳到的最远距离
+        int curMaxJump = 0;
+        int step = 0;
+        int maxPos = 0;
+        for (int i = 0; i < nums.length - 1; i++) { // 不需要跳到 nums.length 否则会多一次跳跃数
+            maxPos = Math.max(i + nums[i], maxPos);
+            if (i == curMaxJump) {
+                step++;
+                curMaxJump = maxPos;
+            }
+        }
+        return step;
+    }
+
+    public static int jump2(int[] nums) {
         // 贪心
         int cur = 0;
         int step = 0;
