@@ -17,6 +17,26 @@ public class UniquePathsII {
     }
 
     public static int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        // 空间优化
+        int m = obstacleGrid.length;
+        int n = obstacleGrid[0].length;
+        int[] dp = new int[n];                  // 滚动数组
+        dp[0] = obstacleGrid[0][0] == 1 ? 0 : 1;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (obstacleGrid[i][j] == 1) {  // 当前是障碍物
+                    dp[j] = 0;
+                    continue;
+                }
+                if (j > 0 && obstacleGrid[i][j - 1] == 0) {
+                    dp[j] += dp[j - 1];
+                }
+            }
+        }
+        return dp[n - 1];
+    }
+
+    public static int uniquePathsWithObstacles1(int[][] obstacleGrid) {
         /*
          * DP, time is O(mn), space is O(mn)
          * 状态定义
