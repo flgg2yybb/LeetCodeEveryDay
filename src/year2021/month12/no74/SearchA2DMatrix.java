@@ -17,9 +17,33 @@ public class SearchA2DMatrix {
         int target2 = 13;
         int[][] matrix3 = {{1}};
         int target3 = 1;
-//        System.out.println(searchMatrix(matrix1, target1));
-//        System.out.println(searchMatrix(matrix2, target2));
-        System.out.println(searchMatrix(matrix3, target3));
+        System.out.println(searchMatrix1(matrix1, target1));
+        System.out.println(searchMatrix1(matrix2, target2));
+        System.out.println(searchMatrix1(matrix3, target3));
+    }
+
+    private static boolean searchMatrix1(int[][] matrix, int target) {
+        /*
+         * 若将矩阵每一行拼接在上一行的末尾，则会得到一个升序数组，我们可以在该数组上二分找到目标元素。
+         * 代码实现时，可以二分升序数组的下标，将其映射到原矩阵的行和列上。
+         * */
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int left = 0;
+        int right = n * m - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int i = mid / n;
+            int j = mid % n;
+            if (matrix[i][j] == target) {
+                return true;
+            } else if (matrix[i][j] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return false;
     }
 
     public static boolean searchMatrix(int[][] matrix, int target) {
