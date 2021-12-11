@@ -1,5 +1,8 @@
 package year2021.month12.no99;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class RecoverBinarySearchTree {
 
     private static TreeNode prev = null;
@@ -25,11 +28,39 @@ public class RecoverBinarySearchTree {
         inorderPrint(root2);
     }
 
-    public static void recoverTree(TreeNode root) {
+    private static void recoverTree(TreeNode root) {
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode p = root;
+        TreeNode prev = null;
+        TreeNode first = null;
+        TreeNode second = null;
+        while (p != null || !stack.isEmpty()) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            TreeNode pop = stack.pop();
+            if (prev != null && prev.val > pop.val) {
+                if (first == null) {
+                    first = prev;
+                }
+                second = pop;
+            }
+            prev = pop;
+            p = pop.right;
+        }
+        int temp = first.val;
+        first.val = second.val;
+        second.val = temp;
+    }
+
+    public static void recoverTree1(TreeNode root) {
         // 正常情况下中序遍历值递增，对 root 做中序遍历
         // 记录出 prev.val > root.val 的第一个节点和最后一个节点
         // 再交换节点值即可
         prev = null;
+        first = null;
+        second = null;
         dfs(root);
         int temp = first.val;
         first.val = second.val;
