@@ -14,6 +14,28 @@ public class FindTheDuplicateNumber {
     }
 
     public static int findDuplicate(int[] nums) {
+        // 若无修改原数组的条件，可使用 原地哈希
+        // 对于每一个元素 num，将其隐射至相应的位置
+        // value -> index
+        // 遍历数组，将每个元素都映射至相应的位置，
+        // 若发现该位置已存在正确的元素，则说明找到重复元素
+        for (int i = 0; i < nums.length; i++) {
+            // nums[i] 为当前遍历的元素，也代表 nums[i] 的目标索引
+            // nums[nums[i]] == nums[i] 表示目标索引放入了目标元素
+            while (nums[nums[i]] != nums[i]) {
+                int temp = nums[nums[i]];
+                nums[nums[i]] = nums[i];
+                nums[i] = temp;
+            }
+            // 目标位置已经放入了 nums[i]，然而当前位置 i 却不等于 nums[i]，说明 nums[i] 为重复元素
+            if (i != nums[i]) {
+                return nums[i];
+            }
+        }
+        return -1;
+    }
+
+    public static int findDuplicate1(int[] nums) {
         // 由于数组长度为 n+1，则数组索引范围为：[0,n]
         // 数组中的元素范围均在 [1,n] 之间，
         // 建立元素与索引的映射关系：value -> index
