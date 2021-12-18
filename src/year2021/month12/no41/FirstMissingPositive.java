@@ -14,6 +14,26 @@ public class FirstMissingPositive {
     }
 
     public static int firstMissingPositive(int[] nums) {
+        // Hash In-place,
+        // 将范围大小为 [1, nums.length] 的 value 映射至 value-1 的位置上
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] >= 1 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
+                int temp = nums[nums[i] - 1];
+                nums[nums[i] - 1] = nums[i];
+                nums[i] = temp;
+            }
+        }
+        int missingNumber = 1;
+        for (int num : nums) {
+            if (num != missingNumber) {
+                break;
+            }
+            missingNumber++;
+        }
+        return missingNumber;
+    }
+
+    public static int firstMissingPositive1(int[] nums) {
         Set<Integer> set = new HashSet<>();
         for (int num : nums) {
             set.add(num);
