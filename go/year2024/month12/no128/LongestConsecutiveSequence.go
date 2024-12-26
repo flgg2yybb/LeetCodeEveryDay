@@ -1,7 +1,31 @@
 package main
 
-// 【timeout】hash and count, time: O(n^2), space: O(n)
+// hash and count, time: O(n), space: O(n)
 func longestConsecutive(nums []int) int {
+	dic := make(map[int]bool)
+	for _, num := range nums { // O(n)
+		dic[num] = true
+	}
+	longest := 0
+	for num := range dic { // O(n)
+		if dic[num-1] { // 如果 num-1 存在，则 num 必不是最长连续序列的第一个元素，因此可以跳过
+			continue
+		}
+		cur := 1
+		nextNum := num + 1
+		for dic[nextNum] {
+			cur++
+			nextNum++
+		}
+		if cur > longest {
+			longest = cur
+		}
+	}
+	return longest
+}
+
+// 【timeout】hash and count, time: O(n^2), space: O(n)
+func longestConsecutive1(nums []int) int {
 	dic := make(map[int]struct{})
 	for _, num := range nums { // O(n)
 		dic[num] = struct{}{}
