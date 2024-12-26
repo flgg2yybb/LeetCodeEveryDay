@@ -4,8 +4,23 @@ import java.util.Arrays;
 
 public class MoveZeroes {
 
-    // Two Pointers, tims: O(n), space: O(n)
+    // Quick Soft - Partition, tims: O(n), space: O(1)
     public static void moveZeroes(int[] nums) {
+        int slow = 0;
+        int fast = 0;
+        while (fast < nums.length) {
+            if (nums[fast] != 0) {
+                int temp = nums[slow];
+                nums[slow] = nums[fast];
+                nums[fast] = temp;
+                slow++;
+            }
+            fast++;
+        }
+    }
+
+    // Two Pointers, tims: O(n), space: O(1)
+    public static void moveZeroes1(int[] nums) {
         if (nums.length == 0) {
             return;
         }
