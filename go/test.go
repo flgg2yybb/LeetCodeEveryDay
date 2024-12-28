@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	arr := []int{5, 6, 3, 5, 7, 4}
+	sort.Slice(arr, func(i, j int) bool { return arr[i] < arr[j] })
+	println(fmt.Sprintf("%+v", arr))
 }
