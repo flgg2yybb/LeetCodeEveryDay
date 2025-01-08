@@ -1,4 +1,4 @@
-package year2025.month1;
+package year2025.month1.no3;
 
 import java.util.HashMap;
 import java.util.Map;
