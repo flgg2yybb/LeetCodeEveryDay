@@ -56,10 +56,12 @@ public class FindAllAnagramsInString {
         for (int end = 0; end < chars.length; end++) {
             anagramsMap.push(chars[end]);
             if (end < p.length() - 1) {
+                // 当前 [start, end] 长度小于子串 p 的长度，必然不存在异位词
                 continue;
             }
             int start = end - p.length() + 1;
             if (start > 0) {
+                // 需要保证 anagramMap 中始终仅包含 [start, end] 的字符
                 anagramsMap.pop(chars[start - 1]);
             }
             if (anagramsMap.isAnagrams()) {
