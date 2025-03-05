@@ -9,6 +9,7 @@ func main() {
 	println(fmt.Sprintf("%+v", spiralOrder(matrix2)))
 }
 
+// times: O(mn), space: O(mn)
 func spiralOrder(matrix [][]int) []int {
 	top := 0
 	right := len(matrix[0]) - 1
