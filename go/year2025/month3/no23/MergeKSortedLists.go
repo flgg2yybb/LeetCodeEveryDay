@@ -43,6 +43,7 @@ func (h *MinHeap) Pop() (x interface{}) {
 	arr := *h
 	n := len(arr)
 	x = arr[n-1]   // 取出最后一个元素
+	arr[n-1] = nil // **避免内存泄漏**
 	*h = arr[:n-1] // 移除最后一个元素
 	return x
 }
