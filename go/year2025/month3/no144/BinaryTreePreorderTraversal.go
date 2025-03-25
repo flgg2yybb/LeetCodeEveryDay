@@ -43,16 +43,16 @@ func main() {
 func preorderTraversal(root *TreeNode) []int {
 	ans := make([]int, 0)
 	stack := make([]*TreeNode, 0)
-	prev := root
-	for len(stack) > 0 || prev != nil {
-		for prev != nil {
-			stack = append(stack, prev)
-			ans = append(ans, prev.Val) // 根
-			prev = prev.Left            // 左
+	p := root
+	for len(stack) > 0 || p != nil {
+		for p != nil {
+			stack = append(stack, p)
+			ans = append(ans, p.Val) // 根
+			p = p.Left               // 左
 		}
 		pop := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
-		prev = pop.Right // 右
+		p = pop.Right // 右
 	}
 	return ans
 }
