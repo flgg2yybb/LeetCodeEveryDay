@@ -8,7 +8,42 @@ func main() {
 	disp(buildTree(preorder, inorder))
 }
 
+// Stack, times: O(n), space: O(n)
+// 思路：根据前序遍历来构建树，用中序遍历来判断左右子树
+// 栈里存的是前序遍历的节点，每次弹出栈顶元素，判断中序遍历的值是否等于栈顶元素的值，
+// * 如果不等于，说明当前栈顶元素的左子树还没遍历完，继续构建左子树
+// * 如果等于，说明当前栈顶元素的左子树遍历完了，继续构建右子树
 func buildTree(preorder []int, inorder []int) *TreeNode {
+	if len(preorder) == 0 {
+		return nil
+	}
+	root := &TreeNode{Val: preorder[0]}
+	stack := make([]*TreeNode, 0)
+	stack = append(stack, root)
+	inIndex := 0 // 当前中序遍历的索引
+	// preorder => [root, left, right], inorder => [left, root, right]
+	// stack => [root, left, right]
+	for i := 1; i < len(preorder); i++ {
+		lastNode := stack[len(stack)-1]
+		if lastNode.Val != inorder[inIndex] { // 当前栈顶元素不等于中序遍历的值，说明当前栈顶元素的左子树还没遍历完
+			lastNode.Left = &TreeNode{Val: preorder[i]}
+			stack = append(stack, lastNode.Left)
+		} else {
+			// 当前栈顶元素等于中序遍历的值，说明当前栈顶元素的左子树遍历完了
+			for len(stack) != 0 && stack[len(stack)-1].Val == inorder[inIndex] {
+				lastNode = stack[len(stack)-1]
+				stack = stack[:len(stack)-1]
+				inIndex++
+			}
+			// 当前栈顶元素不等于中序遍历的值，说明中序遍历的值为当前栈顶元素的右子树
+			lastNode.Right = &TreeNode{Val: preorder[i]}
+			stack = append(stack, lastNode.Right)
+		}
+	}
+	return root
+}
+
+func buildTree1(preorder []int, inorder []int) *TreeNode {
 	return dfsBuildTree(preorder, inorder, 0, 0, len(inorder)-1)
 }
 
