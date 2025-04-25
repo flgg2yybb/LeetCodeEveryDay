@@ -10,12 +10,46 @@ func main() {
 }
 
 /*
+单调队列，times: O(nlogn), space: O(n)
+思路：用一个严格单调递增的队列来维护当前的最长递增子序列，同时让子序列上升的尽可能慢，具体如下
+  - 如果当前元素 > 队列的最后一个元素，则直接在对尾追加入队列
+  - 如果当前元素 <= 队列的最后一个元素，则需要找到队列中第一个大于等于当前元素的元素，替换掉它，并且从该元素位置开始继续维护单调递增队列
+
+对于找到队列中第一个大于等于当前元素的元素，可以使用二分查找
+结果：队列长度
+Refer Link: https://writings.sh/post/longest-increasing-subsequence-revisited
+*/
+func lengthOfLIS(nums []int) int {
+	queue := make([]int, 0)
+	for _, num := range nums {
+		queueLen := len(queue)
+		if queueLen > 0 && num <= queue[queueLen-1] {
+			// 如果当前元素 <= 队列的最后一个元素，则需要找到队列中第一个大于等于当前元素的元素，替换掉它
+			left, right := 0, queueLen-1
+			for left < right {
+				mid := left + (right-left)/2 // 向 left 靠拢
+				if queue[mid] >= num {
+					right = mid
+				} else {
+					//queue[mid] < num
+					left = mid + 1
+				}
+			}
+			queue[left] = num
+			continue
+		}
+		queue = append(queue, num)
+	}
+	return len(queue)
+}
+
+/*
 DP, tims: O(n^2), space: O(n)
 状态定义：dp[i] 为以 nums[i] 结尾的最长递增子序列的长度
 状态转移方程：dp[i] = max(dp[j] + 1), (j < i && nums[j] < nums[i])
 状态初始化：dp[i] = 1
 */
-func lengthOfLIS(nums []int) int {
+func lengthOfLIS1(nums []int) int {
 	dp := make([]int, len(nums))
 	ans := 0
 	for i := 0; i < len(nums); i++ {
