@@ -10,6 +10,34 @@ func main() {
 }
 
 /*
+Stack, times: O(n), space: O(n)
+始终保持栈底元素为当前已经遍历过的元素中【最后一个没有被匹配的右括号下标】
+1.对于 s[i] = '('，直接入栈
+2.对于 s[i] = ')'，我们先弹出栈顶元素，表示匹配了当前的右括号
+  - 如果栈为空，则代表着之前出栈的为辅助元素，即目前没有左括号与当前右括号进行匹配，需要将当前右括号索引压入栈中
+  - 如果栈不为空，则将当前下标减去栈顶元素，即为以当前右括号为结尾的最长有效括号的长度: i-stack[len(stack)-1]
+*/
+func longestValidParentheses(s string) int {
+	stack := make([]int, 0, len(s))
+	stack = append(stack, -1) // 代表辅助元素
+	maxLen := 0
+	for i := 0; i < len(s); i++ {
+		if s[i] == '(' {
+			stack = append(stack, i) //  存储未匹配的 '(' 的索引
+			continue
+		}
+		// s[i] == ')'
+		stack = stack[:len(stack)-1] // 栈中存在 '('，则出栈一个 '(' 来匹配
+		if len(stack) == 0 {         // 【出栈的为辅助元素】即目前没有左括号与当前右括号进行匹配
+			stack = append(stack, i) //将当前右括号索引压入栈中
+		} else {
+			maxLen = max(maxLen, i-stack[len(stack)-1]) //将当前下标减去栈顶元素，即为以当前右括号为结尾的最长有效括号的长度
+		}
+	}
+	return maxLen
+}
+
+/*
  * DP, time is O(n), space is O(n)
  * 状态定义：
  * dp[i] 表示以当前 i 结尾的字符串中最长有效括号子串的长度
@@ -27,7 +55,7 @@ func main() {
  *        ^   ^
  *        2 + 4 = 6
  * */
-func longestValidParentheses(s string) int {
+func longestValidParentheses3(s string) int {
 	if len(s) < 2 {
 		return 0
 	}
