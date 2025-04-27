@@ -9,20 +9,23 @@ func main() {
 	println(longestValidParentheses(s3)) // 2
 }
 
-/* DP, times: O(n), space: O(n)
- * 状态定义
- * dp[i]定义为以下标 i的字符结尾的字符串中有效括号子串的长度
- * 状态转移方程
+/*
+ * DP, time is O(n), space is O(n)
+ * 状态定义：
+ * dp[i] 表示以当前 i 结尾的字符串中最长有效括号子串的长度
+ * 状态转义方程：
  * if s[i] = '('
- *   dp[i] = 0
- * else s[i] = ')' && i - dp[i-1] - 1 >= 0 && s[i - dp[i-1] - 1] = '('
- *   如果当前为 )，i - dp[i-1] -1为与当前位置相对应的下标，若其为(，则dp[i] = dp[i-1] + 2
- *   注意：可满足当前串为()、(()())的case
- *   dp[i] = dp[i-1] + 2
+ *       dp[i] = 0
+ * else s[i] = ')' && i - dp[i-1] - 1 >= 0 && s[i - dp[i-1] - 1] == '('
+ *       dp[i] = dp[i-1] + 2
+ * 注意：
  *   若当前已配对成功，当前范围的前一个元素也能配对成功（dp[i - dp[i-1] - 2]存在且大于0），则还需加上前面的长度
  *   因i - dp[i-1] - 2配对不成功时，dp[i - dp[i-1] - 2] = 0，则可统一处理
  *   if i - dp[i-1] -2 >= 0
  *       dp[i] += dp[i - dp[i-1] -2]
+ * 例子： ()(())
+ *        ^   ^
+ *        2 + 4 = 6
  * */
 func longestValidParentheses(s string) int {
 	if len(s) < 2 {
